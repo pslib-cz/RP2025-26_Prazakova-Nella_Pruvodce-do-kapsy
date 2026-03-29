@@ -1,0 +1,30 @@
+# 1.1 Katalog požadavků
+
+Klíčové vlastnosti budoucí aplikace. **Funkcionální** požadavky specifikují konkrétní funkce, a **nefunkcionální** určují vlastnosti systému, jako je např. responzivita.
+
+Stupnice priorit:
+* **Vysoká (Must have):** funkce nezbytné pro základní provoz aplikace.
+* **Střední (Should have):** užitečné funkce pro komfort uživatele.
+* **Nízká (Could have):** doplňkové funkce v případě časové rezervy.
+
+---
+
+### 1.1.1 Funkcionální požadavky
+
+| ID | Název | Popis | Priorita |
+| :--- | :--- | :--- | :--- |
+| **F01** | Zobrazení mapy | Systém zobrazí interaktivní plánek školy s vyznačenými body. | Vysoká |
+| **F02** | Detail stanoviště | Po interakci s bodem na mapě se zobrazí podrobné informace. | Vysoká |
+| **F03** | Kvízové otázky | Doplnění stanovišť o interaktivní kvízové otázky. | Nízká |
+| **F04** | Správa bodů | Rozhraní v Razor Pages pro přidávání a editaci bodů na mapě. | Vysoká |
+| **F05** | Autentizace | Zabezpečené přihlášení jako admin. | Vysoká |
+
+---
+
+### 1.1.2 Nefunkcionální požadavky
+
+| ID | Název | Popis | Priorita |
+| :--- | :--- | :--- | :--- |
+| **NF01** | Responzivita | Aplikace je optimalizovaná pro všechny velikosti displejů. | Vysoká |
+| **NF02** | Rychlost načtení | Podklady se musí načíst co nejrychleji (optimalizace assetů). | Střední |
+| **NF03** | Intuitivnost | Srozumitelné rozhraní pro všechny věkové skupiny návštěvníků. | Vysoká |
