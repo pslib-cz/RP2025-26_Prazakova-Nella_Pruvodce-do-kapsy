@@ -1,6 +1,6 @@
 # 1.1 Katalog požadavků
 
-Klíčové vlastnosti budoucí aplikace. **Funkcionální** požadavky specifikují konkrétní funkce, a **nefunkcionální** určují vlastnosti systému, jako je např. responzivita.
+Katalog definuje klíčové vlastnosti aplikace "Den otevřených dveří". **Funkcionální** požadavky specifikují konkrétní funkce, a **nefunkcionální** určují vlastnosti systému, jako je např. responzivita.
 
 Stupnice priorit:
 * **Vysoká (Must have):** funkce nezbytné pro základní provoz aplikace.
@@ -9,22 +9,37 @@ Stupnice priorit:
 
 ---
 
-### 1.1.1 Funkcionální požadavky
+### 1.1.1 Funkcionální požadavky (F)
 
 | ID | Název | Popis | Priorita |
 | :--- | :--- | :--- | :--- |
-| **F01** | Zobrazení mapy | Systém zobrazí interaktivní plánek školy s vyznačenými body. | Vysoká |
-| **F02** | Detail stanoviště | Po interakci s bodem na mapě se zobrazí podrobné informace. | Vysoká |
-| **F03** | Kvízové otázky | Doplnění stanovišť o interaktivní kvízové otázky. | Nízká |
-| **F04** | Správa bodů | Rozhraní v Razor Pages pro přidávání a editaci bodů na mapě. | Vysoká |
-| **F05** | Autentizace | Zabezpečené přihlášení jako admin. | Vysoká |
+| **F01** | **Volba areálu** | Úvodní obrazovka umožňující uživateli výběr mezi areály. | Vysoká |
+| **F02** | **Zobrazení mapy** | Zobrazení vektorového plánku budovy s interaktivními body. | Vysoká |
+| **F03** | **Interaktivita mapy** | Mapa podporuje zoom a posun. Level of Detail. | Střední |
+| **F04** | **Přepínání podlaží** | Možnost měnit aktuálně zobrazené patro budovy pomocí výběrového menu. | Vysoká |
+| **F05** | **Kategorizace a filtry** | Rychlá filtrace stanovišť podle oborů pomocí štítků. | Střední |
+| **F06** | **Vyhledávání** | Textové vyhledávání konkrétních učeben, oborů nebo klíčových slov. | Střední |
+| **F07** | **Detail stanoviště** | Zobrazení detailnějšího okna po kliknutí na bod. | Vysoká |
+| **F08** | **Tutorial** | Overlay vrstva s vysvětlivkami ovládacích prvků. | Nízká |
+| **F09** | **Interaktivní kvíz** | Spuštění kvízového okna u vybraných stanovišť. | Nízká |
+| **F10** | **Administrace bodů** | CRUD rozhraní pro správce: přidávání, mazání a přesun bodů na mapě. | Vysoká |
+| **F11** | **Archivace akcí** | Uložení konfiguraci celé akce jako samostatnou událost v databázi. | Nízká |
+| **F12** | **Klonování akcí** | Vytvoření akce na základě dat z minulé události. Editaci existujících bodů. | Nízká |
+| **F13** | **Autentizace** | Zabezpečený přístup do správy databáze pomocí jména a hesla. | Vysoká |
 
 ---
 
-### 1.1.2 Nefunkcionální požadavky
+### 1.1.2 Nefunkcionální požadavky (NF)
 
 | ID | Název | Popis | Priorita |
 | :--- | :--- | :--- | :--- |
-| **NF01** | Responzivita | Aplikace je optimalizovaná pro všechny velikosti displejů. | Vysoká |
-| **NF02** | Rychlost načtení | Podklady se musí načíst co nejrychleji (optimalizace assetů). | Střední |
-| **NF03** | Intuitivnost | Srozumitelné rozhraní pro všechny věkové skupiny návštěvníků. | Vysoká |
+| **NF01** | **Mobile-First Design** | Optimalizace UI pro mobilní telefony. | Vysoká |
+| **NF02** | **Responzivita** | Korektní zobrazení na tabletech a desktopu.| Střední |
+| **NF03** | **Rychlost odezvy** | Rychlý čas načtení úvodní mapy (optimalizace SVG a assetů). | Střední |
+| **NF04** | **Intuitivní ovládání** | UI odpovídající standardům mobilních mapových aplikací. | Vysoká |
+| **NF05** | **Bezpečnost dat** | Ochrana konfiguračních souborů a hesel admina. | Vysoká |
+| **NF06** | **Výkon (Lighthouse)** | Aplikace musí dosahovat skóre Performance 80+ bodů. | Střední |
+
+### Design a Prototyp
+* **Figma soubor:** [Odkaz na design](https://www.figma.com/design/xygrAv1nfEujoHUdkVFuCo/DOD?node-id=45-4&t=XaQGk5JMylmZsa97-1)
+* **Interaktivní prototyp:** [Spustit prototyp](https://www.figma.com/proto/xygrAv1nfEujoHUdkVFuCo/DOD?node-id=45-4&p=f&t=XaQGk5JMylmZsa97-0&scaling=scale-down&content-scaling=fixed&page-id=45%3A4&starting-point-node-id=49%3A159)
