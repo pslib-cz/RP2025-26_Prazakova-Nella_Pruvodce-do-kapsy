@@ -7,7 +7,7 @@ namespace pruvodce.server.Data
     {
         public static void Seed(ModelBuilder modelBuilder)
         {
-            //  Budova
+            //Budova
             modelBuilder.Entity<Building>().HasData(
                 new Building
                 {
@@ -17,7 +17,7 @@ namespace pruvodce.server.Data
                 }
             );
 
-            // Patro
+            //Patro
             modelBuilder.Entity<Floor>().HasData(
                 new Floor
                 {
@@ -28,7 +28,7 @@ namespace pruvodce.server.Data
                 }
             );
 
-            //  Místnost
+            //Místnost
             modelBuilder.Entity<Room>().HasData(
                 new Room
                 {
@@ -40,7 +40,7 @@ namespace pruvodce.server.Data
                 }
             );
 
-            // Event
+            //Event
             modelBuilder.Entity<Event>().HasData(
                 new Event
                 {
@@ -52,7 +52,7 @@ namespace pruvodce.server.Data
                 }
             );
 
-            // Stanovištì
+            //Stanovištì
             modelBuilder.Entity<Point>().HasData(
                 new Point
                 {

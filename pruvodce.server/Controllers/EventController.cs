@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pruvodce.server.Data;
+using pruvodce.server.Models;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -10,9 +11,13 @@ public class EventController : ControllerBase
     public EventController(ApplicationDbContext context) => _context = context;
 
     [HttpGet]
-    public async Task<IActionResult> GetEvents()
+    public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
     {
-        var events = await _context.Events.Include(e => e.Points).ToListAsync();
-        return Ok(events);
+        return await _context.Events
+            .Include(e => e.Points)
+                .ThenInclude(p => p.Room)
+                    .ThenInclude(r => r.Floor)
+                        .ThenInclude(f => f.Building)
+            .ToListAsync();
     }
 }
