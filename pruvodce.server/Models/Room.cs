@@ -11,6 +11,7 @@ namespace pruvodce.server.Models
         public required string SvgData { get; set; }
         public required string Label { get; set; }
         public List<Subject> Subjects { get; set; } = new List<Subject>();
+        public string? Icon { get; set; }
         public double? CoordinateX { get; set; }
         public double? CoordinateY { get; set; }
 

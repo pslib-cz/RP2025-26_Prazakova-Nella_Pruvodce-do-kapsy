@@ -1,0 +1,87 @@
+.introContainer {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.backgroundWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.introSvg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.contentOverlay {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.header {
+    text-align: center;
+    padding-top: 1rem;
+    pointer-events: auto;
+}
+
+.footer {
+    padding-bottom: 40px;
+    text-align: center;
+    pointer-events: auto;
+}
+
+.logo {
+    width: 180px;
+    margin-bottom: 20px;
+}
+
+.mainTitle {
+    color: #444; 
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+.subTitle {
+    color: #666;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.buildingClickable {
+    cursor: pointer;
+}
+
+.svgText {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    fill: #333;
+}
+
+.quizButton {
+    background: white;
+    border: none;
+    color: #007bff;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+}

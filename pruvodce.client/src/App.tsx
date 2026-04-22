@@ -1,12 +1,20 @@
-import InteractiveMap from './assets/components/map/InteractiveMap';
+import InteractiveMap from './Components/InteractiveMap';
 import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import IntroPage from './Pages/IntroPage';
+import MapPage from './Pages/MapPage';
+// import QuizPage from './pages/QuizPage';
 
-function App() {
+const App = () => {
   return (
-    <div className="app-container">
-      <InteractiveMap />
-    </div>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<IntroPage />} />
+        <Route path="/map/:buildingId" element={<MapPage />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default App;
