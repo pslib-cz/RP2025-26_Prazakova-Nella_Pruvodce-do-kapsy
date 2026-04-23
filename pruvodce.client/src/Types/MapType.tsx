@@ -7,28 +7,34 @@ export const RoomType = {
     Corridor: 5,
     Other: 6
 } as const;
+
 export type RoomType = typeof RoomType[keyof typeof RoomType];
 
+export const RoomTypeLabels: Record<number, string> = {
+    0: "Učebna",
+    1: "Specializovaná",
+    2: "Kancelář",
+    3: "WC",
+    4: "Bufet",
+    5: "Chodba",
+    6: "Jiné"
+};
 
-export const FieldType = {
-    IT: 0,
-    EL: 1,
-    ST: 2,
-    TL: 3,
-    OD: 4,
-    TE: 5
-} as const;
-export type FieldType = typeof FieldType[keyof typeof FieldType];
-
-
-///
+export const FieldTypeLabels: Record<number, string> = {
+    0: "IT",
+    1: "Elektro",
+    2: "Strojírenství",
+    3: "Technické lyceum",
+    4: "Odborné",
+    5: "Teorie"
+};
 
 
 export interface Specialization {
     specializationId: string;
     name: string;
     description: string;
-    type: FieldType;
+    type: number;
 }
 
 export interface Subject {
@@ -82,10 +88,10 @@ export interface RoomData {
     subjects?: Subject[];
     coordinateX?: number;
     coordinateY?: number;
-    type: RoomType;
+    type: number;
     note?: string;
     floorId: number;
-    points?: Point[]; 
+    points?: Point[];
 }
 
 export interface FloorData {

@@ -1,4 +1,3 @@
-import InteractiveMap from './Components/InteractiveMap';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import IntroPage from './Pages/IntroPage';

@@ -1,0 +1,839 @@
+[
+  {
+    "id": "B109",
+    "name": "B109",
+    "path": "M299.5,326.5 h24 v45 h-24 z",
+    "labelPosition": {
+      "x": 312,
+      "y": 349
+    },
+    "type": "0"
+  },
+  {
+    "id": "B110",
+    "name": "B110",
+    "path": "M276.5,326.5 h23 v45 h-23 z",
+    "labelPosition": {
+      "x": 288,
+      "y": 349
+    },
+    "type": "0"
+  },
+  {
+    "id": "vytah-2",
+    "name": "Vytah-2",
+    "path": "M263.5,326.5 h13 v45 h-13 z",
+    "labelPosition": {
+      "x": 270,
+      "y": 349
+    },
+    "type": "0"
+  },
+  {
+    "id": "D106",
+    "name": "D106",
+    "path": "M180.5,290.5 h48 v21 h-48 z",
+    "labelPosition": {
+      "x": 205,
+      "y": 301
+    },
+    "type": "0"
+  },
+  {
+    "id": "D105",
+    "name": "D105",
+    "path": "M172.5,228.5 h56 v62 h-56 z",
+    "labelPosition": {
+      "x": 201,
+      "y": 260
+    },
+    "type": "0"
+  },
+  {
+    "id": "toilet-5",
+    "name": "Toalety",
+    "path": "M186.5,228.5 h42 v21 h-42 z",
+    "labelPosition": {
+      "x": 208,
+      "y": 239
+    },
+    "type": "3"
+  },
+  {
+    "id": "D114",
+    "name": "D114",
+    "path": "M100.5,228.5 h45 v62 h-45 z",
+    "labelPosition": {
+      "x": 123,
+      "y": 260
+    },
+    "type": "0"
+  },
+  {
+    "id": "D121",
+    "name": "D121",
+    "path": "M100.5,290.5 h45 v90 h-45 z",
+    "labelPosition": {
+      "x": 123,
+      "y": 336
+    },
+    "type": "0"
+  },
+  {
+    "id": "B117",
+    "name": "B117",
+    "path": "M159.5,326.5 h36 v54 h-36 z",
+    "labelPosition": {
+      "x": 178,
+      "y": 354
+    },
+    "type": "0"
+  },
+  {
+    "id": "B120",
+    "name": "B120",
+    "path": "M159.5,380.5 h36 v49 h-36 z",
+    "labelPosition": {
+      "x": 178,
+      "y": 405
+    },
+    "type": "0"
+  },
+  {
+    "id": "toilet-4",
+    "name": "Toalety",
+    "path": "M195.5,326.5 h22 v45 h-22 z",
+    "labelPosition": {
+      "x": 207,
+      "y": 349
+    },
+    "type": "3"
+  },
+  {
+    "id": "B114",
+    "name": "B114",
+    "path": "M217.5,326.5 h6 v45 h-6 z",
+    "labelPosition": {
+      "x": 221,
+      "y": 349
+    },
+    "type": "0"
+  },
+  {
+    "id": "B113",
+    "name": "B113",
+    "path": "M223.5,326.5 h15 v45 h-15 z",
+    "labelPosition": {
+      "x": 231,
+      "y": 349
+    },
+    "type": "0"
+  },
+  {
+    "id": "B121",
+    "name": "B121",
+    "path": "M195.5,396.5 h14 v33 h-14 z",
+    "labelPosition": {
+      "x": 203,
+      "y": 413
+    },
+    "type": "0"
+  },
+  {
+    "id": "B124",
+    "name": "B124",
+    "path": "M209.5,396.5 h27 v33 h-27 z",
+    "labelPosition": {
+      "x": 223,
+      "y": 413
+    },
+    "type": "0"
+  },
+  {
+    "id": "B103",
+    "name": "B103",
+    "path": "M263.5,396.5 h11 v33 h-11 z",
+    "labelPosition": {
+      "x": 269,
+      "y": 413
+    },
+    "type": "0"
+  },
+  {
+    "id": "B104",
+    "name": "B104",
+    "path": "M274.5,396.5 h23 v33 h-23 z",
+    "labelPosition": {
+      "x": 286,
+      "y": 413
+    },
+    "type": "0"
+  },
+  {
+    "id": "B106",
+    "name": "B106",
+    "path": "M297.5,396.5 h26 v33 h-26 z",
+    "labelPosition": {
+      "x": 311,
+      "y": 413
+    },
+    "type": "0"
+  },
+  {
+    "id": "C103",
+    "name": "C103",
+    "path": "M336.5,355.5 h43 v100 h-43 z",
+    "labelPosition": {
+      "x": 358,
+      "y": 406
+    },
+    "type": "0"
+  },
+  {
+    "id": "C104",
+    "name": "C104",
+    "path": "M336.5,332.5 h33 v24 h-33 z",
+    "labelPosition": {
+      "x": 353,
+      "y": 345
+    },
+    "type": "0"
+  },
+  {
+    "id": "toilet-3",
+    "name": "Toalety",
+    "path": "M369.5,332.5 h26 v24 h-26 z",
+    "labelPosition": {
+      "x": 383,
+      "y": 345
+    },
+    "type": "3"
+  },
+  {
+    "id": "satna",
+    "name": "Satna",
+    "path": "M395.5,332.5 h44 v24 h-44 z",
+    "labelPosition": {
+      "x": 418,
+      "y": 345
+    },
+    "type": "0"
+  },
+  {
+    "id": "A123",
+    "name": "A123",
+    "path": "M398.5,366.5 h33 v31 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 382
+    },
+    "type": "0"
+  },
+  {
+    "id": "A121",
+    "name": "A121",
+    "path": "M398.5,397.5 h33 v34 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 415
+    },
+    "type": "0"
+  },
+  {
+    "id": "A120",
+    "name": "A120",
+    "path": "M398.5,431.5 h33 v35 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 449
+    },
+    "type": "0"
+  },
+  {
+    "id": "A117",
+    "name": "A117",
+    "path": "M398.5,466.5 h33 v11 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 472
+    },
+    "type": "0"
+  },
+  {
+    "id": "A114",
+    "name": "A114",
+    "path": "M406.5,477.5 h25 v17 h-25 z",
+    "labelPosition": {
+      "x": 419,
+      "y": 486
+    },
+    "type": "0"
+  },
+  {
+    "id": "A112",
+    "name": "A112",
+    "path": "M398.5,494.5 h33 v56 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 523
+    },
+    "type": "0"
+  },
+  {
+    "id": "A108",
+    "name": "A108",
+    "path": "M398.5,623.5 h33 v48 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 648
+    },
+    "type": "0"
+  },
+  {
+    "id": "A110",
+    "name": "A110",
+    "path": "M398.5,585.5 h33 v38 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 605
+    },
+    "type": "0"
+  },
+  {
+    "id": "A111",
+    "name": "A111",
+    "path": "M398.5,550.5 h33 v35 h-33 z",
+    "labelPosition": {
+      "x": 415,
+      "y": 568
+    },
+    "type": "0"
+  },
+  {
+    "id": "vytah-1",
+    "name": "Vytah-1",
+    "path": "M351.5,468.5 h28 v18 h-28 z",
+    "labelPosition": {
+      "x": 366,
+      "y": 478
+    },
+    "type": "0"
+  },
+  {
+    "id": "toilet-1",
+    "name": "Toalety",
+    "path": "M326.5,486.5 h53 v23 h-53 z",
+    "labelPosition": {
+      "x": 353,
+      "y": 498
+    },
+    "type": "3"
+  },
+  {
+    "id": "A134",
+    "name": "A134",
+    "path": "M326.5 584.5L326.799 509H379.5V604.5H311.5V584.5H326.5Z",
+    "labelPosition": {
+      "x": 346,
+      "y": 557
+    },
+    "type": "0"
+  },
+  {
+    "id": "A107",
+    "name": "A107",
+    "path": "M384.5,630.5 h14 v41 h-14 z",
+    "labelPosition": {
+      "x": 392,
+      "y": 651
+    },
+    "type": "0"
+  },
+  {
+    "id": "A106",
+    "name": "A106",
+    "path": "M349.5,630.5 h35 v41 h-35 z",
+    "labelPosition": {
+      "x": 367,
+      "y": 651
+    },
+    "type": "0"
+  },
+  {
+    "id": "A105",
+    "name": "A105",
+    "path": "M311.5,630.5 h38 v41 h-38 z",
+    "labelPosition": {
+      "x": 331,
+      "y": 651
+    },
+    "type": "0"
+  },
+  {
+    "id": "A144",
+    "name": "A144",
+    "path": "M214.5,584.5 h53 v34 h-53 z",
+    "labelPosition": {
+      "x": 241,
+      "y": 602
+    },
+    "type": "0"
+  },
+  {
+    "id": "kuchyn",
+    "name": "Kuchyn",
+    "path": "M148.5,559.5 h66 v73 h-66 z",
+    "labelPosition": {
+      "x": 182,
+      "y": 596
+    },
+    "type": "0"
+  },
+  {
+    "id": "jidelna",
+    "name": "Jidelna",
+    "path": "M148.5,632.5 h85 v39 h-85 z",
+    "labelPosition": {
+      "x": 191,
+      "y": 652
+    },
+    "type": "0"
+  },
+  {
+    "id": "kancelar",
+    "name": "Kancelar",
+    "path": "M233.5,632.5 h15 v39 h-15 z",
+    "labelPosition": {
+      "x": 241,
+      "y": 652
+    },
+    "type": "0"
+  },
+  {
+    "id": "toilet-2",
+    "name": "Toalety",
+    "path": "M248.5,632.5 h19 v39 h-19 z",
+    "labelPosition": {
+      "x": 258,
+      "y": 652
+    },
+    "type": "3"
+  }
+]
+undefined
+const roomsData = [];
+const roomsGroup = document.getElementById('Mfirst-rooms');
+const currentFloorId = 1; // TADY si nastav ID patra, které zrovna exportuješ
+
+if (roomsGroup) {
+    roomsGroup.querySelectorAll('rect, path').forEach(room => {
+        const id = room.getAttribute('id');
+        if (!id) return;
+
+        let svgData = "";
+        if (room.tagName.toLowerCase() === 'rect') {
+            const x = parseFloat(room.getAttribute('x'));
+            const y = parseFloat(room.getAttribute('y'));
+            const w = parseFloat(room.getAttribute('width'));
+            const h = parseFloat(room.getAttribute('height'));
+            svgData = `M${x},${y} h${w} v${h} h-${w} z`;
+        } else {
+            svgData = room.getAttribute('d');
+        }
+
+        const bbox = room.getBBox();
+        
+        // Generujeme objekt tak, aby pøesnì sedìl na RoomData
+        roomsData.push({
+            roomId: id,                               // Místo 'id'
+            label: id.includes('toilet') ? "WC" : id, // Místo 'name'
+            svgData: svgData,                         // Místo 'path'
+            coordinateX: Math.round(bbox.x + (bbox.width / 2)),
+            coordinateY: Math.round(bbox.y + (bbox.height / 2)),
+            type: id.includes('toilet') ? "3" : "0",
+            floorId: currentFloorId                   // Tohle ti v JSONu chybìlo
+        });
+    });
+
+    console.log(JSON.stringify(roomsData, null, 2));
+}
+VM228:35 [
+  {
+    "roomId": "B109",
+    "label": "B109",
+    "svgData": "M299.5,326.5 h24 v45 h-24 z",
+    "coordinateX": 312,
+    "coordinateY": 349,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B110",
+    "label": "B110",
+    "svgData": "M276.5,326.5 h23 v45 h-23 z",
+    "coordinateX": 288,
+    "coordinateY": 349,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "vytah-2",
+    "label": "vytah-2",
+    "svgData": "M263.5,326.5 h13 v45 h-13 z",
+    "coordinateX": 270,
+    "coordinateY": 349,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "D106",
+    "label": "D106",
+    "svgData": "M180.5,290.5 h48 v21 h-48 z",
+    "coordinateX": 205,
+    "coordinateY": 301,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "D105",
+    "label": "D105",
+    "svgData": "M172.5,228.5 h56 v62 h-56 z",
+    "coordinateX": 201,
+    "coordinateY": 260,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "toilet-5",
+    "label": "WC",
+    "svgData": "M186.5,228.5 h42 v21 h-42 z",
+    "coordinateX": 208,
+    "coordinateY": 239,
+    "type": "3",
+    "floorId": 1
+  },
+  {
+    "roomId": "D114",
+    "label": "D114",
+    "svgData": "M100.5,228.5 h45 v62 h-45 z",
+    "coordinateX": 123,
+    "coordinateY": 260,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "D121",
+    "label": "D121",
+    "svgData": "M100.5,290.5 h45 v90 h-45 z",
+    "coordinateX": 123,
+    "coordinateY": 336,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B117",
+    "label": "B117",
+    "svgData": "M159.5,326.5 h36 v54 h-36 z",
+    "coordinateX": 178,
+    "coordinateY": 354,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B120",
+    "label": "B120",
+    "svgData": "M159.5,380.5 h36 v49 h-36 z",
+    "coordinateX": 178,
+    "coordinateY": 405,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "toilet-4",
+    "label": "WC",
+    "svgData": "M195.5,326.5 h22 v45 h-22 z",
+    "coordinateX": 207,
+    "coordinateY": 349,
+    "type": "3",
+    "floorId": 1
+  },
+  {
+    "roomId": "B114",
+    "label": "B114",
+    "svgData": "M217.5,326.5 h6 v45 h-6 z",
+    "coordinateX": 221,
+    "coordinateY": 349,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B113",
+    "label": "B113",
+    "svgData": "M223.5,326.5 h15 v45 h-15 z",
+    "coordinateX": 231,
+    "coordinateY": 349,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B121",
+    "label": "B121",
+    "svgData": "M195.5,396.5 h14 v33 h-14 z",
+    "coordinateX": 203,
+    "coordinateY": 413,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B124",
+    "label": "B124",
+    "svgData": "M209.5,396.5 h27 v33 h-27 z",
+    "coordinateX": 223,
+    "coordinateY": 413,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B103",
+    "label": "B103",
+    "svgData": "M263.5,396.5 h11 v33 h-11 z",
+    "coordinateX": 269,
+    "coordinateY": 413,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B104",
+    "label": "B104",
+    "svgData": "M274.5,396.5 h23 v33 h-23 z",
+    "coordinateX": 286,
+    "coordinateY": 413,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "B106",
+    "label": "B106",
+    "svgData": "M297.5,396.5 h26 v33 h-26 z",
+    "coordinateX": 311,
+    "coordinateY": 413,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "C103",
+    "label": "C103",
+    "svgData": "M336.5,355.5 h43 v100 h-43 z",
+    "coordinateX": 358,
+    "coordinateY": 406,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "C104",
+    "label": "C104",
+    "svgData": "M336.5,332.5 h33 v24 h-33 z",
+    "coordinateX": 353,
+    "coordinateY": 345,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "toilet-3",
+    "label": "WC",
+    "svgData": "M369.5,332.5 h26 v24 h-26 z",
+    "coordinateX": 383,
+    "coordinateY": 345,
+    "type": "3",
+    "floorId": 1
+  },
+  {
+    "roomId": "satna",
+    "label": "satna",
+    "svgData": "M395.5,332.5 h44 v24 h-44 z",
+    "coordinateX": 418,
+    "coordinateY": 345,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A123",
+    "label": "A123",
+    "svgData": "M398.5,366.5 h33 v31 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 382,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A121",
+    "label": "A121",
+    "svgData": "M398.5,397.5 h33 v34 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 415,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A120",
+    "label": "A120",
+    "svgData": "M398.5,431.5 h33 v35 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 449,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A117",
+    "label": "A117",
+    "svgData": "M398.5,466.5 h33 v11 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 472,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A114",
+    "label": "A114",
+    "svgData": "M406.5,477.5 h25 v17 h-25 z",
+    "coordinateX": 419,
+    "coordinateY": 486,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A112",
+    "label": "A112",
+    "svgData": "M398.5,494.5 h33 v56 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 523,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A108",
+    "label": "A108",
+    "svgData": "M398.5,623.5 h33 v48 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 648,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A110",
+    "label": "A110",
+    "svgData": "M398.5,585.5 h33 v38 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 605,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A111",
+    "label": "A111",
+    "svgData": "M398.5,550.5 h33 v35 h-33 z",
+    "coordinateX": 415,
+    "coordinateY": 568,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "vytah-1",
+    "label": "vytah-1",
+    "svgData": "M351.5,468.5 h28 v18 h-28 z",
+    "coordinateX": 366,
+    "coordinateY": 478,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "toilet-1",
+    "label": "WC",
+    "svgData": "M326.5,486.5 h53 v23 h-53 z",
+    "coordinateX": 353,
+    "coordinateY": 498,
+    "type": "3",
+    "floorId": 1
+  },
+  {
+    "roomId": "A134",
+    "label": "A134",
+    "svgData": "M326.5 584.5L326.799 509H379.5V604.5H311.5V584.5H326.5Z",
+    "coordinateX": 346,
+    "coordinateY": 557,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A107",
+    "label": "A107",
+    "svgData": "M384.5,630.5 h14 v41 h-14 z",
+    "coordinateX": 392,
+    "coordinateY": 651,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A106",
+    "label": "A106",
+    "svgData": "M349.5,630.5 h35 v41 h-35 z",
+    "coordinateX": 367,
+    "coordinateY": 651,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A105",
+    "label": "A105",
+    "svgData": "M311.5,630.5 h38 v41 h-38 z",
+    "coordinateX": 331,
+    "coordinateY": 651,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "A144",
+    "label": "A144",
+    "svgData": "M214.5,584.5 h53 v34 h-53 z",
+    "coordinateX": 241,
+    "coordinateY": 602,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "kuchyn",
+    "label": "kuchyn",
+    "svgData": "M148.5,559.5 h66 v73 h-66 z",
+    "coordinateX": 182,
+    "coordinateY": 596,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "jidelna",
+    "label": "jidelna",
+    "svgData": "M148.5,632.5 h85 v39 h-85 z",
+    "coordinateX": 191,
+    "coordinateY": 652,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "kancelar",
+    "label": "kancelar",
+    "svgData": "M233.5,632.5 h15 v39 h-15 z",
+    "coordinateX": 241,
+    "coordinateY": 652,
+    "type": "0",
+    "floorId": 1
+  },
+  {
+    "roomId": "toilet-2",
+    "label": "WC",
+    "svgData": "M248.5,632.5 h19 v39 h-19 z",
+    "coordinateX": 258,
+    "coordinateY": 652,
+    "type": "3",
+    "floorId": 1
+  }
+]

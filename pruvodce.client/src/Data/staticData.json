@@ -1,0 +1,36 @@
+{
+  "buildings": [
+    {
+      "buildingId": 1,
+      "name": "Masarykova",
+      "address": "Masarykova 460/3",
+      "floors": [
+        {
+          "floorId": 1,
+          "name": "1. Patro",
+          "mapImageUrl": "/Mfirst.svg",
+          "rooms": []
+        },
+        {
+          "floorId": 2,
+          "name": "2. Patro",
+          "mapImageUrl": "/Msecond.svg",
+          "rooms": []
+        }
+      ]
+    },
+    {
+      "buildingId": 2,
+      "name": "Tyršova",
+      "address": "Tyršova 82/1",
+      "floors": [
+        {
+          "floorId": 3,
+          "name": "1. Patro",
+          "mapImageUrl": "/Tfirst.svg",
+          "rooms": []
+        }
+      ]
+    }
+  ]
+}
