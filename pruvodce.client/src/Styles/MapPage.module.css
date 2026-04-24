@@ -2,57 +2,27 @@
   width: 100vw;
   height: 100vh;
   position: relative;
+  background: #e0e0e0;
 }
 
-.changeBuilding {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  background: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.floorControls {
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-  z-index: 1000;
+.mapUIContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  background: #e0e0e0;
 }
 
-.floorButton {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: none;
-  background: white;
-  color: #333;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.floorButton.active {
-  background: #007bff;
-  color: white;
-}
-
-.topControlsWrapper {
+.controlsWrapper {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  max-width: 400px;
+  width: 90%;
+  max-width: 500px;
   position: absolute;
+  margin: 0 auto;
   top: 16px;
   left: 16px;
   right: 16px;
@@ -84,6 +54,11 @@
   text-align: left;
   cursor: pointer;
   outline: none;
+  transition: all 0.2s;
+}
+
+.mainSelectorBtn:hover {
+  background-color: #c5c5c5;
 }
 
 .buildingList {
@@ -103,11 +78,17 @@
   cursor: pointer;
   width: 100%;
   text-align: left;
+  transition: opacity 0.2s;
+}
+
+.buildingListItem:active {
+  opacity: 0.7;
 }
 
 .bName {
   font-size: 18px;
   color: #000;
+  font-weight: 500;
 }
 
 .bAddress {
@@ -127,5 +108,142 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+}
+
+.filterBtn:active {
+  background-color: #5a5a5a;
+}
+
+.floorControls {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.floorButton {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.floorButton:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.floorButton.active {
+  background: #007bff;
+  color: white;
+}
+
+.mapContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.mapInnerContainer {
+  position: relative;
+  background: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/*  DESKTOP  */
+@media (min-width: 1024px) {
+  .desktop-map {
+    transform-origin: center center;
+  }
+
+  .mapUIContainer {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .controlsWrapper {
+    position: static;
+    padding: 2rem;
+    padding-top: 6rem;
+    width: 40vw;
+    height: 100%;
+    flex-direction: row;
+    gap: 2rem;
+    background: white;
+  }
+
+  .buildingList {
+    padding: 8px 0 0 0;
+    gap: 12px;
+  }
+
+  .buildingListItem {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .bName {
+    font-size: 15px;
+  }
+
+  .bAddress {
+    font-size: 12px;
+  }
+
+  .mapContainer {
+    flex: 0 0 auto;
+    width: 70vw;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mapInnerContainer {
+    width: 100%;
+    height: auto;
+  }
+
+  .floorControls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 70px;
+    flex-direction: column;
+    gap: 12px;
+    display: flex;
+  }
+
+  .floorButton {
+    width: 55px;
+    height: 55px;
+    font-size: 18px;
+  }
+}
+
+
+/* vetší? */
+@media (min-width: 1600px) {
+  .desktop-map {
+    transform: scale(0.7);
+    transform-origin: center center;
+  }
 }

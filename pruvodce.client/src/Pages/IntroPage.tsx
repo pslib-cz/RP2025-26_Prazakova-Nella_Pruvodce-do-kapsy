@@ -4,6 +4,7 @@ import style from '../Styles/IntroPage.module.css';
 
 const IntroPage: React.FC = () => {
     const navigate = useNavigate();
+    const isDesktop = window.innerWidth >= 1024;
 
     useEffect(() => {
         const savedBuilding = localStorage.getItem('preferredBuilding');
@@ -25,9 +26,9 @@ const IntroPage: React.FC = () => {
     preserveAspectRatio="xMidYMid slice" 
     className={style.introSvg}
 >
-    <svg 
-        x="250" y="550"
-        width="150" height="160"
+    <svg className="building-T"
+        x={isDesktop ? "350" : "250"} y={isDesktop ? "350" : "550"}
+        width={isDesktop ? "60" : "150"} height="160"
         viewBox="0 0 160 175"
         onClick={() => handleSelectBuilding(2)}
         style={{ cursor: 'pointer', overflow: 'visible' }}
@@ -42,9 +43,9 @@ const IntroPage: React.FC = () => {
         <text x="170" y="180" textAnchor="middle" fontSize="60" fill="black" style={{ pointerEvents: 'none', fontWeight: 'bold' }}>T</text>
     </svg>
 
-    <svg 
+    <svg className="building-M"
         x="80" y="300"
-        width="160" height="200"
+        width={isDesktop ? "100" : "160"} height="200"
         viewBox="0 0 150 195"
         onClick={() => handleSelectBuilding(1)}
         style={{ cursor: 'pointer', overflow: 'visible' }}

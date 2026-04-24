@@ -35,7 +35,8 @@
 .header {
     text-align: center;
     padding-top: 1rem;
-    pointer-events: auto;
+    width: max-content;
+    margin: 0 auto;
 }
 
 .footer {

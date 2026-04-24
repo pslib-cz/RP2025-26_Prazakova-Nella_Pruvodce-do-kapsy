@@ -34,11 +34,14 @@ interface InteractiveMapProps {
     floors: FloorData[];
     activeFloorId: number;
     buildingId: number;
+    className?: string;
 }
 
-const InteractiveMap: React.FC<InteractiveMapProps> = ({ floors, activeFloorId, buildingId }) => {
+const InteractiveMap: React.FC<InteractiveMapProps> = ({ floors, activeFloorId, buildingId, className }) => {
     const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
     const [zoomLevel, setZoomLevel] = useState(1);
+
+    const isDesktop = window.innerWidth >= 1024;
 
     const activeFloorData = floors.find(f => f.floorId === activeFloorId) || floors[0];
 
@@ -50,17 +53,18 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ floors, activeFloorId, 
     const SelectedBackground = backgroundMap[buildingId] || BackgroundM;
 
     return (
-        <div style={{ width: '100vw', height: '100vh', position: 'relative'}}>
+        <div className={`map-wrapper ${className || ''}`}>
             <TransformWrapper
                 onTransform={(ref) => setZoomLevel(ref.state.scale)}
-                initialScale={0.85} 
-                minScale={0.75}
-                centerOnInit={true}
+                initialScale={isDesktop ? 0.6 : 0.95}
+                minScale={isDesktop ? 0.5 : 0.8}
+                initialPositionX={isDesktop ? 160 : 0}
+                initialPositionY={isDesktop ? -120 : 0}
                 limitToBounds={true}
             >
                 <TransformComponent 
                     wrapperStyle={{ width: '100vw', height: '100vh', backgroundColor: '#EAEAEA' }} 
-                    contentStyle={{ width: '130vw', height: '130vh' }}
+                    contentStyle={{ width: isDesktop ? '80vw' : '100vw', height: isDesktop ? '220vh' : '100vh' }}
                 >
                     <svg 
                         viewBox="0 0 540 900"
