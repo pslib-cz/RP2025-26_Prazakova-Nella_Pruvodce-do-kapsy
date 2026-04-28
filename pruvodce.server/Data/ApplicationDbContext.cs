@@ -15,7 +15,7 @@ namespace pruvodce.server.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Point> Points { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<Subject> Subject { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -26,9 +26,6 @@ namespace pruvodce.server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //test data
-            DbInitializer.Seed(modelBuilder);
         }
     }
 }

@@ -9,13 +9,7 @@ namespace pruvodce.server.Models
     {
         [Key]
         public int FloorId { get; set; }
-        public required string Name { get; set; }
-        public int FloorNumber { get; set; }
-        public required string MapImageUrl { get; set; }
-
         public int BuildingId { get; set; }
-        public Building? Building { get; set; }
-
-        public List<Room> Rooms { get; set; } = new List<Room>();
+        public int FloorNumber { get; set; }
     }
 }

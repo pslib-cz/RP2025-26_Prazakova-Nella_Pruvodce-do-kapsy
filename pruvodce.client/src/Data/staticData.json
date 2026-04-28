@@ -8,13 +8,14 @@
         {
           "floorId": 1,
           "name": "1. Patro",
-          "mapImageUrl": "/Mfirst.svg",
+          "backgroundUrl": "/floors/Mfirst.svg",
+          "detailUrl": "/floors/Mfirst-detail.svg",
           "rooms": []
         },
         {
           "floorId": 2,
           "name": "2. Patro",
-          "mapImageUrl": "/Msecond.svg",
+          "backgroundUrl": "/floors/Msecond.svg",
           "rooms": []
         }
       ]
@@ -27,7 +28,7 @@
         {
           "floorId": 3,
           "name": "1. Patro",
-          "mapImageUrl": "/Tfirst.svg",
+          "backgroundUrl": "/floors/Tfirst.svg",
           "rooms": []
         }
       ]

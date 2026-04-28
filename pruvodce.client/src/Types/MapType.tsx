@@ -3,9 +3,8 @@ export const RoomType = {
     Specialized: 1,
     Office: 2,
     Toilets: 3,
-    Buffet: 4,
-    Corridor: 5,
-    Other: 6
+    Elevator: 4,
+    Other: 5
 } as const;
 
 export type RoomType = typeof RoomType[keyof typeof RoomType];
@@ -15,8 +14,7 @@ export const RoomTypeLabels: Record<number, string> = {
     1: "Specializovaná",
     2: "Kancelář",
     3: "WC",
-    4: "Bufet",
-    5: "Chodba",
+    4: "Výtah",
     6: "Jiné"
 };
 
@@ -82,8 +80,18 @@ export interface Point {
 
 export interface RoomData {
     roomId: string;
-    svgData: string;
-    label: string;
+    label?: string;
+
+    svgOutline: string;
+    svgInterior?: string;
+    
+
+    interiorImageUrl?: string;
+    interiorX?: number;
+    interiorY?: number;
+    interiorWidth?: number;
+    interiorHeight?: number;
+
     icon?: string;
     subjects?: Subject[];
     coordinateX?: number;
@@ -98,6 +106,8 @@ export interface FloorData {
     floorId: number;
     name: string;
     mapImageUrl: string;
+    backgroundUrl?: string;
+    detailUrl?: string;
     rooms: RoomData[];
 }
 

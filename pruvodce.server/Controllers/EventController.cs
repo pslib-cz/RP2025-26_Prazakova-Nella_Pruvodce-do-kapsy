@@ -1,3 +1,4 @@
+/* nakonec mam v json
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pruvodce.server.Data;
@@ -21,3 +22,4 @@ public class EventController : ControllerBase
             .ToListAsync();
     }
 }
+*/
