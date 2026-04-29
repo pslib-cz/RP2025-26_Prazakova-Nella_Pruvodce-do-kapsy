@@ -2,35 +2,46 @@ import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useStaticData } from '../Hooks/useStaticData';
 import InteractiveMap from '../Components/InteractiveMap';
-import style from "../Styles/MapPage.module.css";
+import style from '../Styles/MapPage.module.css';
 import { Icon } from '@iconify/react';
 
 const MapPage: React.FC = () => {
   const { buildingId } = useParams<{ buildingId: string }>();
   const navigate = useNavigate();
 
-  const { buildings, loading } = useStaticData();
+  const { buildings, loading, error } = useStaticData();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentFloorId, setCurrentFloorId] = useState<number>(1);
+  const [currentFloorId, setCurrentFloorId] = useState<number | null>(null);
 
   const currentBuilding = buildings.find(b => b.buildingId === Number(buildingId));
-  const buildingFloors = currentBuilding?.floors || [];
+  const buildingFloors = currentBuilding?.floors ?? [];
 
   useEffect(() => {
-    if (buildingFloors.length > 0) {
-      setCurrentFloorId(buildingFloors[0].floorId);
-    }
-  }, [buildingId]);
+    if (buildingFloors.length === 0) return;
+
+    setCurrentFloorId(previous => {
+      const stillExists =
+        previous != null && buildingFloors.some(floor => floor.floorId === previous);
+
+      return stillExists ? previous : buildingFloors[0].floorId;
+    });
+  }, [buildingFloors]);
 
   if (loading) return <div>Načítání mapy...</div>;
-  if (!currentBuilding || buildingFloors.length === 0) return <Navigate to="/" />;
+  if (error) return <div>{error}</div>;
 
+  if (!currentBuilding) {
+  return <div>Budova nebyla nalezena.</div>;
+}
 
-  if (!currentBuilding || buildingFloors.length === 0) {
-    return <Navigate to="/" />;
-  }
+if (buildingFloors.length === 0) {
+  return <div>Budova nemá žádná patra.</div>;
+}
 
+if (currentFloorId == null) {
+  return <div>Patro nebylo vybráno.</div>;
+}
   return (
     <div className={style.pageWrapper}>
       <div className={style.mapUIContainer}>
@@ -51,6 +62,7 @@ const MapPage: React.FC = () => {
                     className={style.buildingListItem}
                     onClick={() => {
                       setIsDropdownOpen(false);
+                      localStorage.setItem('preferredBuilding', building.buildingId.toString());
                       navigate(`/map/${building.buildingId}`);
                     }}
                   >
@@ -88,7 +100,7 @@ const MapPage: React.FC = () => {
         </div>
 
         <div className={style.floorControls}>
-          {[...buildingFloors].reverse().map((floor) => (
+          {[...buildingFloors].reverse().map(floor => (
             <button
               key={floor.floorId}
               onClick={() => setCurrentFloorId(floor.floorId)}
@@ -97,7 +109,7 @@ const MapPage: React.FC = () => {
               }`}
               title={floor.name}
             >
-              {floor.floorId || floor.name.charAt(0)}
+              {floor.floorNumber ?? floor.floorId}
             </button>
           ))}
         </div>

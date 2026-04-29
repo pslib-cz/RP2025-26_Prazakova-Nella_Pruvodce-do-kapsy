@@ -13,7 +13,6 @@ namespace pruvodce.server.Models
         public required string LastN { get; set; }
 
         public string? Note { get; set; } // poznámka od studentů
-
-        public List<Subject> Subjects { get; set; } = new List<Subject>();
+        public List<Point> Points { get; set; } = new List<Point>();
     }
 }

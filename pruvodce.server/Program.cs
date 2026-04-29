@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using pruvodce.server.Data;
+using pruvodce.server.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,17 +16,18 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<MapDataService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+        builder.Configuration.GetConnectionString("Sqlite")
         ?? "Data Source=pruvodce.db"
     ));
 
@@ -48,16 +50,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
-}
 
 app.Run();

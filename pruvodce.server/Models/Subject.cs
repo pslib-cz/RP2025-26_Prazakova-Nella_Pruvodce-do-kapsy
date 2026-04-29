@@ -13,9 +13,6 @@ namespace pruvodce.server.Models
 
         public string? Note { get; set; } //poznámka od studentů
 
-        public List<Specialization> Specialization { get; set; } = new List<Specialization>();
-
-        public string? RoomId { get; set; }
-        public Room? Room { get; set; }
+        public List<Point> Points { get; set; } = new List<Point>();
     }
 }

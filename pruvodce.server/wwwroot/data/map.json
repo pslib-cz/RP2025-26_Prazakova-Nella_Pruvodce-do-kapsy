@@ -1,0 +1,20 @@
+﻿{
+  "buildings": [
+    {
+      "buildingId": 1,
+      "name": "Masarykova",
+      "address": "Masarykova 460/3",
+      "floors": [
+        {
+          "floorId": 1,
+          "name": "1. Patro",
+          "floorNumber": 1,
+          "backgroundUrl": "/floors/Mfirst.svg",
+          "detailUrl": "/floors/Mfirst-detail.svg",
+          "roomsUrl": "/data/rooms/masarykova-1.json",
+          "rooms": []
+        }
+      ]
+    }
+  ]
+}

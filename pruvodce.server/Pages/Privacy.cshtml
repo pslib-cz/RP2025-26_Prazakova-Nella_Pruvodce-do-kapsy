@@ -1,8 +1,19 @@
 ﻿@page
-@model PrivacyModel
-@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+@model IndexModel
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="jumbotron bg-light py-5 rounded mb-5">
+    <h1 class="display-4">Vítejte v Průvodci</h1>
+    <p class="lead">Správa událostí, učitelů a předmětů.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Administrace</h5>
+                <p class="card-text">Spravuj všechny data aplikace.</p>
+                <a href="/Events" class="btn btn-primary">Přejít do admin</a>
+            </div>
+        </div>
+    </div>
+</div>

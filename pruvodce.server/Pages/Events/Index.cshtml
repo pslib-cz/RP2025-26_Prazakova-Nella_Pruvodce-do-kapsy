@@ -1,0 +1,39 @@
+@page
+@model pruvodce.server.Pages.Events.IndexModel
+@{
+    ViewData["Title"] = "Events";
+}
+
+<h1>Events</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Active</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Events)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.StartDate.ToString("g")</td>
+            <td>@item.EndDate.ToString("g")</td>
+            <td>@(item.IsActive ? "Yes" : "No")</td>
+            <td>
+                <a asp-page="Details" asp-route-id="@item.EventId">Details</a> |
+                <a asp-page="Edit" asp-route-id="@item.EventId">Edit</a> |
+                <a asp-page="Delete" asp-route-id="@item.EventId">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

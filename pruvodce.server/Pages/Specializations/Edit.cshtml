@@ -1,0 +1,32 @@
+@page "{id}"
+@model pruvodce.server.Pages.Specializations.EditModel
+@{
+    ViewData["Title"] = "Edit Specialization";
+}
+
+<h1>Edit Specialization</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Specialization.SpecializationId" />
+    <div class="form-group">
+        <label asp-for="Specialization.Name"></label>
+        <input asp-for="Specialization.Name" class="form-control" />
+        <span asp-validation-for="Specialization.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Specialization.Description"></label>
+        <textarea asp-for="Specialization.Description" class="form-control"></textarea>
+        <span asp-validation-for="Specialization.Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Specialization.Type"></label>
+        <select asp-for="Specialization.Type" asp-items="Model.TypeItems" class="form-control"></select>
+        <span asp-validation-for="Specialization.Type" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

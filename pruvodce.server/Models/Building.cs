@@ -8,5 +8,6 @@ namespace pruvodce.server.Models
     {
         [Key]
         public int BuildingId { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 }

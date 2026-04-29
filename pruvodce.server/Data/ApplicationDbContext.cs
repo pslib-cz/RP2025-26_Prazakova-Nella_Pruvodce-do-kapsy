@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using pruvodce.server.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using pruvodce.server.Models;
 
 namespace pruvodce.server.Data
 {
@@ -10,9 +10,6 @@ namespace pruvodce.server.Data
             : base(options) { }
 
         public DbSet<Event> Events { get; set; }
-        public DbSet<Building> Buildings { get; set; }
-        public DbSet<Floor> Floors { get; set; }
-        public DbSet<Room> Rooms { get; set; }
         public DbSet<Point> Points { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Subject> Subjects { get; set; }
@@ -26,6 +23,10 @@ namespace pruvodce.server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Event>()
+                .Property(e => e.Name)
+                .IsRequired();
         }
     }
 }

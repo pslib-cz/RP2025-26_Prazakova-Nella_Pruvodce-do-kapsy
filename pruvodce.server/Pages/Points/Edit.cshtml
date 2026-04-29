@@ -1,0 +1,64 @@
+@page "{id}"
+@model pruvodce.server.Pages.Points.EditModel
+@{
+    ViewData["Title"] = "Edit Point";
+}
+
+<h1>Edit Point</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Point.PointId" />
+
+    <div class="form-group">
+        <label asp-for="Point.Label"></label>
+        <input asp-for="Point.Label" class="form-control" />
+        <span asp-validation-for="Point.Label" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.Description"></label>
+        <textarea asp-for="Point.Description" class="form-control"></textarea>
+        <span asp-validation-for="Point.Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.RoomId"></label>
+        <select asp-for="Point.RoomId" asp-items="Model.RoomItems" class="form-control"></select>
+        <span asp-validation-for="Point.RoomId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Teachers</label>
+        <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherItems" class="form-control" multiple></select>
+    </div>
+
+    <div class="form-group">
+        <label>Subjects</label>
+        <select asp-for="SelectedSubjectIds" asp-items="Model.SubjectItems" class="form-control" multiple></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.SpecializationId"></label>
+        <select asp-for="Point.SpecializationId" asp-items="Model.SpecializationItems" class="form-control"></select>
+        <span asp-validation-for="Point.SpecializationId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.EventId"></label>
+        <select asp-for="Point.EventId" asp-items="Model.EventItems" class="form-control"></select>
+        <span asp-validation-for="Point.EventId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.Note"></label>
+        <textarea asp-for="Point.Note" class="form-control"></textarea>
+        <span asp-validation-for="Point.Note" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

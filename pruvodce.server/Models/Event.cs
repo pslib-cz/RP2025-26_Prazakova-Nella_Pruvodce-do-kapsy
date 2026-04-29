@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace pruvodce.server.Models
 {
@@ -10,15 +8,18 @@ namespace pruvodce.server.Models
         public int EventId { get; set; }
 
         [Required]
-        public required string Name { get; set; }
+        public required string Name { get; set; } = string.Empty;
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public bool IsActive { get; set; } //jestli je zrovna vidět na webu
+        public bool IsActive { get; set; }
 
         public string? Description { get; set; }
 
-        public List<Point> Points { get; set; } = new List<Point>();
+        public List<Point> Points { get; set; } = new();
+
+        [Required]
+        public int? BuildingId { get; set; }
     }
 }

@@ -1,0 +1,37 @@
+@page
+@model pruvodce.server.Pages.Teachers.IndexModel
+@{
+    ViewData["Title"] = "Teachers";
+}
+
+<h1>Teachers</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Full name</th>
+            <th>Degree</th>
+            <th>Note</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Teachers)
+    {
+        <tr>
+            <td>@item.FirstN @item.LastN</td>
+            <td>@item.Degree</td>
+            <td>@item.Note</td>
+            <td>
+                <a asp-page="Details" asp-route-id="@item.TeacherId">Details</a> |
+                <a asp-page="Edit" asp-route-id="@item.TeacherId">Edit</a> |
+                <a asp-page="Delete" asp-route-id="@item.TeacherId">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

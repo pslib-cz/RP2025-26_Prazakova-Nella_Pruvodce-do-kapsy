@@ -1,0 +1,44 @@
+@page "{id}"
+@model pruvodce.server.Pages.Teachers.DetailsModel
+@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+<h1>Teacher</h1>
+
+<div>
+    <h4>Teacher</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Full name</dt>
+        <dd class="col-sm-10">@Model.Teacher?.FirstN @Model.Teacher?.LastN</dd>
+
+        <dt class="col-sm-2">Degree</dt>
+        <dd class="col-sm-10">@Model.Teacher?.Degree</dd>
+
+        <dt class="col-sm-2">Note</dt>
+        <dd class="col-sm-10">@Model.Teacher?.Note</dd>
+
+        <dt class="col-sm-2">Subjects</dt>
+        <dd class="col-sm-10">
+            @if (Model.Subjects?.Any() == true)
+            {
+                <ul>
+                @foreach (var s in Model.Subjects)
+                {
+                    <li>@s.Name (@s.Acronym)</li>
+                }
+                </ul>
+            }
+            else
+            {
+                <span class="text-muted">None</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<p>
+    <a asp-page="Edit" asp-route-id="@Model.Teacher?.TeacherId" class="btn btn-primary">Edit</a>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</p>

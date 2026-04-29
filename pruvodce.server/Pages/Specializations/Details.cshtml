@@ -1,0 +1,26 @@
+﻿@page "{id}"
+@model pruvodce.server.Pages.Specializations.DetailsModel
+@{
+    ViewData["Title"] = "Specialization Details";
+}
+
+<h1>Specialization</h1>
+
+<div>
+    <h4>Specialization</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Specialization?.Name</dd>
+
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@Model.Specialization?.Description</dd>
+
+        <dt class="col-sm-2">Type</dt>
+        <dd class="col-sm-10">@Model.Specialization?.Type.ToString()</dd>
+    </dl>
+</div>
+<p>
+    <a asp-page="Edit" asp-route-id="@Model.Specialization?.SpecializationId" class="btn btn-primary">Edit</a>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</p>

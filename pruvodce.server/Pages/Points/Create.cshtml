@@ -1,0 +1,90 @@
+@page
+@model pruvodce.server.Pages.Points.CreateModel
+@{
+    ViewData["Title"] = "Create Point";
+}
+
+<h1>Create Point</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Point.Label"></label>
+        <input asp-for="Point.Label" class="form-control" />
+        <span asp-validation-for="Point.Label" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.Description"></label>
+        <textarea asp-for="Point.Description" class="form-control"></textarea>
+        <span asp-validation-for="Point.Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.RoomId">Room</label>
+        <select asp-for="Point.RoomId" asp-items="Model.RoomItems" class="form-control">
+            <option value="">-- Vyber místnost --</option>
+        </select>
+        <span asp-validation-for="Point.RoomId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Teachers</label>
+        <select asp-for="SelectedTeacherIds"
+                asp-items="Model.TeacherItems"
+                class="form-control searchable-multiselect"
+                multiple>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Subjects</label>
+        <select asp-for="SelectedSubjectIds"
+                asp-items="Model.SubjectItems"
+                class="form-control searchable-multiselect"
+                multiple>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.SpecializationId"></label>
+        <select asp-for="Point.SpecializationId" asp-items="Model.SpecializationItems" class="form-control">
+            <option value="">-- none --</option>
+        </select>
+        <span asp-validation-for="Point.SpecializationId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.EventId"></label>
+        <select asp-for="Point.EventId" asp-items="Model.EventItems" class="form-control">
+            <option value="">-- none --</option>
+        </select>
+        <span asp-validation-for="Point.EventId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Point.Note"></label>
+        <textarea asp-for="Point.Note" class="form-control"></textarea>
+        <span asp-validation-for="Point.Note" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.searchable-multiselect').select2({
+                placeholder: 'Vyber alespoò 1',
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+}

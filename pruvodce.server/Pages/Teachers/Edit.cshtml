@@ -1,0 +1,37 @@
+@page "{id}"
+@model pruvodce.server.Pages.Teachers.EditModel
+@{
+    ViewData["Title"] = "Edit Teacher";
+}
+
+<h1>Edit Teacher</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Teacher.TeacherId" />
+    <div class="form-group">
+        <label asp-for="Teacher.FirstN"></label>
+        <input asp-for="Teacher.FirstN" class="form-control" />
+        <span asp-validation-for="Teacher.FirstN" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Teacher.LastN"></label>
+        <input asp-for="Teacher.LastN" class="form-control" />
+        <span asp-validation-for="Teacher.LastN" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Teacher.Degree"></label>
+        <input asp-for="Teacher.Degree" class="form-control" />
+        <span asp-validation-for="Teacher.Degree" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Teacher.Note"></label>
+        <textarea asp-for="Teacher.Note" class="form-control"></textarea>
+        <span asp-validation-for="Teacher.Note" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

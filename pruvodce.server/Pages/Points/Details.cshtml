@@ -1,0 +1,65 @@
+@page "{id}"
+@model pruvodce.server.Pages.Points.DetailsModel
+@{
+    ViewData["Title"] = "Point Details";
+}
+
+<h1>Point</h1>
+
+<div>
+    <h4>Point</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Label</dt>
+        <dd class="col-sm-10">@Model.Point?.Label</dd>
+
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@Model.Point?.Description</dd>
+
+        <dt class="col-sm-2">Room</dt>
+        <dt class="col-sm-2">Room</dt>
+        <dd class="col-sm-10">@Model.Point?.RoomId</dd>
+
+        <dt class="col-sm-2">Teachers</dt>
+        <dd class="col-sm-10">
+            @if (Model.Point?.Teachers?.Any() == true)
+            {
+                <ul>
+                @foreach (var t in Model.Point.Teachers)
+                {
+                    <li>@t.FirstN @t.LastN</li>
+                }
+                </ul>
+            }
+            else
+            {
+                <span class="text-muted">None</span>
+            }
+        </dd>
+
+        <dt class="col-sm-2">Event</dt>
+        <dd class="col-sm-10">@Model.Point?.Event?.Name</dd>
+
+        <dt class="col-sm-2">Subjects</dt>
+        <dd class="col-sm-10">
+            @if (Model.Point?.Subjects?.Any() == true)
+            {
+                <ul>
+                @foreach (var s in Model.Point.Subjects)
+                {
+                    <li>@s.Name (@s.Acronym)</li>
+                }
+                </ul>
+            }
+            else
+            {
+                <span class="text-muted">None</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<p>
+    <a asp-page="Edit" asp-route-id="@Model.Point?.PointId" class="btn btn-primary">Edit</a>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</p>

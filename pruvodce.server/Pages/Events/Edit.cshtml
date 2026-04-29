@@ -1,0 +1,47 @@
+@page "{id:int}"
+@model pruvodce.server.Pages.Events.EditModel
+@{
+    ViewData["Title"] = "Edit Event";
+}
+
+<h1>Edit Event</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Event.EventId" />
+    <div class="form-group">
+        <label asp-for="Event.Name"></label>
+        <input asp-for="Event.Name" class="form-control" />
+        <span asp-validation-for="Event.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="Event.StartDate"></label>
+            <input asp-for="Event.StartDate" class="form-control" type="datetime-local" step="60" />
+            <span asp-validation-for="Event.StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Event.EndDate"></label>
+            <input asp-for="Event.EndDate" class="form-control" type="datetime-local" step="60" />
+            <span asp-validation-for="Event.EndDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="Event.IsActive" class="form-check-input" />
+        <label asp-for="Event.IsActive" class="form-check-label"></label>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Event.Description"></label>
+        <textarea asp-for="Event.Description" class="form-control"></textarea>
+        <span asp-validation-for="Event.Description" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

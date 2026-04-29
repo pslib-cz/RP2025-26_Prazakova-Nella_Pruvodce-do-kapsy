@@ -1,0 +1,42 @@
+@page
+@model pruvodce.server.Pages.Specializations.CreateModel
+@{
+    ViewData["Title"] = "Create Specialization";
+}
+
+<h1>Create Specialization</h1>
+
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Specialization.Name"></label>
+        <input asp-for="Specialization.Name" class="form-control" />
+        <span asp-validation-for="Specialization.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Specialization.Description"></label>
+        <textarea asp-for="Specialization.Description" class="form-control"></textarea>
+        <span asp-validation-for="Specialization.Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Specialization.Type"></label>
+        <select asp-for="Specialization.Type" asp-items="Model.TypeItems" class="form-control">
+            <option value="">-- Vyber typ --</option>
+        </select>
+        <span asp-validation-for="Specialization.Type" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Specialization.Icon">Ikonka</label>
+        <select asp-for="Specialization.Icon" asp-items="Model.IconItems" class="form-control">
+            <option value="">-- Vyber ikonku --</option>
+        </select>
+        <span asp-validation-for="Specialization.Icon" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

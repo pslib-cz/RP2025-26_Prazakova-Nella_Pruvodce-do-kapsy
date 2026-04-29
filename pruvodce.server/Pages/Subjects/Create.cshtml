@@ -1,0 +1,31 @@
+@page
+@model pruvodce.server.Pages.Subjects.CreateModel
+@{
+    ViewData["Title"] = "Create Subject";
+}
+
+<h1>Create Subject</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Subject.Name"></label>
+        <input asp-for="Subject.Name" class="form-control" />
+        <span asp-validation-for="Subject.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Subject.Acronym"></label>
+        <input asp-for="Subject.Acronym" class="form-control" />
+        <span asp-validation-for="Subject.Acronym" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Subject.Note"></label>
+        <textarea asp-for="Subject.Note" class="form-control"></textarea>
+        <span asp-validation-for="Subject.Note" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

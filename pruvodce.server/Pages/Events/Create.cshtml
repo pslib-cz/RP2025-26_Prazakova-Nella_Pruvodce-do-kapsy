@@ -1,0 +1,54 @@
+@page
+@model pruvodce.server.Pages.Events.CreateModel
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<h1>Create Event</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Event.Name"></label>
+        <input asp-for="Event.Name" class="form-control" />
+        <span asp-validation-for="Event.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Event.BuildingId">Budova</label>
+        <select asp-for="Event.BuildingId" asp-items="Model.BuildingItems" class="form-control">
+            <option value="">-- Vyber budovu --</option>
+        </select>
+        <span asp-validation-for="Event.BuildingId" class="text-danger"></span>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="Event.StartDate"></label>
+            <input asp-for="Event.StartDate" class="form-control" type="datetime-local" step="60" />
+            <span asp-validation-for="Event.StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Event.EndDate"></label>
+            <input asp-for="Event.EndDate" class="form-control" type="datetime-local" step="60" />
+            <span asp-validation-for="Event.EndDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="Event.IsActive" class="form-check-input" />
+        <label asp-for="Event.IsActive" class="form-check-label"></label>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Event.Description"></label>
+        <textarea asp-for="Event.Description" class="form-control"></textarea>
+        <span asp-validation-for="Event.Description" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
