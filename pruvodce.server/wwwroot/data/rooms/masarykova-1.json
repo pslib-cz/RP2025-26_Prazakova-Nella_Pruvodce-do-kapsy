@@ -2,7 +2,7 @@
 [
   {
     "roomId": "vytah-B1",
-    "label": "vytah-B1",
+    "label": "",
     "svgOutline": "M262.5 327.5L276.5 327.5L276.5 372.5L262.5 372.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/vytah-B1.svg",
@@ -78,7 +78,7 @@
   },
   {
     "roomId": "B114",
-    "label": "B114",
+    "label": "",
     "svgOutline": "M214.5 327.5L223.5 327.5L223.5 371.5L214.5 371.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/B114.svg",
@@ -423,7 +423,7 @@
   },
   {
     "roomId": "vytah-A1",
-    "label": "vytah-A1",
+    "label": "",
     "svgOutline": "M352.5 467.5L379.5 467.5L379.5 487.5L352.5 487.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/vytah-A1.svg",
@@ -514,7 +514,7 @@
   },
   {
     "roomId": "jidelna",
-    "label": "jidelna",
+    "label": "jídelna",
     "svgOutline": "M149.5 632.5L233.5 632.5L233.5 670.5L149.5 670.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/jidelna.svg",
@@ -524,12 +524,12 @@
     "interiorHeight": 8,
     "coordinateX": 192,
     "coordinateY": 652,
-    "type": 4,
+    "type": 2,
     "floorId": 1
   },
   {
     "roomId": "kancelar",
-    "label": "kancelar",
+    "label": "",
     "svgOutline": "M233.5 632.5L245.5 632.5L245.5 670.5L233.5 670.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/kancelar.svg",
@@ -544,7 +544,7 @@
   },
   {
     "roomId": "wc-telocvicna",
-    "label": "wc-telocvicna",
+    "label": "",
     "svgOutline": "M369.5 333.5L395.5 333.5L395.5 356.5L369.5 356.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/wc-telocvicna.svg",
@@ -560,7 +560,7 @@
   },
   {
     "roomId": "wc-B1",
-    "label": "wc-B1",
+    "label": "",
     "svgOutline": "M195.5 327.5L214.5 327.5L214.5 371.5L195.5 371.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/wc-B1.svg",
@@ -576,7 +576,7 @@
   },
   {
     "roomId": "wc-D1",
-    "label": "wc-D1",
+    "label": "",
     "svgOutline": "M187.5 229.5L227.5 229.5L227.5 249.5L187.5 249.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/wc-D1.svg",
@@ -592,7 +592,7 @@
   },
   {
     "roomId": "wc-A1",
-    "label": "wc-A1",
+    "label": "",
     "svgOutline": "M327.5 487.5L379.5 487.5L379.5 501.5L327.5 501.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/wc-A1.svg",
@@ -608,7 +608,7 @@
   },
   {
     "roomId": "wc-jidelna",
-    "label": "wc-jidelna",
+    "label": "",
     "svgOutline": "M245.5 632.5L264.5 632.5L264.5 670.5L245.5 670.5Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/wc-jidelna.svg",

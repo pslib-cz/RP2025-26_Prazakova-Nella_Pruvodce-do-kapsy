@@ -32,7 +32,7 @@ export interface Specialization {
   name: string;
   description?: string;
   type?: number | string;
-  icon?: string;
+  icon?: number | string;
 }
 
 export interface Teacher {

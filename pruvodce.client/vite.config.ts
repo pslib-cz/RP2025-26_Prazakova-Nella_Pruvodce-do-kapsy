@@ -30,6 +30,10 @@ export default defineConfig({
       '/icons.svg': {
         target: backend,
         changeOrigin: true
+      },
+      '/admin': {
+        target: backend,
+        changeOrigin: true
       }
     }
   }

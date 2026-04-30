@@ -69,11 +69,16 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     return <div>Patro nebylo nalezeno.</div>;
   }
 
+  const pointRenderData = activeFloorData.rooms.flatMap(room =>
+    (room.points ?? []).map((point, index) => ({
+      point,
+      x: (room.coordinateX ?? 0) + index * 14,
+      y: room.coordinateY ?? 0
+    }))
+  );
+
   return (
-    <div
-      className={`map-wrapper ${className || ''}`}
-      style={{ position: 'relative' }}
-    >
+    <div className={`map-wrapper ${className || ''}`} style={{ position: 'relative' }}>
       {selectedPoint && (
         <div
           style={{
@@ -255,26 +260,24 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               />
             )}
 
-            {activeFloorData.rooms.map(room => {
-              const pathData = room.svgOutline || room.svgData;
+            <g id="rooms-layer">
+              {activeFloorData.rooms.map(room => {
+                const pathData = room.svgOutline || room.svgData;
 
-              if (!pathData) {
-                return null;
-              }
+                if (!pathData) {
+                  return null;
+                }
 
-              const rawRoomType = Number(room.type);
-              const safeRoomType = Number.isNaN(rawRoomType)
-                ? RoomType.Other
-                : rawRoomType;
+                const rawRoomType = Number(room.type);
+                const safeRoomType = Number.isNaN(rawRoomType)
+                  ? RoomType.Other
+                  : rawRoomType;
 
-              const colors = roomColors[safeRoomType] ?? roomColors[RoomType.Other];
+                const colors = roomColors[safeRoomType] ?? roomColors[RoomType.Other];
 
-              const isToilets = safeRoomType === RoomType.Toilets;
-              const isElevator = safeRoomType === RoomType.Elevator;
-
-              return (
-                <React.Fragment key={room.roomId}>
+                return (
                   <path
+                    key={room.roomId}
                     d={pathData}
                     fill={colors.bg}
                     stroke={colors.border}
@@ -294,85 +297,89 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                       e.currentTarget.style.fill = colors.bg;
                     }}
                   />
+                );
+              })}
+            </g>
 
-                  {zoomLevel > 2 && room.interiorImageUrl && (
-                    <image
-                      href={room.interiorImageUrl}
-                      x={room.interiorX ?? 0}
-                      y={room.interiorY ?? 0}
-                      width={room.interiorWidth ?? 0}
-                      height={room.interiorHeight ?? 0}
+            <g id="room-labels-layer">
+              {activeFloorData.rooms.map(room => {
+                const rawRoomType = Number(room.type);
+                const safeRoomType = Number.isNaN(rawRoomType)
+                  ? RoomType.Other
+                  : rawRoomType;
+
+                const isToilets = safeRoomType === RoomType.Toilets;
+                const isElevator = safeRoomType === RoomType.Elevator;
+                const displayLabel = room.label?.trim();
+
+                if (
+                  zoomLevel <= 1.5 ||
+                  room.coordinateX == null ||
+                  room.coordinateY == null
+                ) {
+                  return null;
+                }
+
+                if (room.icon) {
+                  return (
+                    <foreignObject
+                      key={room.roomId}
+                      x={room.coordinateX - 10 / zoomLevel}
+                      y={room.coordinateY - 10 / zoomLevel}
+                      width={20 / zoomLevel}
+                      height={20 / zoomLevel}
                       style={{ pointerEvents: 'none' }}
-                    />
-                  )}
-
-                  {zoomLevel > 1.5 &&
-                    room.coordinateX != null &&
-                    room.coordinateY != null &&
-                    (room.icon ? (
-                      <foreignObject
-                        x={room.coordinateX - 10 / zoomLevel}
-                        y={room.coordinateY - 10 / zoomLevel}
-                        width={20 / zoomLevel}
-                        height={20 / zoomLevel}
-                        style={{ pointerEvents: 'none' }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          width: '100%',
+                          height: '100%'
+                        }}
                       >
-                        <div
+                        <Icon
+                          icon={room.icon}
                           style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
                             width: '100%',
-                            height: '100%'
+                            height: '100%',
+                            color: isToilets
+                              ? '#647F97'
+                              : isElevator
+                                ? '#89482A'
+                                : '#25292c'
                           }}
-                        >
-                          <Icon
-                            icon={room.icon}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              color: isToilets
-                                ? '#647F97'
-                                : isElevator
-                                  ? '#89482A'
-                                  : '#25292c'
-                            }}
-                          />
-                        </div>
-                      </foreignObject>
-                    ) : (
-                      room.label && (
-                        <text
-                          x={room.coordinateX}
-                          y={room.coordinateY}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          style={{
-                            fontSize: `${12 / zoomLevel}px`,
-                            fill: '#333',
-                            fontWeight: 'bold',
-                            pointerEvents: 'none',
-                            userSelect: 'none'
-                          }}
-                        >
-                          {room.label}
-                        </text>
-                      )
-                    ))}
+                        />
+                      </div>
+                    </foreignObject>
+                  );
+                }
 
-                  {room.points?.map((point, index) => (
-                    <InteractivePoint
-                      key={point.pointId}
-                      point={point}
-                      x={(room.coordinateX ?? 0) + index * (14 / zoomLevel)}
-                      y={(room.coordinateY ?? 0) - 18 / zoomLevel}
-                      zoomLevel={zoomLevel}
-                      onClick={setSelectedPoint}
-                    />
-                  ))}
-                </React.Fragment>
-              );
-            })}
+                if (!displayLabel) {
+                  return null;
+                }
+
+                return (
+                  <text
+                    key={room.roomId}
+                    x={room.coordinateX}
+                    y={room.coordinateY}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    style={{
+                      fontSize: `${12 / zoomLevel}px`,
+                      fill: '#333',
+                      fontWeight: 'bold',
+                      pointerEvents: 'none',
+                      userSelect: 'none'
+                    }}
+                  >
+                    {displayLabel}
+                  </text>
+                );
+              })}
+            </g>
 
             {activeFloorData.detailUrl && (
               <image
@@ -384,6 +391,19 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 style={{ pointerEvents: 'none' }}
               />
             )}
+
+            <g id="points-layer">
+              {pointRenderData.map(({ point, x, y }) => (
+                <InteractivePoint
+                  key={point.pointId}
+                  point={point}
+                  x={x}
+                  y={y}
+                  zoomLevel={zoomLevel}
+                  onClick={setSelectedPoint}
+                />
+              ))}
+            </g>
           </svg>
         </TransformComponent>
       </TransformWrapper>

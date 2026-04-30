@@ -15,7 +15,17 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AddFolderRouteModelConvention("/", model =>
+    {
+        foreach (var selector in model.Selectors)
+        {
+            selector.AttributeRouteModel!.Template =
+                "admin/" + selector.AttributeRouteModel.Template;
+        }
+    });
+});
 builder.Services.AddScoped<MapDataService>();
 
 builder.Services.AddControllers()

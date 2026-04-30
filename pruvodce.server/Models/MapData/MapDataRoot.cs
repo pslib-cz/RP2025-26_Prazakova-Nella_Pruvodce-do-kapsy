@@ -42,7 +42,7 @@
         public double? CoordinateX { get; set; }
         public double? CoordinateY { get; set; }
 
-        public string? Type { get; set; }
+        public int? Type { get; set; }
         public int FloorId { get; set; }
 
         public string? Icon { get; set; }

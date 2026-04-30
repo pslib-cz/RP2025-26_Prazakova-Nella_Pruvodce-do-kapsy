@@ -1,0 +1,66 @@
+.point {
+  cursor: pointer;
+  pointer-events: all;
+  transform-box: fill-box;
+  transform-origin: center;
+  z-index: 100;
+  --pin-color: #2f6fed;
+}
+
+.pinInner {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 140ms ease,
+    filter 140ms ease;
+}
+
+.pinBody {
+  fill: var(--pin-color);
+  stroke: #ffffff;
+  stroke-width: 1;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.25));
+}
+
+.pinCircle {
+  fill: #ffffff;
+  opacity: 0.95;
+}
+
+.pinIcon {
+  color: var(--pin-color);
+  pointer-events: none;
+}
+
+.point:hover .pinInner {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.28));
+}
+
+.typeIT {
+  --pin-color: #3cab68;
+}
+
+.typeEL {
+  --pin-color: #e34242;
+}
+
+.typeST {
+  --pin-color: #429fe3;
+}
+
+.typeTL {
+  --pin-color: #b24ad6;
+}
+
+.typeOD {
+  --pin-color: #37a64a;
+}
+
+.typeTE {
+  --pin-color: #44484c;
+}
+
+.typeDefault {
+  --pin-color: #2f6fed;
+}

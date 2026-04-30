@@ -51,15 +51,12 @@
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
   padding: 0;
   text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  height: 100%;
 }
 
 html, body {
@@ -76,7 +73,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #222; /* Pro test: uvidíš, kde končí container */
+  background-color: #222;
 }
 
 h1,

@@ -28,31 +28,53 @@ const IntroPage: React.FC = () => {
     navigate(`/map/${id}`);
   };
 
-  if (loading) return <div>Načítání...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) {
+    return (
+      <div className={style.introContainer}>
+        <div className={style.statusBox}>Načítání...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={style.introContainer}>
+        <div className={style.statusBox}>{error}</div>
+      </div>
+    );
+  }
 
   return (
-    <div className={style.introContainer}>
-      <div className={style.contentOverlay}>
-        <div className={style.header}>
-          <img src="/prumLogo.png" alt="Logo" className={style.logo} />
-          <h1 className={style.mainTitle}>DEN OTEVŘENÝCH DVEŘÍ</h1>
-          <h2 className={style.subTitle}>VYBERTE SI AREÁL</h2>
-        </div>
+    <main className={style.introContainer}>
+      <section className={style.card}>
+        <header className={style.header}>
+          <img src="/logo.png" alt="Průmyslovka Liberec" className={style.logo} />
+        </header>
 
-        <div className={style.footer}>
-          {buildings.map(building => (
-            <button
-              key={building.buildingId}
-              className={style.quizButton}
-              onClick={() => handleSelectBuilding(building.buildingId)}
-            >
-              {building.name}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+        <section className={style.selectorSection}>
+          <h1 className={style.title}>ZVOLTE SI AREÁL</h1>
+
+          <div className={style.buttonGroup}>
+            {buildings.map((building, index) => (
+              <button
+                key={building.buildingId}
+                type="button"
+                className={`${style.buildingButton} ${
+                  index % 2 === 0 ? style.masarykovaButton : style.tyrsovaButton
+                }`}
+                onClick={() => handleSelectBuilding(building.buildingId)}
+              >
+                BUDOVA {building.name.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <p className={style.quizText}>
+            Nevíte kam vyrazit? <button type="button" className={style.quizLink}>Vyplňte náš kvíz.</button>
+          </p>
+        </section>
+      </section>
+    </main>
   );
 };
 
