@@ -18,31 +18,48 @@ namespace pruvodce.server.Pages.Specializations
         [BindProperty]
         public Specialization? Specialization { get; set; }
 
+        public int RelatedPointsCount { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string? id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (id == null)
                 return NotFound();
 
-            Specialization = await _context.Specializations.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.SpecializationId == id);
+            Specialization = await _context.Specializations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.SpecializationId == id);
 
             if (Specialization == null)
                 return NotFound();
+
+            RelatedPointsCount = await _context.Points
+                .CountAsync(p => p.SpecializationId == id);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Specialization == null || string.IsNullOrEmpty(Specialization.SpecializationId))
+            if (Specialization == null)
                 return NotFound();
 
-            var entity = await _context.Specializations.FindAsync(Specialization.SpecializationId);
-            if (entity != null)
+            var entity = await _context.Specializations
+                .FirstOrDefaultAsync(s => s.SpecializationId == Specialization.SpecializationId);
+
+            if (entity == null)
+                return NotFound();
+
+            var relatedPoints = await _context.Points
+                .Where(p => p.SpecializationId == entity.SpecializationId)
+                .ToListAsync();
+
+            foreach (var p in relatedPoints)
             {
-                _context.Specializations.Remove(entity);
-                await _context.SaveChangesAsync();
+                p.SpecializationId = null;
             }
+
+            _context.Specializations.Remove(entity);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
         }

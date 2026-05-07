@@ -21,12 +21,12 @@
 
         <dt class="col-sm-2">Points</dt>
         <dd class="col-sm-10">
-            @if (Model.Subject?.Points?.Any() == true)
+            @if (Model.Subject?.PointSubjects?.Any() == true)
             {
                 <ul>
-                @foreach (var p in Model.Subject.Points)
+                @foreach (var ps in Model.Subject.PointSubjects)
                 {
-                    <li><a asp-page="/Points/Details" asp-route-id="@p.PointId">@p.Label</a></li>
+                    <li><a asp-page="/Points/Details" asp-route-id="@ps.PointId">@ps.Point.Label</a></li>
                 }
                 </ul>
             }

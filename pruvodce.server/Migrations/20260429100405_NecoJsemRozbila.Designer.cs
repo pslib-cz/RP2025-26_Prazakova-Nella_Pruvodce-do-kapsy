@@ -11,8 +11,8 @@ using pruvodce.server.Data;
 namespace pruvodce.server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260428170744_pages")]
-    partial class pages
+    [Migration("20260429100405_NecoJsemRozbila")]
+    partial class NecoJsemRozbila
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,11 +20,45 @@ namespace pruvodce.server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
+            modelBuilder.Entity("PointSubject", b =>
+                {
+                    b.Property<string>("PointsPointId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubjectsSubjectId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PointsPointId", "SubjectsSubjectId");
+
+                    b.HasIndex("SubjectsSubjectId");
+
+                    b.ToTable("PointSubject");
+                });
+
+            modelBuilder.Entity("PointTeacher", b =>
+                {
+                    b.Property<string>("PointsPointId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TeachersTeacherId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PointsPointId", "TeachersTeacherId");
+
+                    b.HasIndex("TeachersTeacherId");
+
+                    b.ToTable("PointTeacher");
+                });
+
             modelBuilder.Entity("pruvodce.server.Models.Building", b =>
                 {
                     b.Property<int>("BuildingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("BuildingId");
 
@@ -35,6 +69,9 @@ namespace pruvodce.server.Migrations
                 {
                     b.Property<int>("EventId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BuildingId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
@@ -93,12 +130,6 @@ namespace pruvodce.server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("LabelX")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("LabelY")
-                        .HasColumnType("REAL");
-
                     b.Property<string>("Note")
                         .HasColumnType("TEXT");
 
@@ -106,16 +137,14 @@ namespace pruvodce.server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TeacherId")
+                    b.Property<string>("SpecializationId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("PointId");
 
                     b.HasIndex("EventId");
 
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("SpecializationId");
 
                     b.ToTable("Points");
                 });
@@ -142,19 +171,17 @@ namespace pruvodce.server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Icon")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SubjectId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("SpecializationId");
-
-                    b.HasIndex("SubjectId");
 
                     b.ToTable("Specializations");
                 });
@@ -175,22 +202,7 @@ namespace pruvodce.server.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PointId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RoomId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TeacherId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("SubjectId");
-
-                    b.HasIndex("PointId");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("TeacherId");
 
                     b.ToTable("Subjects");
                 });
@@ -219,57 +231,49 @@ namespace pruvodce.server.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("PointSubject", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.Point", null)
+                        .WithMany()
+                        .HasForeignKey("PointsPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("pruvodce.server.Models.Subject", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectsSubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PointTeacher", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.Point", null)
+                        .WithMany()
+                        .HasForeignKey("PointsPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("pruvodce.server.Models.Teacher", null)
+                        .WithMany()
+                        .HasForeignKey("TeachersTeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("pruvodce.server.Models.Point", b =>
                 {
                     b.HasOne("pruvodce.server.Models.Event", "Event")
                         .WithMany("Points")
                         .HasForeignKey("EventId");
 
-                    b.HasOne("pruvodce.server.Models.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pruvodce.server.Models.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId");
+                    b.HasOne("pruvodce.server.Models.Specialization", "Specialization")
+                        .WithMany("Points")
+                        .HasForeignKey("SpecializationId");
 
                     b.Navigation("Event");
 
-                    b.Navigation("Room");
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("pruvodce.server.Models.Specialization", b =>
-                {
-                    b.HasOne("pruvodce.server.Models.Subject", "Subject")
-                        .WithMany("Specialization")
-                        .HasForeignKey("SubjectId");
-
-                    b.Navigation("Subject");
-                });
-
-            modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
-                {
-                    b.HasOne("pruvodce.server.Models.Point", "Point")
-                        .WithMany("Subjects")
-                        .HasForeignKey("PointId");
-
-                    b.HasOne("pruvodce.server.Models.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId");
-
-                    b.HasOne("pruvodce.server.Models.Teacher", "Teacher")
-                        .WithMany("Subjects")
-                        .HasForeignKey("TeacherId");
-
-                    b.Navigation("Point");
-
-                    b.Navigation("Room");
-
-                    b.Navigation("Teacher");
+                    b.Navigation("Specialization");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Event", b =>
@@ -277,19 +281,9 @@ namespace pruvodce.server.Migrations
                     b.Navigation("Points");
                 });
 
-            modelBuilder.Entity("pruvodce.server.Models.Point", b =>
+            modelBuilder.Entity("pruvodce.server.Models.Specialization", b =>
                 {
-                    b.Navigation("Subjects");
-                });
-
-            modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
-                {
-                    b.Navigation("Specialization");
-                });
-
-            modelBuilder.Entity("pruvodce.server.Models.Teacher", b =>
-                {
-                    b.Navigation("Subjects");
+                    b.Navigation("Points");
                 });
 #pragma warning restore 612, 618
         }

@@ -24,7 +24,7 @@ namespace pruvodce.server.Pages.Subjects
                 return NotFound();
 
             Subject = await _context.Subjects
-                .Include(s => s.Points)
+                .Include(s => s.PointSubjects)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.SubjectId == id);
 

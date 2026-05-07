@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -19,32 +18,42 @@ namespace pruvodce.server.Pages.Subjects
         [BindProperty]
         public Subject? Subject { get; set; }
 
+        public int RelatedPointsCount { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (string.IsNullOrEmpty(id))
                 return NotFound();
 
             Subject = await _context.Subjects
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.SubjectId == id);
+                .Include(s => s.PointSubjects)
+                .FirstOrDefaultAsync(s => s.SubjectId == id);
 
             if (Subject == null)
                 return NotFound();
+
+            RelatedPointsCount = Subject.PointSubjects.Count;
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Subject == null || string.IsNullOrEmpty(Subject.SubjectId))
+            if (Subject == null)
                 return NotFound();
 
-            var entity = await _context.Subjects.FindAsync(Subject.SubjectId);
-            if (entity != null)
-            {
-                _context.Subjects.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+            var entity = await _context.Subjects
+                .Include(s => s.PointSubjects)
+                .FirstOrDefaultAsync(s => s.SubjectId == Subject.SubjectId);
+
+            if (entity == null)
+                return NotFound();
+
+            _context.PointSubjects.RemoveRange(entity.PointSubjects);
+
+            _context.Subjects.Remove(entity);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
         }

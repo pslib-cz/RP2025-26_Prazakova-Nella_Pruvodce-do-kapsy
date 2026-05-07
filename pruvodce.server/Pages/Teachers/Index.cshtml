@@ -1,37 +1,102 @@
 @page
 @model pruvodce.server.Pages.Teachers.IndexModel
 @{
-    ViewData["Title"] = "Teachers";
+    ViewData["Title"] = "Učitelé";
 }
 
-<h1>Teachers</h1>
+<section class="admin-list">
+    <div class="admin-list__card">
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
-</p>
+        <div class="admin-list__header">
+            <div>
+                <h2 class="admin-list__title">Učitelé</h2>
+                <p class="admin-list__subtitle">Seznam všech vyučujících v systému.</p>
+            </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Full name</th>
-            <th>Degree</th>
-            <th>Note</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Teachers)
-    {
-        <tr>
-            <td>@item.FirstN @item.LastN</td>
-            <td>@item.Degree</td>
-            <td>@item.Note</td>
-            <td>
-                <a asp-page="Details" asp-route-id="@item.TeacherId">Details</a> |
-                <a asp-page="Edit" asp-route-id="@item.TeacherId">Edit</a> |
-                <a asp-page="Delete" asp-route-id="@item.TeacherId">Delete</a>
-            </td>
-        </tr>
+            <a asp-page="Create" class="admin-button admin-button--primary">
+                + Přidat vyučujícího
+            </a>
+        </div>
+
+        <form method="get" class="admin-list__filters" id="teacherFilterForm">
+            <input asp-for="Search"
+                   class="admin-list__search"
+                   placeholder="Hledat podle Jména, poznámky..."
+                   oninput="submitTeacherFilter()" />
+        </form>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr class="admin-table__row">
+                        <th class="admin-table__cell admin-table__cell--head">Jméno</th>
+                        <th class="admin-table__cell admin-table__cell--head">Poznámka</th>
+                        <th class="admin-table__cell admin-table__cell--head">Akce</th>
+                    </tr>
+                </thead>
+
+                <tbody class="admin-table__body">
+                    @if (Model.Teachers.Any())
+                    {
+                        @foreach (var item in Model.Teachers)
+                        {
+                            <tr class="admin-table__row">
+
+                                <td class="admin-table__cell">
+                                    <span class="admin-table__primary">
+                                        @(string.IsNullOrWhiteSpace(item.Degree)
+                                            ? $"{item.FirstN} {item.LastN}"
+                                            : $"{item.Degree} {item.FirstN} {item.LastN}")
+                                    </span>
+                                </td>
+
+                                <td class="admin-table__cell">
+                                    @item.Note
+                                </td>
+
+                                <td class="admin-table__cell">
+                                    <div class="admin-table__actions">
+                                        <a asp-page="./Edit"
+                                           asp-route-id="@item.TeacherId"
+                                           class="admin-button admin-button--secondary">
+                                            Editovat
+                                        </a>
+
+                                        <a asp-page="./Delete"
+                                           asp-route-id="@item.TeacherId"
+                                           class="admin-button admin-button--danger">
+                                            Odebrat
+                                        </a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="admin-table__row">
+                            <td colspan="3" class="admin-table__cell admin-table__cell--empty">
+                                Žádní učitelé nebyli nalezeni.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+@section Scripts {
+<script>
+    let teacherTimeout;
+
+    function submitTeacherFilter() {
+        clearTimeout(teacherTimeout);
+
+        teacherTimeout = setTimeout(() => {
+            document.getElementById("teacherFilterForm").submit();
+        }, 300);
     }
-    </tbody>
-</table>
+</script>
+}

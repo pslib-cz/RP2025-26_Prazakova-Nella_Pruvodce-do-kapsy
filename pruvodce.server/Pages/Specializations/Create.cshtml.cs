@@ -24,29 +24,14 @@ namespace pruvodce.server.Pages.Specializations
         {
             SpecializationId = string.Empty,
             Name = string.Empty,
-            Description = string.Empty,
-            Icon = null
+            Description = string.Empty
         };
 
         public List<SelectListItem> TypeItems { get; set; } = new();
-        public List<SelectListItem> IconItems { get; set; } = new();
 
         public void OnGet()
         {
             LoadTypeItems();
-            LoadIconItems();
-        }
-
-        private void LoadIconItems()
-        {
-            IconItems = Enum.GetValues(typeof(SpecializationIcon))
-                .Cast<SpecializationIcon>()
-                .Select(e => new SelectListItem
-                {
-                    Value = e.ToString(),
-                    Text = e.ToString()
-                })
-                .ToList();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -63,7 +48,6 @@ namespace pruvodce.server.Pages.Specializations
             {
                 // repopulate all selects before returning the page
                 LoadTypeItems();
-                LoadIconItems();
                 return Page();
             }
 

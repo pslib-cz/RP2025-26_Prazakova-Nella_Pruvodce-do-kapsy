@@ -54,7 +54,6 @@
 
 .title {
   margin: 0 0 18px;
-  font-size: clamp(15px, 2.4vw, 20px);
   font-weight: 500;
   letter-spacing: 0.02em;
   color: #111;
@@ -65,16 +64,15 @@
   width: min(100%, 360px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
 }
 
 .buildingButton {
   width: 100%;
   min-height: 40px;
-  padding: 10px 20px;
+  padding: 1rem 2rem;
   border-radius: 999px;
   background: transparent;
-  font-size: clamp(13px, 1.8vw, 15px);
   font-weight: 300;
   letter-spacing: 0.01em;
     color: #222222;
@@ -108,7 +106,6 @@
 .quizText {
   margin: 18px 0 0;
   color: #8a8a8a;
-  font-size: clamp(12px, 1.8vw, 14px);
   text-align: center;
 }
 
@@ -128,8 +125,542 @@
 
 .statusBox {
   color: #333;
-  font-size: 16px;
   text-align: center;
+}
+
+.page {
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 358px minmax(0, 1fr);
+  background: var(--page-bg);
+}
+
+.desktopPanel {
+  min-height: 0;
+  height: 100vh;
+  background: var(--panel-bg);
+  border-radius: 0 18px 18px 0;
+  box-shadow: var(--shadow-panel);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.panelInner {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 20px 18px;
+}
+
+.panelSection {
+  padding-bottom: 24px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.panelSection:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+
+.panelLabel {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #626262;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.PointSection {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapArea {
+  position: relative;
+  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.mapCanvas {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.mobileTopControls {
+  display: none;
+}
+
+/* Building select */
+
+.buildingSelect {
+  position: relative;
+  width: 100%;
+}
+
+.buildingSelectButton {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid #bfc2c4;
+  border-radius: 9px;
+  background: #f8f8f8;
+  color: var(--text-main);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.buildingSelectText {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.buildingSelectText strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.buildingSelectText span {
+  min-width: 0;
+  color: #a0a0a0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buildingDropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 50;
+  background: #ffffff;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.buildingDropdownItem {
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border-soft);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.buildingDropdownItem:last-child {
+  border-bottom: 0;
+}
+
+.buildingDropdownItem:hover {
+  background: #f5f5f5;
+}
+
+.buildingDropdownItem strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.buildingDropdownItem span {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Type filters */
+
+.typeList {
+  display: grid;
+  gap: 10px;
+}
+
+.typeItem {
+  display: grid;
+  grid-template-columns: 22px 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.typeItem input {
+  display: none;
+}
+
+.fakeCheckbox {
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  border: 1.5px solid #777;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+}
+
+.typeItem input:checked + .fakeCheckbox {
+  background: #686c70;
+  border-color: #686c70;
+}
+
+.typeIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+}
+
+.pointTalk {
+  background: var(--point-talk);
+}
+
+.pointHand {
+  background: var(--point-hand);
+}
+
+.pointUcebna {
+  background: var(--point-ucebna);
+}
+
+.pointJine {
+  background: var(--point-jine);
+}
+
+.typeText {
+  min-width: 0;
+}
+
+.typeText strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.1;
+}
+
+.typeText small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Floors */
+
+.panelFloorControls {
+  display: flex;
+  gap: 22px;
+}
+
+.floatingFloorControls {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  z-index: 10;
+  padding: 8px 5px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: 6px;
+}
+
+.floorButton {
+  width: 52px;
+  height: 42px;
+  border: 1px solid #cfd1d3;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #777;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.floatingFloorControls .floorButton {
+  width: 34px;
+  height: 34px;
+  border: 0;
+}
+
+.floorButtonActive {
+  background: #666a6d;
+  color: #ffffff;
+  border-color: #666a6d;
+}
+
+/* Points */
+
+.PointList {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: grid;
+  gap: 12px;
+}
+
+.PointCard {
+  width: 100%;
+  min-height: 58px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: var(--shadow-card);
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.PointCard:hover {
+  transform: translateY(-1px);
+}
+
+.PointIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+}
+
+.PointInfo {
+  min-width: 0;
+}
+
+.PointInfo strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.PointInfo small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.PointRoom {
+  align-self: start;
+  margin-top: 4px;
+  font-size: 10px;
+  color: #111;
+}
+
+.emptyState {
+  padding: 18px 14px;
+  border-radius: 10px;
+  background: #f7f7f7;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Field colors */
+
+.fieldIt {
+  background: var(--field-it);
+}
+
+.fieldEl {
+  background: var(--field-el);
+}
+
+.fieldSt {
+  background: var(--field-st);
+}
+
+.fieldTl {
+  background: var(--field-tl);
+}
+
+.fieldOd {
+  background: var(--field-od);
+}
+
+.fieldTe {
+  background: var(--field-te);
+}
+
+.fieldDefault {
+  background: var(--field-default);
+}
+
+/* Mobile sheet */
+
+.mobileOverlay {
+  display: none;
+}
+
+.mobileSheet {
+  display: none;
+}
+
+.mobileSheetClose,
+.mobileSheetHandle {
+  display: none;
+}
+
+.mobileFilterButton {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #bfc2c4;
+  border-radius: 999px;
+  background: #f8f8f8;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .page {
+    display: block;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .desktopPanel {
+    display: none;
+  }
+
+  .mapArea {
+    height: 100dvh;
+  }
+
+  .mobileTopControls {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    right: 20px;
+    z-index: 15;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .mobileTopControls .buildingSelectButton {
+    height: 48px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .mapCanvas {
+    padding: 78px 10px 70px;
+  }
+
+  .floatingFloorControls {
+    right: 20px;
+    bottom: 22px;
+  }
+
+  .mobileOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(1px);
+  }
+
+  .mobileSheet {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    max-height: 78dvh;
+    background: #ffffff;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.16);
+    transform: translateY(105%);
+    transition: transform 220ms ease;
+    overflow: hidden;
+  }
+
+  .mobileSheetOpen {
+    transform: translateY(0);
+  }
+
+  .mobileSheet .panelInner {
+    max-height: 78dvh;
+    padding: 42px 20px 18px;
+  }
+
+  .mobileSheet .PointSection {
+    flex: 1;
+    min-height: 180px;
+  }
+
+  .mobileSheetClose {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    right: 8px;
+    top: 12px;
+    z-index: 2;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    border-radius: 999px;
+    background: #dddddd;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .mobileSheetHandle {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 108px;
+    height: 5px;
+    border-radius: 999px;
+    background: #d7d7d7;
+    transform: translateX(-50%);
+  }
+
+  .panelSection {
+    padding-bottom: 20px;
+    margin-bottom: 18px;
+  }
 }
 
 @media (max-height: 640px) {

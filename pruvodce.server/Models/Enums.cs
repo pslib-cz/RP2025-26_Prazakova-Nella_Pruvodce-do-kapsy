@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace pruvodce.server.Models
 {
     public enum RoomType
@@ -11,25 +13,34 @@ namespace pruvodce.server.Models
         Other
     }
 
-    public enum FieldType // pravd�podobn� jen pro barvi�ky, jinak v�e p�es specializace
+    public enum FieldType
     {
+        [Display(Name = "Informační technologie")]
         IT,
+        [Display(Name = "Elektrotechnika")]
         EL,
-        ST, // stroj�renstv�
-        TL, // technick� lyceum
+        [Display(Name = "Strojírenství")]
+        ST,
+        [Display(Name = "Technické lyceum")]
+        TL,
+        [Display(Name = "Oděvnictví")]
         OD,
+        [Display(Name = "Textnilnictví")]
         TE
     }
 
-    public enum SpecializationIcon
+    public enum PointIcon
     {
-        Computer,
-        Code,
-        Network,
-        Electricity,
-        Machine,
-        Design,
-        Health,
-        Business
+        [Display(Name = "Přednáška")]
+        Talk,
+
+        [Display(Name = "Praktické stanoviště")]
+        Hand,
+
+        [Display(Name = "Ukázka učebny")]
+        Ucebna,
+
+        [Display(Name = "Jiné")]
+        Jine
     }
 }

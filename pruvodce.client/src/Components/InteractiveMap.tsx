@@ -1,42 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { Icon } from '@iconify/react';
+
 import BackgroundM from './BackgroundM';
 import BackgroundT from './BackgroundT';
-import { Icon } from '@iconify/react';
-import { RoomType, type FloorData, type Point } from '../Types/MapType';
 import InteractivePoint from './Point';
+
+import { RoomType, type FloorData, type Point } from '../Types/MapType';
 
 const roomColors: Record<number, { bg: string; hover: string; border: string }> = {
   [RoomType.Classroom]: {
     bg: 'url(#gradient-classroom)',
     hover: 'rgba(205, 205, 205, 0.7)',
-    border: '#50555A'
+    border: '#50555A',
   },
   [RoomType.Specialized]: {
     bg: 'url(#gradient-specialized)',
     hover: 'rgba(192, 192, 192, 0.7)',
-    border: '#50555A'
+    border: '#50555A',
   },
   [RoomType.Office]: {
     bg: 'url(#gradient-office)',
     hover: 'rgba(170, 170, 170, 0.7)',
-    border: '#50555A'
+    border: '#50555A',
   },
   [RoomType.Toilets]: {
     bg: 'url(#gradient-wc)',
     hover: 'rgba(181, 198, 212, 0.7)',
-    border: '#50555A'
+    border: '#50555A',
   },
   [RoomType.Elevator]: {
     bg: 'url(#gradient-elevator)',
     hover: 'rgba(107, 112, 116, 0.7)',
-    border: '#50555A'
+    border: '#50555A',
   },
   [RoomType.Other]: {
     bg: 'url(#gradient-other)',
     hover: 'rgba(200, 200, 200, 0.7)',
-    border: '#50555A'
-  }
+    border: '#50555A',
+  },
 };
 
 interface InteractiveMapProps {
@@ -46,51 +48,163 @@ interface InteractiveMapProps {
   className?: string;
 }
 
+function useIsDesktop(): boolean {
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+
+    const handleChange = () => {
+      setIsDesktop(mediaQuery.matches);
+    };
+
+    handleChange();
+
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
+
+  return isDesktop;
+}
+
+function getPointCoordinate(
+  point: Point,
+  fallbackX: number,
+  fallbackY: number
+): { x: number; y: number } {
+  const rawPoint = point as Point & {
+    coordinateX?: number;
+    coordinateY?: number;
+    x?: number;
+    y?: number;
+  };
+
+  return {
+    x: rawPoint.coordinateX ?? rawPoint.x ?? fallbackX,
+    y: rawPoint.coordinateY ?? rawPoint.y ?? fallbackY,
+  };
+}
+
+function getPointTitle(point: Point): string {
+  const rawPoint = point as Point & {
+    label?: string;
+    name?: string;
+    title?: string;
+  };
+
+  return rawPoint.label ?? rawPoint.name ?? rawPoint.title ?? 'Stanoviště';
+}
+
 const InteractiveMap: React.FC<InteractiveMapProps> = ({
   floors,
   activeFloorId,
   buildingId,
-  className
+  className,
 }) => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
 
-  const isDesktop = window.innerWidth >= 1024;
-  const activeFloorData = floors.find(f => f.floorId === activeFloorId) ?? floors[0];
+  const isDesktop = useIsDesktop();
+
+  const activeFloorData = useMemo(() => {
+    return floors.find(floor => floor.floorId === activeFloorId) ?? floors[0];
+  }, [floors, activeFloorId]);
+
+  useEffect(() => {
+    setSelectedPoint(null);
+  }, [activeFloorId, buildingId]);
 
   const backgroundMap: Record<number, React.FC<{ zoomLevel: number }>> = {
     1: BackgroundM,
-    2: BackgroundT
+    2: BackgroundT,
   };
 
   const SelectedBackground = backgroundMap[buildingId] ?? BackgroundM;
+
+  const pointRenderData = useMemo(() => {
+    if (!activeFloorData) return [];
+
+    return activeFloorData.rooms.flatMap(room => {
+      const roomPoints = room.points ?? [];
+
+      return roomPoints.map((point, index) => {
+        const fallbackX = room.coordinateX ?? 0;
+        const fallbackY = room.coordinateY ?? 0;
+
+        const pointBaseCoordinate = getPointCoordinate(
+          point,
+          fallbackX,
+          fallbackY
+        );
+
+        /**
+         * Když je v jedné místnosti více bodů a nemají vlastní souřadnice,
+         * lehce je rozsadíme, aby neležely přesně na sobě.
+         */
+        const hasOwnCoordinates =
+          (point as Point & { coordinateX?: number; coordinateY?: number })
+            .coordinateX != null ||
+          (point as Point & { x?: number; y?: number }).x != null;
+
+        if (hasOwnCoordinates) {
+          return {
+            point,
+            x: pointBaseCoordinate.x,
+            y: pointBaseCoordinate.y,
+          };
+        }
+
+        const offsetStep = 14;
+        const offset = index * offsetStep;
+
+        return {
+          point,
+          x: pointBaseCoordinate.x + offset,
+          y: pointBaseCoordinate.y,
+        };
+      });
+    });
+  }, [activeFloorData]);
 
   if (!activeFloorData) {
     return <div>Patro nebylo nalezeno.</div>;
   }
 
-  const pointRenderData = activeFloorData.rooms.flatMap(room =>
-    (room.points ?? []).map((point, index) => ({
-      point,
-      x: (room.coordinateX ?? 0) + index * 14,
-      y: room.coordinateY ?? 0
-    }))
-  );
+  const initialScale = isDesktop ? 0.6 : 0.95;
+  const minScale = isDesktop ? 0.5 : 0.8;
+  const initialPositionX = isDesktop ? 160 : 0;
+  const initialPositionY = isDesktop ? -120 : 0;
 
   return (
-    <div className={`map-wrapper ${className || ''}`} style={{ position: 'relative' }}>
+    <div
+      className={`map-wrapper ${className ?? ''}`}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+      }}
+    >
       {selectedPoint && (
         <div
           style={{
             position: 'absolute',
             top: 16,
             left: 16,
-            zIndex: 10,
+            zIndex: 20,
             background: 'white',
-            padding: '8px 12px',
-            borderRadius: 8,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            maxWidth: 280
+            padding: '10px 14px',
+            borderRadius: 10,
+            boxShadow: '0 4px 18px rgba(0,0,0,0.18)',
+            maxWidth: 300,
           }}
         >
           <button
@@ -101,76 +215,94 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               border: 'none',
               background: 'transparent',
               cursor: 'pointer',
-              fontSize: 16
+              fontSize: 18,
+              lineHeight: 1,
+              marginLeft: 8,
             }}
             aria-label="Zavřít detail"
           >
             ×
           </button>
 
-          <strong>{selectedPoint.label}</strong>
+          <strong>{getPointTitle(selectedPoint)}</strong>
 
-          {selectedPoint.description && <div>{selectedPoint.description}</div>}
+          {'description' in selectedPoint && selectedPoint.description && (
+            <div style={{ marginTop: 4 }}>{selectedPoint.description}</div>
+          )}
 
-          {selectedPoint.event && (
-            <div>
-              <small>Event: {selectedPoint.event.name}</small>
+          {'event' in selectedPoint && selectedPoint.event && (
+            <div style={{ marginTop: 6 }}>
+              <small>Akce: {selectedPoint.event.name}</small>
             </div>
           )}
 
-          {selectedPoint.specialization && (
+          {'specialization' in selectedPoint && selectedPoint.specialization && (
             <div>
-              <small>Specializace: {selectedPoint.specialization.name}</small>
+              <small>Obor: {selectedPoint.specialization.name}</small>
             </div>
           )}
 
-          {selectedPoint.teachers && selectedPoint.teachers.length > 0 && (
-            <div>
-              <small>
-                Učitelé:{' '}
-                {selectedPoint.teachers
-                  .map(t => `${t.firstN} ${t.lastN}`)
-                  .join(', ')}
-              </small>
-            </div>
-          )}
+          {'teachers' in selectedPoint &&
+            selectedPoint.teachers &&
+            selectedPoint.teachers.length > 0 && (
+              <div>
+                <small>
+                  Učitelé:{' '}
+                  {selectedPoint.teachers
+                    .map(teacher => `${teacher.firstN} ${teacher.lastN}`)
+                    .join(', ')}
+                </small>
+              </div>
+            )}
 
-          {selectedPoint.subjects && selectedPoint.subjects.length > 0 && (
-            <div>
-              <small>
-                Předměty:{' '}
-                {selectedPoint.subjects
-                  .map(s => s.acronym || s.name)
-                  .join(', ')}
-              </small>
-            </div>
-          )}
+          {'subjects' in selectedPoint &&
+            selectedPoint.subjects &&
+            selectedPoint.subjects.length > 0 && (
+              <div>
+                <small>
+                  Předměty:{' '}
+                  {selectedPoint.subjects
+                    .map(subject => subject.acronym || subject.name)
+                    .join(', ')}
+                </small>
+              </div>
+            )}
         </div>
       )}
 
       <TransformWrapper
-        onTransform={(ref) => setZoomLevel(ref.state.scale)}
-        initialScale={isDesktop ? 0.6 : 0.95}
-        minScale={isDesktop ? 0.5 : 0.8}
-        initialPositionX={isDesktop ? 160 : 0}
-        initialPositionY={isDesktop ? -120 : 0}
-        limitToBounds={true}
+        key={`${buildingId}-${activeFloorId}-${isDesktop ? 'desktop' : 'mobile'}`}
+        onTransform={ref => setZoomLevel(ref.state.scale)}
+        initialScale={initialScale}
+        minScale={minScale}
+        maxScale={3}
+        initialPositionX={initialPositionX}
+        initialPositionY={initialPositionY}
+        limitToBounds
+        centerOnInit={!isDesktop}
+        wheel={{ step: 0.12 }}
+        doubleClick={{ disabled: true }}
+        panning={{ velocityDisabled: true }}
       >
         <TransformComponent
           wrapperStyle={{
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: '#EAEAEA'
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#EAEAEA',
           }}
           contentStyle={{
             width: isDesktop ? '80vw' : '100vw',
-            height: isDesktop ? '220vh' : '100vh'
+            height: isDesktop ? '220vh' : '100vh',
           }}
         >
           <svg
             viewBox="0 0 540 900"
             preserveAspectRatio="xMidYMid slice"
-            style={{ width: '100%', height: '100%', display: 'block' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'block',
+            }}
           >
             <defs>
               <radialGradient
@@ -264,9 +396,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               {activeFloorData.rooms.map(room => {
                 const pathData = room.svgOutline || room.svgData;
 
-                if (!pathData) {
-                  return null;
-                }
+                if (!pathData) return null;
 
                 const rawRoomType = Number(room.type);
                 const safeRoomType = Number.isNaN(rawRoomType)
@@ -288,13 +418,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     style={{
                       cursor: 'pointer',
                       transition: 'fill 0.2s',
-                      pointerEvents: 'all'
+                      pointerEvents: 'all',
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.fill = colors.hover;
+                    onMouseEnter={event => {
+                      event.currentTarget.style.fill = colors.hover;
                     }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.fill = colors.bg;
+                    onMouseLeave={event => {
+                      event.currentTarget.style.fill = colors.bg;
                     }}
                   />
                 );
@@ -336,7 +466,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                           justifyContent: 'center',
                           alignItems: 'center',
                           width: '100%',
-                          height: '100%'
+                          height: '100%',
                         }}
                       >
                         <Icon
@@ -348,7 +478,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                               ? '#647F97'
                               : isElevator
                                 ? '#89482A'
-                                : '#25292c'
+                                : '#25292c',
                           }}
                         />
                       </div>
@@ -356,9 +486,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   );
                 }
 
-                if (!displayLabel) {
-                  return null;
-                }
+                if (!displayLabel) return null;
 
                 return (
                   <text
@@ -372,7 +500,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                       fill: '#333',
                       fontWeight: 'bold',
                       pointerEvents: 'none',
-                      userSelect: 'none'
+                      userSelect: 'none',
                     }}
                   >
                     {displayLabel}

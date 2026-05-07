@@ -17,21 +17,6 @@ namespace pruvodce.server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
-            modelBuilder.Entity("PointSubject", b =>
-                {
-                    b.Property<string>("PointsPointId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SubjectsSubjectId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("PointsPointId", "SubjectsSubjectId");
-
-                    b.HasIndex("SubjectsSubjectId");
-
-                    b.ToTable("PointSubject");
-                });
-
             modelBuilder.Entity("PointTeacher", b =>
                 {
                     b.Property<string>("PointsPointId")
@@ -47,14 +32,35 @@ namespace pruvodce.server.Migrations
                     b.ToTable("PointTeacher");
                 });
 
+            modelBuilder.Entity("pruvodce.server.Models.AdminUser", b =>
+                {
+                    b.Property<int>("AdminUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("AdminUserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("AdminUsers");
+                });
+
             modelBuilder.Entity("pruvodce.server.Models.Event", b =>
                 {
                     b.Property<int>("EventId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("BuildingId")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
@@ -67,6 +73,7 @@ namespace pruvodce.server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
@@ -74,7 +81,23 @@ namespace pruvodce.server.Migrations
 
                     b.HasKey("EventId");
 
+                    b.HasIndex("Name", "StartDate")
+                        .IsUnique();
+
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.EventBuilding", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BuildingId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("EventId", "BuildingId");
+
+                    b.ToTable("EventBuildings");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Point", b =>
@@ -85,17 +108,17 @@ namespace pruvodce.server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("EventId")
+                    b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Icon")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Icon")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Label")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Note")
+                    b.Property<string>("NoteId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RoomId")
@@ -109,9 +132,26 @@ namespace pruvodce.server.Migrations
 
                     b.HasIndex("EventId");
 
+                    b.HasIndex("NoteId");
+
                     b.HasIndex("SpecializationId");
 
                     b.ToTable("Points");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.PointSubject", b =>
+                {
+                    b.Property<string>("PointId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubjectId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PointId", "SubjectId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("PointSubjects");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Specialization", b =>
@@ -121,13 +161,12 @@ namespace pruvodce.server.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(1000)
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Icon")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
@@ -138,6 +177,28 @@ namespace pruvodce.server.Migrations
                     b.ToTable("Specializations");
                 });
 
+            modelBuilder.Entity("pruvodce.server.Models.StudentNote", b =>
+                {
+                    b.Property<string>("StudentNoteId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("StudentField")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StudentName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("StudentYear")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("StudentNoteId");
+
+                    b.ToTable("StudentNote");
+                });
+
             modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
                 {
                     b.Property<string>("SubjectId")
@@ -145,16 +206,23 @@ namespace pruvodce.server.Migrations
 
                     b.Property<string>("Acronym")
                         .IsRequired()
+                        .HasMaxLength(7)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Note")
+                    b.Property<string>("NoteId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("SubjectId");
+
+                    b.HasIndex("Acronym")
+                        .IsUnique();
+
+                    b.HasIndex("NoteId");
 
                     b.ToTable("Subjects");
                 });
@@ -165,37 +233,27 @@ namespace pruvodce.server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Degree")
+                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstN")
                         .IsRequired()
+                        .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastN")
                         .IsRequired()
+                        .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Note")
+                    b.Property<string>("NoteId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("TeacherId");
 
+                    b.HasIndex("NoteId");
+
                     b.ToTable("Teachers");
-                });
-
-            modelBuilder.Entity("PointSubject", b =>
-                {
-                    b.HasOne("pruvodce.server.Models.Point", null)
-                        .WithMany()
-                        .HasForeignKey("PointsPointId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pruvodce.server.Models.Subject", null)
-                        .WithMany()
-                        .HasForeignKey("SubjectsSubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("PointTeacher", b =>
@@ -213,11 +271,28 @@ namespace pruvodce.server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("pruvodce.server.Models.EventBuilding", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.Event", "Event")
+                        .WithMany("EventBuildings")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("pruvodce.server.Models.Point", b =>
                 {
                     b.HasOne("pruvodce.server.Models.Event", "Event")
                         .WithMany("Points")
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("pruvodce.server.Models.StudentNote", "Note")
+                        .WithMany()
+                        .HasForeignKey("NoteId");
 
                     b.HasOne("pruvodce.server.Models.Specialization", "Specialization")
                         .WithMany("Points")
@@ -225,17 +300,68 @@ namespace pruvodce.server.Migrations
 
                     b.Navigation("Event");
 
+                    b.Navigation("Note");
+
                     b.Navigation("Specialization");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.PointSubject", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.Point", "Point")
+                        .WithMany("PointSubjects")
+                        .HasForeignKey("PointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("pruvodce.server.Models.Subject", "Subject")
+                        .WithMany("PointSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Point");
+
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.StudentNote", "Note")
+                        .WithMany()
+                        .HasForeignKey("NoteId");
+
+                    b.Navigation("Note");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Teacher", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.StudentNote", "Note")
+                        .WithMany()
+                        .HasForeignKey("NoteId");
+
+                    b.Navigation("Note");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Event", b =>
                 {
+                    b.Navigation("EventBuildings");
+
                     b.Navigation("Points");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Point", b =>
+                {
+                    b.Navigation("PointSubjects");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Specialization", b =>
                 {
                     b.Navigation("Points");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
+                {
+                    b.Navigation("PointSubjects");
                 });
 #pragma warning restore 612, 618
         }

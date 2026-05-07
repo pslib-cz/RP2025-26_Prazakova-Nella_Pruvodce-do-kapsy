@@ -5,7 +5,7 @@
 namespace pruvodce.server.Migrations
 {
     /// <inheritdoc />
-    public partial class ups : Migration
+    public partial class Addpaginagtion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

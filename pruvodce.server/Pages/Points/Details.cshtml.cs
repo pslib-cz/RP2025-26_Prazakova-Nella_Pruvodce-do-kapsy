@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -21,22 +20,17 @@ namespace pruvodce.server.Pages.Points
         public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (string.IsNullOrEmpty(id))
-            {
                 return NotFound();
-            }
 
             Point = await _context.Points
+                .Include(p => p.PointSubjects)
+                    .ThenInclude(ps => ps.Subject)
                 .Include(p => p.Teachers)
                 .Include(p => p.Event)
-                .Include(p => p.Subjects)
-                .Include(p => p.Specialization)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.PointId == id);
 
             if (Point == null)
-            {
                 return NotFound();
-            }
 
             return Page();
         }

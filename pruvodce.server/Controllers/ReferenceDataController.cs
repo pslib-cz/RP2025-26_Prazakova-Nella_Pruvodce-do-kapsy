@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pruvodce.server.Data;
+using pruvodce.server.Models;
+using pruvodce.server.Services;
 
 namespace pruvodce.server.Controllers
 {
@@ -9,10 +11,12 @@ namespace pruvodce.server.Controllers
     public class ReferenceDataController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly MapDataService _mapDataService;
 
-        public ReferenceDataController(ApplicationDbContext context)
+        public ReferenceDataController(ApplicationDbContext context, MapDataService mapDataService)
         {
             _context = context;
+            _mapDataService = mapDataService;
         }
 
         [HttpGet("teachers")]
@@ -54,32 +58,66 @@ namespace pruvodce.server.Controllers
         [HttpGet("events")]
         public async Task<ActionResult<IEnumerable<object>>> GetEvents()
         {
-            var events = await _context.Events
-                .OrderBy(e => e.StartDate)
+            var visibleEvents = await GetCurrentlyVisibleEventsAsync();
+
+            var result = visibleEvents
+                .OrderBy(e => e.BuildingId)
                 .Select(e => new
                 {
-                    e.EventId,
-                    e.Name,
-                    e.StartDate,
-                    e.EndDate,
-                    e.IsActive,
-                    e.Description,
-                    e.BuildingId
+                    e.Event.EventId,
+                    e.Event.Name,
+                    e.Event.StartDate,
+                    e.Event.EndDate,
+                    e.Event.IsActive,
+                    e.Event.Description,
+                    e.Event.CreatedAt,
+                    e.BuildingId,
+                    Buildings = e.Event.EventBuildings
+                        .Select(eb => eb.BuildingId)
+                        .ToList()
                 })
-                .ToListAsync();
+                .ToList();
 
-            return Ok(events);
+            return Ok(result);
         }
 
         [HttpGet("points")]
         public async Task<ActionResult<IEnumerable<object>>> GetPoints()
         {
-            var points = await _context.Points
+            var visibleEvents = await GetCurrentlyVisibleEventsAsync();
+
+            var visiblePairs = visibleEvents
+                .Select(e => new { e.EventId, e.BuildingId })
+                .ToList();
+
+            var visibleEventIds = visiblePairs
+                .Select(x => x.EventId)
+                .Distinct()
+                .ToList();
+
+            var roomBuildingMap = await GetRoomBuildingMapAsync();
+
+            var rawPoints = await _context.Points
                 .Include(p => p.Teachers)
-                .Include(p => p.Subjects)
+                .Include(p => p.PointSubjects)
+                    .ThenInclude(ps => ps.Subject)
                 .Include(p => p.Event)
+                    .ThenInclude(e => e!.EventBuildings)
                 .Include(p => p.Specialization)
                 .AsNoTracking()
+                .Where(p => p.EventId != null && visibleEventIds.Contains(p.EventId.Value))
+                .ToListAsync();
+
+            var filteredPoints = rawPoints
+                .Where(p =>
+                    p.RoomId != null &&
+                    roomBuildingMap.TryGetValue(p.RoomId, out var pointBuildingId) &&
+                    visiblePairs.Any(v =>
+                        v.EventId == p.EventId &&
+                        v.BuildingId == pointBuildingId))
+                .ToList();
+
+            var result = filteredPoints
                 .Select(p => new
                 {
                     p.PointId,
@@ -98,7 +136,10 @@ namespace pruvodce.server.Controllers
                         p.Event.EndDate,
                         p.Event.IsActive,
                         p.Event.Description,
-                        p.Event.BuildingId
+                        p.Event.CreatedAt,
+                        Buildings = p.Event.EventBuildings
+                            .Select(eb => eb.BuildingId)
+                            .ToList()
                     },
 
                     p.SpecializationId,
@@ -107,8 +148,7 @@ namespace pruvodce.server.Controllers
                         p.Specialization.SpecializationId,
                         p.Specialization.Name,
                         p.Specialization.Description,
-                        p.Specialization.Type,
-                        p.Specialization.Icon
+                        p.Specialization.Type
                     },
 
                     Teachers = p.Teachers.Select(t => new
@@ -120,17 +160,101 @@ namespace pruvodce.server.Controllers
                         t.Note
                     }).ToList(),
 
-                    Subjects = p.Subjects.Select(s => new
+                    Subjects = p.PointSubjects.Select(ps => new
                     {
-                        s.SubjectId,
-                        s.Name,
-                        s.Acronym,
-                        s.Note
+                        ps.Subject.SubjectId,
+                        ps.Subject.Name,
+                        ps.Subject.Acronym,
+                        ps.Subject.Note
                     }).ToList()
                 })
+                .ToList();
+
+            return Ok(result);
+        }
+
+        private async Task<List<VisibleEventForBuilding>> GetCurrentlyVisibleEventsAsync()
+        {
+            var now = DateTime.Now;
+
+            var events = await _context.Events
+                .Include(e => e.EventBuildings)
+                .AsNoTracking()
                 .ToListAsync();
 
-            return Ok(points);
+            var eventBuildingRows = events
+                .SelectMany(e => e.EventBuildings.Select(eb => new
+                {
+                    Event = e,
+                    eb.BuildingId
+                }))
+                .ToList();
+
+            var visibleEvents = eventBuildingRows
+                .GroupBy(x => x.BuildingId)
+                .Select(group =>
+                {
+                    var currentlyRunning = group
+                        .Where(x => x.Event.StartDate <= now && x.Event.EndDate >= now)
+                        .OrderByDescending(x => x.Event.CreatedAt)
+                        .FirstOrDefault();
+
+                    if (currentlyRunning != null)
+                    {
+                        return new VisibleEventForBuilding
+                        {
+                            EventId = currentlyRunning.Event.EventId,
+                            Event = currentlyRunning.Event,
+                            BuildingId = currentlyRunning.BuildingId
+                        };
+                    }
+
+                    var manuallyActive = group
+                        .Where(x => x.Event.IsActive)
+                        .OrderByDescending(x => x.Event.CreatedAt)
+                        .FirstOrDefault();
+
+                    if (manuallyActive == null)
+                    {
+                        return null;
+                    }
+
+                    return new VisibleEventForBuilding
+                    {
+                        EventId = manuallyActive.Event.EventId,
+                        Event = manuallyActive.Event,
+                        BuildingId = manuallyActive.BuildingId
+                    };
+                })
+                .Where(x => x != null)
+                .Cast<VisibleEventForBuilding>()
+                .ToList();
+
+            return visibleEvents;
+        }
+
+        private async Task<Dictionary<string, int>> GetRoomBuildingMapAsync()
+        {
+            var mapData = await _mapDataService.GetMapDataAsync();
+
+            return mapData.Buildings
+                .SelectMany(building =>
+                    building.Floors.SelectMany(floor =>
+                        floor.Rooms.Select(room => new
+                        {
+                            room.RoomId,
+                            building.BuildingId
+                        })))
+                .Where(x => !string.IsNullOrWhiteSpace(x.RoomId))
+                .GroupBy(x => x.RoomId)
+                .ToDictionary(g => g.Key, g => g.First().BuildingId);
+        }
+
+        private class VisibleEventForBuilding
+        {
+            public int EventId { get; set; }
+            public int BuildingId { get; set; }
+            public Event Event { get; set; } = default!;
         }
     }
 }

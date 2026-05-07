@@ -14,12 +14,29 @@ namespace pruvodce.server.Pages.Teachers
             _context = context;
         }
 
-        public IList<Teacher> Teachers { get; set; } = new List<Teacher>();
+        public List<Teacher> Teachers { get; set; } = new();
 
-        public async Task OnGetAsync()
+        public string? Search { get; set; }
+
+        public async Task OnGetAsync(string? search)
         {
-            Teachers = await _context.Teachers
-                .AsNoTracking()
+            Search = search?.Trim().ToLower();
+
+            var query = _context.Teachers.Include(t => t.Note).AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                var searchValue = Search;
+                query = query.Where(t =>
+                    (t.FirstN ?? "").ToLower().Contains(Search) ||
+                    (t.LastN ?? "").ToLower().Contains(Search) ||
+                    (t.Note == null ? "" : t.Note.Text).ToLower().Contains(searchValue) ||
+                    (t.Degree ?? "").ToLower().Contains(Search));
+            }
+
+            Teachers = await query
+                .OrderBy(t => t.LastN)
+                .ThenBy(t => t.FirstN)
                 .ToListAsync();
         }
     }

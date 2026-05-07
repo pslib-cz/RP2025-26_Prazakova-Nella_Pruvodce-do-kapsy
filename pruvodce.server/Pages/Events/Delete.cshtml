@@ -1,30 +1,46 @@
-@page "{id:int}"
+@page "{id}"
 @model pruvodce.server.Pages.Events.DeleteModel
 @{
-    ViewData["Title"] = "Delete Event";
+    ViewData["Title"] = "Odebrat akci";
 }
 
-<h1>Delete Event</h1>
+<section class="admin-delete">
+    <div class="admin-delete__card">
+        <h2 class="admin-delete__title">Opravdu chcete odebrat tuto akci?</h2>
+        <p class="admin-delete__text">
+            Tato akce smaže vybraný záznam. Pokud je na něj něco navázané, může být potřeba nejdříve upravit související data.
+        </p>
 
-<h3>Are you sure you want to delete this?</h3>
+        @if (Model.Event != null)
+        {
+            <div class="admin-delete__summary">
+                <div class="admin-delete__row">
+                    <div class="admin-delete__label">Název</div>
+                    <div class="admin-delete__value">@Model.Event.Name</div>
+                </div>
 
-<div>
-    <h4>Event</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Name</dt>
-        <dd class="col-sm-10">@Model.Event?.Name</dd>
+                <div class="admin-delete__row">
+                    <div class="admin-delete__label">Začátek</div>
+                    <div class="admin-delete__value">@Model.Event.StartDate.ToString("dd.MM.yyyy HH:mm")</div>
+                </div>
 
-        <dt class="col-sm-2">Start</dt>
-        <dd class="col-sm-10">@Model.Event?.StartDate.ToString("g")</dd>
+                <div class="admin-delete__row">
+                    <div class="admin-delete__label">Konec</div>
+                    <div class="admin-delete__value">@Model.Event.EndDate.ToString("dd.MM.yyyy HH:mm")</div>
+                </div>
+            </div>
 
-        <dt class="col-sm-2">End</dt>
-        <dd class="col-sm-10">@Model.Event?.EndDate.ToString("g")</dd>
-    </dl>
+            <form method="post" class="admin-delete__actions">
+                <input type="hidden" asp-for="Event.EventId" />
 
-    <form method="post">
-        <input type="hidden" asp-for="Event.EventId" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+                <button type="submit" class="admin-button admin-button--danger">
+                    Odebrat
+                </button>
+
+                <a asp-page="Index" class="admin-button admin-button--secondary">
+                    Zpět
+                </a>
+            </form>
+        }
+    </div>
+</section>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using pruvodce.server.Data;
 using pruvodce.server.Models;
 using pruvodce.server.Services;
@@ -19,9 +20,15 @@ namespace pruvodce.server.Pages.Events
         }
 
         [BindProperty]
-        public Event Event { get; set; } = default!;
+        public Event Event { get; set; } = new()
+        {
+            Name = string.Empty
+        };
 
-        public SelectList BuildingItems { get; set; } = default!;
+        [BindProperty]
+        public List<int> SelectedBuildingIds { get; set; } = new();
+
+        public MultiSelectList BuildingItems { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
@@ -30,7 +37,8 @@ namespace pruvodce.server.Pages.Events
                 Name = string.Empty,
                 StartDate = RoundToMinute(DateTime.Now),
                 EndDate = RoundToMinute(DateTime.Now.AddHours(2)),
-                IsActive = true
+                IsActive = true,
+                CreatedAt = DateTime.Now
             };
 
             await LoadSelectListsAsync();
@@ -38,45 +46,115 @@ namespace pruvodce.server.Pages.Events
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            var savedEventId = await SaveEventAsync();
+
+            if (savedEventId == null)
             {
-                await LoadSelectListsAsync();
                 return Page();
             }
 
-            var mapData = await _mapDataService.GetMapDataAsync();
+            return RedirectToPage("Index");
+        }
 
-            var buildingExists = mapData.Buildings
-                .Any(b => b.BuildingId == Event.BuildingId);
+        public async Task<IActionResult> OnPostSaveAndCreatePointAsync()
+        {
+            var savedEventId = await SaveEventAsync();
 
-            if (!buildingExists)
+            if (savedEventId == null)
             {
-                ModelState.AddModelError("Event.BuildingId", "Vyberte existující budovu.");
-                await LoadSelectListsAsync();
                 return Page();
+            }
+
+            return RedirectToPage("/Points/Create", new { eventId = savedEventId.Value });
+        }
+
+        private async Task<int?> SaveEventAsync()
+        {
+            ModelState.Remove("Event.Points");
+            ModelState.Remove("Event.EventBuildings");
+
+            Event.Name = Event.Name?.Trim() ?? string.Empty;
+
+            if (SelectedBuildingIds == null || SelectedBuildingIds.Count == 0)
+            {
+                ModelState.AddModelError("SelectedBuildingIds", "Vyberte alespoÅˆ jednu budovu.");
             }
 
             if (Event.EndDate <= Event.StartDate)
             {
-                ModelState.AddModelError("Event.EndDate", "Konec akce musí být pozdìji než zaèátek.");
-                await LoadSelectListsAsync();
-                return Page();
+                ModelState.AddModelError("Event.EndDate", "Konec akce musÃ­ bÃ½t pozdÄ›ji neÅ¾ zaÄÃ¡tek.");
             }
+
+            if (!string.IsNullOrWhiteSpace(Event.Name))
+            {
+                var eventNameExists = await _context.Events
+                    .AnyAsync(e => e.Name.ToLower() == Event.Name.ToLower());
+
+                if (eventNameExists)
+                {
+                    ModelState.AddModelError("Event.Name", "Akce s tÃ­mto nÃ¡zvem uÅ¾ existuje.");
+                }
+            }
+
+            var mapData = await _mapDataService.GetMapDataAsync();
+
+            var validBuildingIds = mapData.Buildings
+                .Select(b => b.BuildingId)
+                .ToHashSet();
+
+            if (SelectedBuildingIds != null &&
+                SelectedBuildingIds.Any(id => !validBuildingIds.Contains(id)))
+            {
+                ModelState.AddModelError("SelectedBuildingIds", "Vyberte existujÃ­cÃ­ budovy.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await LoadSelectListsAsync();
+                return null;
+            }
+
+            var selectedBuildingIds = SelectedBuildingIds!
+                .Distinct()
+                .ToList();
+
+            if (Event.IsActive)
+            {
+                var otherEvents = await _context.Events
+                    .Include(e => e.EventBuildings)
+                    .Where(e => e.EventBuildings.Any(eb => selectedBuildingIds.Contains(eb.BuildingId)))
+                    .ToListAsync();
+
+                foreach (var otherEvent in otherEvents)
+                {
+                    otherEvent.IsActive = false;
+                }
+            }
+
+            Event.CreatedAt = DateTime.Now;
+
+            Event.EventBuildings = selectedBuildingIds
+                .Select(buildingId => new EventBuilding
+                {
+                    BuildingId = buildingId
+                })
+                .ToList();
 
             _context.Events.Add(Event);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("Index");
+            return Event.EventId;
         }
 
         private async Task LoadSelectListsAsync()
         {
             var mapData = await _mapDataService.GetMapDataAsync();
 
-            BuildingItems = new SelectList(
+            BuildingItems = new MultiSelectList(
                 mapData.Buildings.OrderBy(b => b.Name),
                 "BuildingId",
-                "Name"
+                "Name",
+                SelectedBuildingIds
             );
         }
 

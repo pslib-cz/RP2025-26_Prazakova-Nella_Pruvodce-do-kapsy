@@ -3,24 +3,38 @@
 @{
     ViewData["Title"] = "Delete Subject";
 }
+<section class="admin-delete">
+    <div class="admin-delete__card">
+        <h2 class="admin-delete__title">Opravdu chcete odebrat tento předmět?</h2>
+        <p class="admin-delete__text">
+            Tato akce smaže vybraný záznam. Pokud je na něj něco navázané, může být potřeba nejdříve upravit související data.
+        </p>
 
-<h1>Delete Subject</h1>
+        @if (Model.Subject != null)
+        {
+            <div class="admin-delete__summary">
+                <div class="admin-delete__row">
+                    <div class="admin-delete__label">Název</div>
+                    <div class="admin-delete__value">@Model.Subject.Name</div>
+                </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Subject</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Name</dt>
-        <dd class="col-sm-10">@Model.Subject?.Name</dd>
+                <div class="admin-delete__row">
+                    <div class="admin-delete__label">Popis</div>
+                    <div class="admin-delete__value">@Model.Subject.Note</div>
+                </div>
+            </div>
 
-        <dt class="col-sm-2">Acronym</dt>
-        <dd class="col-sm-10">@Model.Subject?.Acronym</dd>
-    </dl>
+            <form method="post" class="admin-delete__actions">
+                <input type="hidden" asp-for="Subject.SubjectId" />
 
-    <form method="post">
-        <input type="hidden" asp-for="Subject.SubjectId" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+                <button type="submit" class="admin-button admin-button--danger">
+                    Odebrat
+                </button>
+
+                <a asp-page="Index" class="admin-button admin-button--secondary">
+                    Zpět
+                </a>
+            </form>
+        }
+    </div>
+</section>

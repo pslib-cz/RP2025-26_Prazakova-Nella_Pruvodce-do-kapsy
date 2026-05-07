@@ -1,35 +1,107 @@
 @page
 @model pruvodce.server.Pages.Subjects.IndexModel
 @{
-    ViewData["Title"] = "Subjects";
+    ViewData["Title"] = "Předměty";
 }
 
-<h1>Subjects</h1>
+<section class="admin-list">
+    <div class="admin-list__card">
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
-</p>
+        <div class="admin-list__header">
+            <div>
+                <h2 class="admin-list__title">Předměty</h2>
+                <p class="admin-list__subtitle">Seznam všech předmětů v systému.</p>
+            </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Acronym</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Subjects)
-    {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Acronym</td>
-            <td>
-                <a asp-page="Details" asp-route-id="@item.SubjectId">Details</a> |
-                <a asp-page="Edit" asp-route-id="@item.SubjectId">Edit</a> |
-                <a asp-page="Delete" asp-route-id="@item.SubjectId">Delete</a>
-            </td>
-        </tr>
+            <a asp-page="Create" class="admin-button admin-button--primary">
+                + Přidat předmět
+            </a>
+        </div>
+
+        <form method="get" class="admin-list__filters" id="subjectFilterForm">
+            <input asp-for="Search"
+                   class="admin-list__search"
+                   placeholder="Hledat podle názvu, zkratky..."
+                   oninput="submitSubjectFilter()" />
+        </form>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table admin-table--specializations">
+                <thead>
+                    <tr class="admin-table__row">
+                        <th class="admin-table__cell admin-table__cell--head">Název</th>
+                        <th class="admin-table__cell admin-table__cell--head">Zkratka</th>
+                        <th class="admin-table__cell admin-table__cell--head">Poznámka</th>
+                        <th class="admin-table__cell admin-table__cell--head">Akce</th>
+                    </tr>
+                </thead>
+
+                <tbody class="admin-table__body">
+                    @if (Model.Subjects.Any())
+                    {
+                        @foreach (var item in Model.Subjects)
+                        {
+                            <tr class="admin-table__row">
+
+                                <td class="admin-table__cell">
+                                    <span class="admin-table__primary">
+                                        @item.Name
+                                    </span>
+                                </td>
+
+                                <td class="admin-table__cell">
+                                    @item.Acronym
+                                </td>
+
+                                <td class="admin-table__cell">
+                                    @item.Note
+                                </td>
+
+                                <td class="admin-table__cell">
+                                    <div class="admin-table__actions admin-table__actions--stacked">
+
+                                        <a asp-page="./Edit"
+                                           asp-route-id="@item.SubjectId"
+                                           class="admin-button admin-button--secondary">
+                                            Editovat
+                                        </a>
+
+                                        <a asp-page="./Delete"
+                                           asp-route-id="@item.SubjectId"
+                                           class="admin-button admin-button--danger">
+                                            Odebrat
+                                        </a>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="admin-table__row">
+                            <td colspan="3" class="admin-table__cell admin-table__cell--empty">
+                                Žádné předměty nebyly nalezeny.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+@section Scripts {
+<script>
+    let subjectTimeout;
+
+    function submitSubjectFilter() {
+        clearTimeout(subjectTimeout);
+
+        subjectTimeout = setTimeout(() => {
+            document.getElementById("subjectFilterForm").submit();
+        }, 300);
     }
-    </tbody>
-</table>
+</script>
+}

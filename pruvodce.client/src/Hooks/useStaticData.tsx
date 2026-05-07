@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { BuildingData, Point, RoomData } from '../Types/MapType';
+import type { BuildingData, RoomData } from '../Types/MapType';
 
 interface StaticDataResult {
   buildings: BuildingData[];
-  points: Point[];
   loading: boolean;
   error: string | null;
 }
@@ -35,36 +34,12 @@ async function fetchJson<T>(url: string): Promise<T> {
 function normalizeRooms(rooms: RoomData[]): RoomData[] {
   return rooms.map(room => ({
     ...room,
-    type: typeof room.type === 'string' ? Number(room.type) : room.type
-  }));
-}
-
-function mergePointsIntoRooms(buildings: BuildingData[], points: Point[]): BuildingData[] {
-  const pointsByRoom = new Map<string, Point[]>();
-
-  for (const point of points) {
-    if (!point.roomId) continue;
-
-    const list = pointsByRoom.get(point.roomId) ?? [];
-    list.push(point);
-    pointsByRoom.set(point.roomId, list);
-  }
-
-  return buildings.map(building => ({
-    ...building,
-    floors: building.floors.map(floor => ({
-      ...floor,
-      rooms: (floor.rooms ?? []).map(room => ({
-        ...room,
-        points: pointsByRoom.get(room.roomId) ?? []
-      }))
-    }))
+    type: typeof room.type === 'string' ? Number(room.type) : room.type,
   }));
 }
 
 export function useStaticData(): StaticDataResult {
   const [buildings, setBuildings] = useState<BuildingData[]>([]);
-  const [points, setPoints] = useState<Point[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,48 +54,32 @@ export function useStaticData(): StaticDataResult {
         const mapData = await fetchJson<{ buildings: BuildingData[] }>('/data/map.json');
 
         const buildingsWithRooms = await Promise.all(
-  mapData.buildings.map(async building => ({
-    ...building,
-    floors: await Promise.all(
-      building.floors.map(async floor => {
-        if (!floor.roomsUrl) {
-          console.warn("Patro nemá roomsUrl:", floor);
-          return {
-            ...floor,
-            rooms: normalizeRooms(floor.rooms ?? [])
-          };
-        }
+          mapData.buildings.map(async building => ({
+            ...building,
+            floors: await Promise.all(
+              building.floors.map(async floor => {
+                if (!floor.roomsUrl) {
+                  console.warn('Patro nemá roomsUrl:', floor);
 
-        const rooms = await fetchJson<RoomData[]>(floor.roomsUrl);
+                  return {
+                    ...floor,
+                    rooms: normalizeRooms(floor.rooms ?? []),
+                  };
+                }
 
-        console.log(
-          "Načtené místnosti:",
-          building.name,
-          floor.name,
-          floor.roomsUrl,
-          rooms.length
+                const rooms = await fetchJson<RoomData[]>(floor.roomsUrl);
+
+                return {
+                  ...floor,
+                  rooms: normalizeRooms(rooms),
+                };
+              })
+            ),
+          }))
         );
 
-        return {
-          ...floor,
-          rooms: normalizeRooms(rooms)
-        };
-      })
-    )
-  }))
-);
-
-        let dynamicPoints: Point[] = [];
-
-        try {
-          dynamicPoints = await fetchJson<Point[]>('/api/ReferenceData/points');
-        } catch (pointsError) {
-          console.warn('Body z databáze se nepodařilo načíst, mapa poběží bez nich.', pointsError);
-        }
-
         if (!cancelled) {
-          setPoints(dynamicPoints);
-          setBuildings(mergePointsIntoRooms(buildingsWithRooms, dynamicPoints));
+          setBuildings(buildingsWithRooms);
         }
       } catch (err) {
         console.error(err);
@@ -128,7 +87,6 @@ export function useStaticData(): StaticDataResult {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Nepodařilo se načíst statická data.');
           setBuildings([]);
-          setPoints([]);
         }
       } finally {
         if (!cancelled) {
@@ -144,5 +102,5 @@ export function useStaticData(): StaticDataResult {
     };
   }, []);
 
-  return { buildings, points, loading, error };
+  return { buildings, loading, error };
 }

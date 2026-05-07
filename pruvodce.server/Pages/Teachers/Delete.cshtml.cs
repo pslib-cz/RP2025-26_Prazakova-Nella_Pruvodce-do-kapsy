@@ -18,32 +18,40 @@ namespace pruvodce.server.Pages.Teachers
         [BindProperty]
         public Teacher? Teacher { get; set; }
 
+        public int RelatedPointsCount { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string? id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (id == null)
                 return NotFound();
 
             Teacher = await _context.Teachers
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.TeacherId == id);
+                .FirstOrDefaultAsync(t => t.TeacherId == id);
 
             if (Teacher == null)
                 return NotFound();
+
+            RelatedPointsCount = await _context.Points
+                .Where(p => p.Teachers.Any(t => t.TeacherId == id))
+                .CountAsync();
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Teacher == null || string.IsNullOrEmpty(Teacher.TeacherId))
+            if (Teacher == null)
                 return NotFound();
 
-            var entity = await _context.Teachers.FindAsync(Teacher.TeacherId);
-            if (entity != null)
-            {
-                _context.Teachers.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+            var entity = await _context.Teachers
+                .FirstOrDefaultAsync(t => t.TeacherId == Teacher.TeacherId);
+
+            if (entity == null)
+                return NotFound();
+
+            _context.Teachers.Remove(entity);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
         }

@@ -20,9 +20,13 @@ namespace pruvodce.server.Pages.Points
         }
 
         [BindProperty]
-        public Point Point { get; set; } = new()
+        public Point Point { get; set; } = default!;
+
+        [BindProperty]
+        public StudentNote Note { get; set; } = new()
         {
-            Label = string.Empty
+            Text = string.Empty,
+            StudentName = "Student"
         };
 
         [BindProperty]
@@ -32,37 +36,45 @@ namespace pruvodce.server.Pages.Points
         public List<string> SelectedSubjectIds { get; set; } = new();
 
         public SelectList RoomItems { get; set; } = default!;
-        public MultiSelectList TeacherItems { get; set; } = default!;
         public SelectList EventItems { get; set; } = default!;
-        public MultiSelectList SubjectItems { get; set; } = default!;
         public SelectList SpecializationItems { get; set; } = default!;
+        public SelectList NoteFieldItems { get; set; } = default!;
+        public MultiSelectList TeacherItems { get; set; } = default!;
+        public MultiSelectList SubjectItems { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string? id)
+        public List<SelectListItem> IconItems { get; set; } = new();
+
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
-
-            var entity = await _context.Points
+            var point = await _context.Points
                 .Include(p => p.Teachers)
-                .Include(p => p.Subjects)
-                .Include(p => p.Event)
-                .Include(p => p.Specialization)
+                .Include(p => p.PointSubjects)
+                .Include(p => p.Note)
                 .FirstOrDefaultAsync(p => p.PointId == id);
 
-            if (entity == null)
+            if (point == null)
             {
                 return NotFound();
             }
 
-            Point = entity;
+            Point = point;
 
-            SelectedTeacherIds = Point.Teachers
+            if (Point.Icon == null)
+            {
+                Point.Icon = PointIcon.Jine;
+            }
+
+            Note = point.Note ?? new StudentNote
+            {
+                Text = string.Empty,
+                StudentName = "Student"
+            };
+
+            SelectedTeacherIds = point.Teachers
                 .Select(t => t.TeacherId)
                 .ToList();
 
-            SelectedSubjectIds = Point.Subjects
+            SelectedSubjectIds = point.PointSubjects
                 .Select(s => s.SubjectId)
                 .ToList();
 
@@ -74,9 +86,33 @@ namespace pruvodce.server.Pages.Points
         public async Task<IActionResult> OnPostAsync()
         {
             ModelState.Remove("Point.Teachers");
-            ModelState.Remove("Point.Subjects");
+            ModelState.Remove("Point.PointSubjects");
             ModelState.Remove("Point.Event");
             ModelState.Remove("Point.Specialization");
+            ModelState.Remove("Point.Note");
+
+            bool noteHasAnyValue =
+                !string.IsNullOrWhiteSpace(Note.Text) ||
+                (!string.IsNullOrWhiteSpace(Note.StudentName) && Note.StudentName != "Student") ||
+                Note.StudentField != null;
+
+            ModelState.Remove("Note.Text");
+            ModelState.Remove("Note.StudentName");
+            ModelState.Remove("Note.StudentField");
+            ModelState.Remove("Note.StudentYear");
+
+            if (noteHasAnyValue)
+            {
+                if (string.IsNullOrWhiteSpace(Note.Text))
+                {
+                    ModelState.AddModelError("Note.Text", "Poznámka je povinná.");
+                }
+
+                if (Note.StudentField == null)
+                {
+                    ModelState.AddModelError("Note.StudentField", "Obor je povinný.");
+                }
+            }
 
             if (!ModelState.IsValid)
             {
@@ -84,18 +120,10 @@ namespace pruvodce.server.Pages.Points
                 return Page();
             }
 
-            var roomExists = await RoomExistsAsync(Point.RoomId);
-
-            if (!roomExists)
-            {
-                ModelState.AddModelError("Point.RoomId", "Vyberte existuj�c� m�stnost.");
-                await LoadSelectListsAsync();
-                return Page();
-            }
-
             var existing = await _context.Points
                 .Include(p => p.Teachers)
-                .Include(p => p.Subjects)
+                .Include(p => p.PointSubjects)
+                .Include(p => p.Note)
                 .FirstOrDefaultAsync(p => p.PointId == Point.PointId);
 
             if (existing == null)
@@ -103,34 +131,61 @@ namespace pruvodce.server.Pages.Points
                 return NotFound();
             }
 
-            existing.Label = Point.Label;
+            existing.Label = Point.Label?.Trim() ?? string.Empty;
             existing.Description = Point.Description;
+            existing.Icon = Point.Icon ?? PointIcon.Jine;
             existing.RoomId = Point.RoomId;
             existing.EventId = Point.EventId;
-            existing.Note = Point.Note;
-            existing.Icon = Point.Icon;
             existing.SpecializationId = Point.SpecializationId;
 
             existing.Teachers.Clear();
 
-            var selectedTeachers = await _context.Teachers
+            var teachers = await _context.Teachers
                 .Where(t => SelectedTeacherIds.Contains(t.TeacherId))
                 .ToListAsync();
 
-            foreach (var teacher in selectedTeachers)
+            foreach (var teacher in teachers)
             {
                 existing.Teachers.Add(teacher);
             }
 
-            existing.Subjects.Clear();
+            _context.PointSubjects.RemoveRange(existing.PointSubjects);
 
-            var selectedSubjects = await _context.Subjects
-                .Where(s => SelectedSubjectIds.Contains(s.SubjectId))
-                .ToListAsync();
+            var subjects = SelectedSubjectIds
+                .Select(id => new PointSubject
+                {
+                    PointId = existing.PointId,
+                    SubjectId = id
+                })
+                .ToList();
 
-            foreach (var subject in selectedSubjects)
+            await _context.PointSubjects.AddRangeAsync(subjects);
+
+            if (noteHasAnyValue)
             {
-                existing.Subjects.Add(subject);
+                if (existing.Note == null)
+                {
+                    existing.Note = new StudentNote
+                    {
+                        StudentNoteId = Guid.NewGuid().ToString()
+                    };
+                }
+
+                existing.Note.Text = Note.Text?.Trim() ?? string.Empty;
+                existing.Note.StudentName = string.IsNullOrWhiteSpace(Note.StudentName)
+                    ? "Student"
+                    : Note.StudentName.Trim();
+                existing.Note.StudentField = Note.StudentField;
+            }
+            else
+            {
+                if (existing.Note != null)
+                {
+                    _context.Remove(existing.Note);
+                }
+
+                existing.Note = null;
+                existing.NoteId = null;
             }
 
             await _context.SaveChangesAsync();
@@ -140,45 +195,50 @@ namespace pruvodce.server.Pages.Points
 
         private async Task LoadSelectListsAsync()
         {
-            var mapData = await _mapDataService.GetMapDataAsync();
+            await LoadRoomsAsync();
 
-            var rooms = mapData.Buildings
-                .SelectMany(b => b.Floors.SelectMany(f => f.Rooms.Select(r => new
-                {
-                    r.RoomId,
-                    DisplayName = $"{b.Name} / {f.Name} / {r.Label}"
-                })))
-                .OrderBy(r => r.DisplayName)
-                .ToList();
+            EventItems = new SelectList(
+                await _context.Events
+                    .AsNoTracking()
+                    .OrderBy(e => e.Name)
+                    .ToListAsync(),
+                "EventId",
+                "Name",
+                Point.EventId
+            );
 
-            RoomItems = new SelectList(
-                rooms,
-                "RoomId",
-                "DisplayName",
-                Point.RoomId
+            SpecializationItems = new SelectList(
+                await _context.Specializations
+                    .AsNoTracking()
+                    .OrderBy(s => s.Name)
+                    .ToListAsync(),
+                "SpecializationId",
+                "Name",
+                Point.SpecializationId
             );
 
             var teachers = await _context.Teachers
+                .AsNoTracking()
                 .OrderBy(t => t.LastN)
                 .ThenBy(t => t.FirstN)
-                .ToListAsync();
-
-            var teacherItems = teachers
                 .Select(t => new
                 {
                     t.TeacherId,
-                    FullName = $"{t.FirstN} {t.LastN}"
+                    FullName = string.IsNullOrWhiteSpace(t.Degree)
+                        ? $"{t.FirstN} {t.LastN}"
+                        : $"{t.Degree} {t.FirstN} {t.LastN}"
                 })
-                .ToList();
+                .ToListAsync();
 
             TeacherItems = new MultiSelectList(
-                teacherItems,
+                teachers,
                 "TeacherId",
                 "FullName",
                 SelectedTeacherIds
             );
 
             var subjects = await _context.Subjects
+                .AsNoTracking()
                 .OrderBy(s => s.Name)
                 .ToListAsync();
 
@@ -189,42 +249,74 @@ namespace pruvodce.server.Pages.Points
                 SelectedSubjectIds
             );
 
-            var events = await _context.Events
-                .OrderBy(e => e.Name)
-                .ToListAsync();
-
-            EventItems = new SelectList(
-                events,
-                "EventId",
-                "Name",
-                Point.EventId
+            NoteFieldItems = new SelectList(
+                Enum.GetValues<FieldType>()
+                    .Select(field => new SelectListItem
+                    {
+                        Value = field.ToString(),
+                        Text = GetFieldTypeLabel(field)
+                    }),
+                "Value",
+                "Text",
+                Note.StudentField
             );
 
-            var specializations = await _context.Specializations
-                .OrderBy(s => s.Name)
-                .ToListAsync();
+            IconItems = Enum.GetValues<PointIcon>()
+                .Select(icon => new SelectListItem
+                {
+                    Value = icon.ToString(),
+                    Text = GetPointIconLabel(icon),
+                    Selected = Point.Icon == icon
+                })
+                .ToList();
+        }
 
-            SpecializationItems = new SelectList(
-                specializations,
-                "SpecializationId",
-                "Name",
-                Point.SpecializationId
+        private async Task LoadRoomsAsync()
+        {
+            var mapData = await _mapDataService.GetMapDataAsync();
+
+            var rooms = mapData.Buildings
+                .SelectMany(building => building.Floors.SelectMany(floor =>
+                    floor.Rooms.Select(room => new
+                    {
+                        room.RoomId,
+                        Display = $"{building.Name} - {(string.IsNullOrWhiteSpace(room.Label) ? room.RoomId : room.Label)}"
+                    })))
+                .OrderBy(room => room.Display)
+                .ToList();
+
+            RoomItems = new SelectList(
+                rooms,
+                "RoomId",
+                "Display",
+                Point.RoomId
             );
         }
 
-        private async Task<bool> RoomExistsAsync(string? roomId)
+        private static string GetPointIconLabel(PointIcon icon)
         {
-            if (string.IsNullOrWhiteSpace(roomId))
+            return icon switch
             {
-                return false;
-            }
+                PointIcon.Talk => "Přednáška",
+                PointIcon.Hand => "Praktické stanoviště",
+                PointIcon.Ucebna => "Ukázka učebny",
+                PointIcon.Jine => "Jiné",
+                _ => "Jiné"
+            };
+        }
 
-            var mapData = await _mapDataService.GetMapDataAsync();
-
-            return mapData.Buildings
-                .SelectMany(b => b.Floors)
-                .SelectMany(f => f.Rooms)
-                .Any(r => r.RoomId == roomId);
+        private static string GetFieldTypeLabel(FieldType field)
+        {
+            return field switch
+            {
+                FieldType.IT => "Informační technologie",
+                FieldType.EL => "Elektrotechnika",
+                FieldType.ST => "Strojírenství",
+                FieldType.TL => "Technické lyceum",
+                FieldType.OD => "Oděvnictví",
+                FieldType.TE => "Textilnictví",
+                _ => field.ToString()
+            };
         }
     }
 }

@@ -18,17 +18,26 @@ namespace pruvodce.server.Pages.Events
         [BindProperty]
         public Event? Event { get; set; }
 
+        public int RelatedPointsCount { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
             Event = await _context.Events
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.EventId == id.Value);
 
             if (Event == null)
+            {
                 return NotFound();
+            }
+
+            RelatedPointsCount = await _context.Points
+                .CountAsync(p => p.EventId == Event.EventId);
 
             return Page();
         }
@@ -36,14 +45,29 @@ namespace pruvodce.server.Pages.Events
         public async Task<IActionResult> OnPostAsync()
         {
             if (Event == null)
-                return NotFound();
-
-            var entity = await _context.Events.FindAsync(Event.EventId);
-            if (entity != null)
             {
-                _context.Events.Remove(entity);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            var entity = await _context.Events
+                .FirstOrDefaultAsync(e => e.EventId == Event.EventId);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var relatedPoints = await _context.Points
+                .Where(p => p.EventId == Event.EventId)
+                .ToListAsync();
+
+            foreach (var point in relatedPoints)
+            {
+                point.EventId = null;
+            }
+
+            _context.Events.Remove(entity);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
         }

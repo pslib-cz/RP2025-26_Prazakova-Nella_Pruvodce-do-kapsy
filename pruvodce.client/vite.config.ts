@@ -34,7 +34,11 @@ export default defineConfig({
       '/admin': {
         target: backend,
         changeOrigin: true
+      },
+      '/css': {
+        target: backend,
+        changeOrigin: true
       }
-    }
+          }
   }
 });

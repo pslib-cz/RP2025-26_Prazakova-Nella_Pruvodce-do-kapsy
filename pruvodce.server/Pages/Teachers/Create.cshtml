@@ -1,35 +1,78 @@
 @page
 @model pruvodce.server.Pages.Teachers.CreateModel
 @{
-    ViewData["Title"] = "Create Teacher";
+    ViewData["Title"] = "Vytvořit učitele";
 }
 
-<h1>Create Teacher</h1>
+<section class="admin-form">
+    <form method="post" class="admin-form__card">
 
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Teacher.FirstN"></label>
-        <input asp-for="Teacher.FirstN" class="form-control" />
-        <span asp-validation-for="Teacher.FirstN" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Teacher.LastN"></label>
-        <input asp-for="Teacher.LastN" class="form-control" />
-        <span asp-validation-for="Teacher.LastN" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Teacher.Degree"></label>
-        <input asp-for="Teacher.Degree" class="form-control" />
-        <span asp-validation-for="Teacher.Degree" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Teacher.Note"></label>
-        <textarea asp-for="Teacher.Note" class="form-control"></textarea>
-        <span asp-validation-for="Teacher.Note" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
-</form>
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">Vytvořit učitele</h2>
+            <p class="admin-form__subtitle">Zadejte základní údaje</p>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
+
+        <div class="admin-form__grid">
+
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__label">Celé jméno</label>
+
+                <div style="display:flex; justify-content: space-between;">
+                    <input asp-for="Teacher.Degree"
+                           class="admin-form__input"
+                           placeholder="Titul" />
+
+                    <input asp-for="Teacher.FirstN"
+                           class="admin-form__input"
+                           placeholder="Jméno" />
+
+                    <input asp-for="Teacher.LastN"
+                           class="admin-form__input"
+                           placeholder="Příjmení" />
+                </div>
+
+                <span asp-validation-for="Teacher.Degree" class="admin-form__validation"></span>
+                <span asp-validation-for="Teacher.FirstN" class="admin-form__validation"></span>
+                <span asp-validation-for="Teacher.LastN" class="admin-form__validation"></span>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
+                <label asp-for="Note.Text" class="admin-form__label">Poznámka od studentů</label>
+                <textarea asp-for="Note.Text" class="admin-form__textarea"></textarea>
+                <span asp-validation-for="Note.Text" class="admin-form__validation"></span>
+            </div>
+
+            <div style="display:flex; flex-direction: row; gap: 1rem;" class="admin-form__field admin-form__field--full">
+                <div class="admin-form__field">
+                    <label asp-for="Note.StudentName" class="admin-form__label">Křestní jméno</label>
+                    <input asp-for="Note.StudentName" class="admin-form__input" />
+                    <span asp-validation-for="Note.StudentName" class="admin-form__validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="Note.StudentField" class="admin-form__label">Obor</label>
+                    <select asp-for="Note.StudentField" asp-items="Model.NoteFieldItems" class="admin-form__input">
+                        <option value="">Vyberte obor</option>
+                    </select>
+                    <span asp-validation-for="Note.StudentField" class="admin-form__validation"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Vytvořit
+            </button>
+            <a asp-page="Index" class="admin-button admin-button--secondary">
+                Zpět
+            </a>
+        </div>
+
+    </form>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

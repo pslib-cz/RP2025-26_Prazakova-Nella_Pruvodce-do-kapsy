@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import type { Point } from '../Types/MapType';
 import style from '../Styles/Point.module.css';
+import { getPointIconName } from '../pointIconUtils';
 
 interface InteractivePointProps {
   point: Point;
@@ -11,6 +12,7 @@ interface InteractivePointProps {
 }
 
 type FieldTypeKey = 'IT' | 'EL' | 'ST' | 'TL' | 'OD' | 'TE';
+type PointIconKey = 'Talk' | 'Hand' | 'Ucebna' | 'Jine';
 
 const fieldTypeByNumber: Record<number, FieldTypeKey> = {
   0: 'IT',
@@ -18,29 +20,21 @@ const fieldTypeByNumber: Record<number, FieldTypeKey> = {
   2: 'ST',
   3: 'TL',
   4: 'OD',
-  5: 'TE'
+  5: 'TE',
 };
 
-const iconByName: Record<string, string> = {
-  Computer: 'lucide:monitor',
-  Code: 'lucide:code-2',
-  Network: 'lucide:network',
-  Electricity: 'lucide:zap',
-  Machine: 'lucide:cog',
-  Design: 'lucide:palette',
-  Health: 'lucide:heart-pulse',
-  Business: 'lucide:briefcase-business'
+const pointIconByNumber: Record<number, PointIconKey> = {
+  0: 'Talk',
+  1: 'Hand',
+  2: 'Ucebna',
+  3: 'Jine',
 };
 
-const iconByNumber: Record<number, string> = {
-  0: 'lucide:monitor',
-  1: 'lucide:code-2',
-  2: 'lucide:network',
-  3: 'lucide:zap',
-  4: 'lucide:cog',
-  5: 'lucide:palette',
-  6: 'lucide:heart-pulse',
-  7: 'lucide:briefcase-business'
+const iconByPointType: Record<PointIconKey, string> = {
+  Talk: 'lucide:presentation',
+  Hand: 'lucide:hand',
+  Ucebna: 'lucide:door-open',
+  Jine: 'lucide:map-pin',
 };
 
 function getFieldTypeKey(type: unknown): FieldTypeKey | null {
@@ -62,6 +56,28 @@ function getFieldTypeKey(type: unknown): FieldTypeKey | null {
   }
 
   return null;
+}
+
+function getPointIconKey(icon: unknown): PointIconKey {
+  if (typeof icon === 'number') {
+    return pointIconByNumber[icon] ?? 'Jine';
+  }
+
+  if (typeof icon === 'string') {
+    const normalized = icon.trim();
+
+    const asNumber = Number(normalized);
+    if (!Number.isNaN(asNumber) && asNumber in pointIconByNumber) {
+      return pointIconByNumber[asNumber];
+    }
+
+    if (normalized === 'Talk') return 'Talk';
+    if (normalized === 'Hand') return 'Hand';
+    if (normalized === 'Ucebna') return 'Ucebna';
+    if (normalized === 'Jine') return 'Jine';
+  }
+
+  return 'Jine';
 }
 
 function getPointTypeClass(point: Point): string {
@@ -86,29 +102,11 @@ function getPointTypeClass(point: Point): string {
 }
 
 function getPointIcon(point: Point): string {
-  const specializationIcon = point.specialization?.icon;
-  const pointIcon = point.icon;
-
-  if (typeof specializationIcon === 'number') {
-    return iconByNumber[specializationIcon] ?? 'lucide:map-pin';
-  }
-
-  if (typeof specializationIcon === 'string') {
-    return iconByName[specializationIcon] ?? specializationIcon;
-  }
-
-  if (typeof pointIcon === 'string' && pointIcon.trim()) {
-    return pointIcon;
-  }
-
-  return 'lucide:map-pin';
+  const iconKey = getPointIconKey(point.icon);
+  return iconByPointType[iconKey];
 }
 
 function getPointScale(zoomLevel: number): number {
-  /*
-    Při oddálení necháme pin větší.
-    Při přiblížení ho zmenšíme, aby nezakrýval místnost.
-  */
   if (zoomLevel <= 1) return 1;
 
   const scale = 1 / Math.sqrt(zoomLevel);
@@ -120,17 +118,17 @@ const InteractivePoint: React.FC<InteractivePointProps> = ({
   x,
   y,
   zoomLevel,
-  onClick
+  onClick,
 }) => {
   const typeClass = getPointTypeClass(point);
-  const iconName = getPointIcon(point);
+  const iconName = getPointIconName(point.icon);
   const pointScale = getPointScale(zoomLevel);
 
   return (
     <g
       className={`${style.point} ${typeClass}`}
       transform={`translate(${x} ${y}) scale(${pointScale})`}
-      onClick={(event) => {
+      onClick={event => {
         event.stopPropagation();
         onClick(point);
       }}
@@ -141,11 +139,16 @@ const InteractivePoint: React.FC<InteractivePointProps> = ({
           d="M 0 0 C -10 -13 -15 -22 -15 -31 C -15 -39 -10 -46 0 -46 C 10 -46 15 -39 15 -31 C 15 -22 10 -13 0 0 Z"
         />
 
-        <circle className={style.pinCircle} cx="0" cy="-31" r="11"/>
+        <circle className={style.pinCircle} cx="0" cy="-31" r="11" />
 
-        <Icon icon={iconName} className={style.pinIcon}
-          x={-7} y={-38}
-          width={14} height={14} />
+        <Icon
+          icon={iconName}
+          className={style.pinIcon}
+          x={-7}
+          y={-38}
+          width={14}
+          height={14}
+        />
       </g>
     </g>
   );

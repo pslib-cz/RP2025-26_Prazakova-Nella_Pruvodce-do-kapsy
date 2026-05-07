@@ -1,31 +1,57 @@
-@page "{id}"
+@page
 @model pruvodce.server.Pages.Specializations.EditModel
 @{
-    ViewData["Title"] = "Edit Specialization";
+    ViewData["Title"] = "Upravit zaměření";
 }
 
-<h1>Edit Specialization</h1>
+<section class="admin-form">
+    <form method="post" class="admin-form__card">
 
-<form method="post">
-    <input type="hidden" asp-for="Specialization.SpecializationId" />
-    <div class="form-group">
-        <label asp-for="Specialization.Name"></label>
-        <input asp-for="Specialization.Name" class="form-control" />
-        <span asp-validation-for="Specialization.Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Specialization.Description"></label>
-        <textarea asp-for="Specialization.Description" class="form-control"></textarea>
-        <span asp-validation-for="Specialization.Description" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Specialization.Type"></label>
-        <select asp-for="Specialization.Type" asp-items="Model.TypeItems" class="form-control"></select>
-        <span asp-validation-for="Specialization.Type" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
-</form>
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">Upravit zaměření</h2>
+            <p class="admin-form__subtitle">Zadejte základní údaje</p>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
+
+        <div class="admin-form__grid">
+
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__label">Název</label>
+
+                <div style="display:flex; gap:12px;">
+                    <input asp-for="Specialization.Name"
+                           class="admin-form__input"
+                           placeholder="Název zaměření" />
+
+                    <input asp-for="Specialization.Description"
+                           class="admin-form__input"
+                           placeholder="Popis zaměření" />
+                </div>
+
+                <span asp-validation-for="Specialization.Name" class="admin-form__validation"></span>
+                <span asp-validation-for="Specialization.Description" class="admin-form__validation"></span>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full">
+                <label asp-for="Specialization.Description" class="admin-form__label">Popis</label>
+                <textarea asp-for="Specialization.Description" class="admin-form__textarea admin-form__textarea--longer"></textarea>
+                <span asp-validation-for="Specialization.Description" class="admin-form__validation"></span>
+            </div>
+
+        </div>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Uložit
+            </button>
+            <a asp-page="Index" class="admin-button admin-button--secondary">
+                Zpět
+            </a>
+        </div>
+
+    </form>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,20 +1,84 @@
-import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useStaticData } from '../Hooks/useStaticData';
-import InteractiveMap from '../Components/InteractiveMap';
-import style from '../Styles/MapPage.module.css';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 import { Icon } from '@iconify/react';
+
+import { useStaticData } from '../Hooks/useStaticData';
+import { useActiveEventPoints } from '../Hooks/useActiveEventPoints';
+
+import InteractiveMap from '../Components/InteractiveMap';
+import BuildingSelect from '../Components/Map/BuildingSelect';
+import MapFiltersPanel from '../Components/Map/MapFiltersPanel';
+import FloorControls from '../Components/Map/FloorControls';
+
+import type { BuildingData, FloorData, Point } from '../Types/MapType';
+
+import { mergePointsIntoRooms } from '../mapUtils';
+
+
+import style from '../Styles/MapPage.module.css';
+import '../Styles/mapItems.css';
+
+type PointIcon = 'Talk' | 'Hand' | 'Ucebna' | 'Jine';
+
+function getPointIconType(point: Point): PointIcon {
+  const rawPoint = point as Point & {
+    iconType?: PointIcon;
+    pointIcon?: PointIcon;
+    icon?: PointIcon;
+  };
+
+  return rawPoint.iconType ?? rawPoint.pointIcon ?? rawPoint.icon ?? 'Jine';
+}
 
 const MapPage: React.FC = () => {
   const { buildingId } = useParams<{ buildingId: string }>();
   const navigate = useNavigate();
 
-  const { buildings, loading, error } = useStaticData();
+  const buildingIdNumber = Number(buildingId);
+
+  const {
+    buildings: staticBuildings,
+    loading: staticLoading,
+    error: staticError,
+  } = useStaticData();
+
+  const {
+    activeEvent,
+    points: eventPoints,
+    loading: eventLoading,
+    error: eventError,
+  } = useActiveEventPoints();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   const [currentFloorId, setCurrentFloorId] = useState<number | null>(null);
 
-  const currentBuilding = buildings.find(b => b.buildingId === Number(buildingId));
+  const [activeTypes, setActiveTypes] = useState<PointIcon[]>([
+    'Talk',
+    'Hand',
+    'Ucebna',
+    'Jine',
+  ]);
+
+  const hasActiveEvent = Boolean(activeEvent);
+
+  const visibleEventPoints = useMemo(() => {
+    if (!hasActiveEvent) return [];
+
+    return eventPoints.filter(point => {
+      const pointIconType = getPointIconType(point);
+      return activeTypes.includes(pointIconType);
+    });
+  }, [eventPoints, activeTypes, hasActiveEvent]);
+
+  const buildings = useMemo(() => {
+    return mergePointsIntoRooms(staticBuildings, visibleEventPoints);
+  }, [staticBuildings, visibleEventPoints]);
+
+  const currentBuilding = useMemo(() => {
+    return buildings.find(building => building.buildingId === buildingIdNumber);
+  }, [buildings, buildingIdNumber]);
+
   const buildingFloors = currentBuilding?.floors ?? [];
 
   useEffect(() => {
@@ -22,98 +86,161 @@ const MapPage: React.FC = () => {
 
     setCurrentFloorId(previous => {
       const stillExists =
-        previous != null && buildingFloors.some(floor => floor.floorId === previous);
+        previous != null &&
+        buildingFloors.some(floor => floor.floorId === previous);
 
       return stillExists ? previous : buildingFloors[0].floorId;
     });
   }, [buildingFloors]);
 
-  if (loading) return <div>Načítání mapy...</div>;
-  if (error) return <div>{error}</div>;
+  const currentFloor = useMemo(() => {
+    return buildingFloors.find(floor => floor.floorId === currentFloorId) ?? null;
+  }, [buildingFloors, currentFloorId]);
+
+  const currentFloorPoints = useMemo(() => {
+    if (!currentFloor || !hasActiveEvent) return [];
+
+    return currentFloor.rooms.flatMap(room => room.points ?? []);
+  }, [currentFloor, hasActiveEvent]);
+
+  const handleBuildingChange = (nextBuildingId: number) => {
+    setIsDropdownOpen(false);
+    setIsMobilePanelOpen(false);
+
+    localStorage.setItem('preferredBuilding', nextBuildingId.toString());
+    navigate(`/map/${nextBuildingId}`);
+  };
+
+  const handleFloorChange = (nextFloorId: number) => {
+    setCurrentFloorId(nextFloorId);
+  };
+
+  if (staticLoading) {
+    return <div>Načítání mapy...</div>;
+  }
+
+  if (staticError) {
+    return <div>{staticError}</div>;
+  }
+
+  if (!Number.isFinite(buildingIdNumber)) {
+    return <div>Neplatná budova.</div>;
+  }
 
   if (!currentBuilding) {
-  return <div>Budova nebyla nalezena.</div>;
-}
+    return <div>Budova nebyla nalezena.</div>;
+  }
 
-if (buildingFloors.length === 0) {
-  return <div>Budova nemá žádná patra.</div>;
-}
+  if (buildingFloors.length === 0) {
+    return <div>Budova nemá žádná patra.</div>;
+  }
 
-if (currentFloorId == null) {
-  return <div>Patro nebylo vybráno.</div>;
-}
+  if (currentFloorId == null) {
+    return <div>Patro nebylo vybráno.</div>;
+  }
+
   return (
-    <div className={style.pageWrapper}>
-      <div className={style.mapUIContainer}>
-        <div className={style.controlsWrapper}>
-          <div className={`${style.buildingSelector} ${isDropdownOpen ? style.expanded : ''}`}>
-            <button
-              className={style.mainSelectorBtn}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              Změnit areál
-            </button>
+    <div className={style.page}>
+      <aside className={style.desktopPanel}>
+        <MapFiltersPanel
+          buildings={buildings}
+          currentBuilding={currentBuilding}
+          isDropdownOpen={isDropdownOpen}
+          onDropdownToggle={() => setIsDropdownOpen(previous => !previous)}
+          onBuildingChange={handleBuildingChange}
+          floors={buildingFloors}
+          currentFloorId={currentFloorId}
+          onFloorChange={handleFloorChange}
+          activeTypes={activeTypes}
+          onActiveTypesChange={setActiveTypes}
+          points={currentFloorPoints}
+          hasActiveEvent={hasActiveEvent}
+          isEventLoading={eventLoading}
+          eventError={eventError}
+        />
+      </aside>
 
-            {isDropdownOpen && (
-              <div className={style.buildingList}>
-                {buildings.map(building => (
-                  <button
-                    key={building.buildingId}
-                    className={style.buildingListItem}
-                    onClick={() => {
-                      setIsDropdownOpen(false);
-                      localStorage.setItem('preferredBuilding', building.buildingId.toString());
-                      navigate(`/map/${building.buildingId}`);
-                    }}
-                  >
-                    <div>
-                      <span className={style.bName}>{building.name}</span>
-                      <br />
-                      <span className={style.bAddress}>
-                        {building.address || 'Bez adresy'}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+      <main className={style.mapArea}>
+        <div className={style.mobileTopControls}>
+          <BuildingSelect
+            buildings={buildings}
+            currentBuilding={currentBuilding}
+            isOpen={isDropdownOpen}
+            onToggle={() => setIsDropdownOpen(previous => !previous)}
+            onChange={handleBuildingChange}
+          />
 
           <button
-            className={style.filterBtn}
-            onClick={() => navigate('/settings')}
-            title="Nastavení"
+            type="button"
+            className={style.mobileFilterButton}
+            onClick={() => setIsMobilePanelOpen(true)}
+            aria-label="Otevřít preference"
           >
             <Icon icon="lucide:sliders-horizontal" width="22" height="22" />
           </button>
         </div>
 
-        <div className={style.mapContainer}>
-          <div className={style.mapInnerContainer}>
-            <InteractiveMap
-              floors={buildingFloors}
-              activeFloorId={currentFloorId}
-              buildingId={Number(buildingId)}
-              className="desktop-map"
-            />
-          </div>
+        <div className={style.mapCanvas}>
+          <InteractiveMap
+            floors={buildingFloors}
+            activeFloorId={currentFloorId}
+            buildingId={buildingIdNumber}
+            className="main-map"
+          />
         </div>
 
-        <div className={style.floorControls}>
-          {[...buildingFloors].reverse().map(floor => (
-            <button
-              key={floor.floorId}
-              onClick={() => setCurrentFloorId(floor.floorId)}
-              className={`${style.floorButton} ${
-                currentFloorId === floor.floorId ? style.active : ''
-              }`}
-              title={floor.name}
-            >
-              {floor.floorNumber ?? floor.floorId}
-            </button>
-          ))}
-        </div>
-      </div>
+        <FloorControls
+          floors={buildingFloors}
+          currentFloorId={currentFloorId}
+          onFloorChange={handleFloorChange}
+        />
+      </main>
+
+      {isMobilePanelOpen && (
+        <button
+          type="button"
+          className={style.mobileOverlay}
+          onClick={() => setIsMobilePanelOpen(false)}
+          aria-label="Zavřít preference"
+        />
+      )}
+
+      <section
+        className={`${style.mobileSheet} ${
+          isMobilePanelOpen ? style.mobileSheetOpen : ''
+        }`}
+        aria-hidden={!isMobilePanelOpen}
+      >
+        <button
+          type="button"
+          className={style.mobileSheetClose}
+          onClick={() => setIsMobilePanelOpen(false)}
+          aria-label="Zavřít preference"
+        >
+          <Icon icon="lucide:x" width="18" height="18" />
+        </button>
+
+        <div className={style.mobileSheetHandle} />
+
+        <MapFiltersPanel
+          buildings={buildings}
+          currentBuilding={currentBuilding}
+          isDropdownOpen={false}
+          onDropdownToggle={() => {}}
+          onBuildingChange={handleBuildingChange}
+          floors={buildingFloors}
+          currentFloorId={currentFloorId}
+          onFloorChange={handleFloorChange}
+          activeTypes={activeTypes}
+          onActiveTypesChange={setActiveTypes}
+          points={currentFloorPoints}
+          hasActiveEvent={hasActiveEvent}
+          isEventLoading={eventLoading}
+          eventError={eventError}
+          hideBuildingSelect
+          hideFloorSelect
+        />
+      </section>
     </div>
   );
 };

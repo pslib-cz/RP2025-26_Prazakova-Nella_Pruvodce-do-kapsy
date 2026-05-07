@@ -19,50 +19,68 @@ namespace pruvodce.server.Pages.Specializations
         [BindProperty]
         public Specialization Specialization { get; set; } = default!;
 
-        public List<SelectListItem> TypeItems { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> TypeItems { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (string.IsNullOrEmpty(id))
+            {
                 return NotFound();
+            }
 
-            var item = await _context.Specializations.FindAsync(id);
+            var item = await _context.Specializations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.SpecializationId == id);
+
             if (item == null)
+            {
                 return NotFound();
+            }
 
             Specialization = item;
 
-            TypeItems = Enum.GetValues(typeof(FieldType))
-                .Cast<FieldType>()
-                .Select(e => new SelectListItem { Value = ((int)e).ToString(), Text = e.ToString() })
-                .ToList();
+            LoadSelectLists();
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Specialization.Points");
+
             if (!ModelState.IsValid)
             {
-                TypeItems = Enum.GetValues(typeof(FieldType))
-                    .Cast<FieldType>()
-                    .Select(e => new SelectListItem { Value = ((int)e).ToString(), Text = e.ToString() })
-                    .ToList();
+                LoadSelectLists();
                 return Page();
             }
 
-            var existing = await _context.Specializations.FindAsync(Specialization.SpecializationId);
+            var existing = await _context.Specializations
+                .FirstOrDefaultAsync(s => s.SpecializationId == Specialization.SpecializationId);
+
             if (existing == null)
+            {
                 return NotFound();
+            }
 
             existing.Name = Specialization.Name;
             existing.Description = Specialization.Description;
             existing.Type = Specialization.Type;
 
-            _context.Specializations.Update(existing);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
+        }
+
+        private void LoadSelectLists()
+        {
+            TypeItems = Enum.GetValues(typeof(FieldType))
+                .Cast<FieldType>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                })
+                .ToList();
         }
     }
 }

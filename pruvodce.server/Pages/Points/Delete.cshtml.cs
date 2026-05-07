@@ -18,42 +18,40 @@ namespace pruvodce.server.Pages.Points
         [BindProperty]
         public Point? Point { get; set; }
 
+        public int RelatedPointsCount { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string? id)
         {
-            if (string.IsNullOrEmpty(id))
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             Point = await _context.Points
                 .Include(p => p.Event)
-                .Include(p => p.Specialization)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.PointId == id);
 
             if (Point == null)
-            {
                 return NotFound();
-            }
+
+            RelatedPointsCount = await _context.Points
+                .CountAsync(p => p.EventId == Point.EventId && p.PointId != Point.PointId);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Point == null || string.IsNullOrEmpty(Point.PointId))
-            {
+            if (Point == null)
                 return NotFound();
-            }
 
             var entity = await _context.Points
                 .FirstOrDefaultAsync(p => p.PointId == Point.PointId);
 
-            if (entity != null)
-            {
-                _context.Points.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+            if (entity == null)
+                return NotFound();
+
+            _context.Points.Remove(entity);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
         }
