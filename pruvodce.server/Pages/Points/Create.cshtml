@@ -9,7 +9,7 @@
 
         <div class="admin-form__header">
             <h2 class="admin-form__title">Vytvořit stanoviště</h2>
-            <p class="admin-form__subtitle">Vytvořte nové stanoviště</p>
+            <p class="admin-form__subtitle">Vytvořte nové stanoviště (šablonu)</p>
         </div>
 
         <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
@@ -31,24 +31,77 @@
             </div>
 
             <div class="admin-form__field">
+                <label asp-for="Point.Icon" class="admin-form__label">Typ stanoviště</label>
+                <select asp-for="Point.Icon"
+                        asp-items="Model.IconItems"
+                        class="admin-form__input">
+                    <option value="">Vyberte typ stanoviště</option>
+                </select>
+                <span asp-validation-for="Point.Icon" class="admin-form__validation"></span>
+            </div>
+            
+            <div class="admin-form__field">
                 <label asp-for="Point.SpecializationId" class="admin-form__label">Zaměření</label>
                 <select asp-for="Point.SpecializationId" asp-items="Model.SpecializationItems" class="admin-form__input"></select>
+                <span asp-validation-for="Point.SpecializationId" class="admin-form__validation"></span>
             </div>
 
-            <div class="admin-form__field">
-                <label asp-for="Point.EventId" class="admin-form__label">Akce</label>
-                <select asp-for="Point.EventId" asp-items="Model.EventItems" class="admin-form__input"></select>
-                <span asp-validation-for="Point.EventId" class="admin-form__validation"></span>
+            <div class="admin-multiselect">
+                <label asp-for="Point.Icon" class="admin-form__label">Vyučující</label>
+                <input type="text"
+                    class="admin-list__search teacher-search"
+                    placeholder="Vyhledejte jméno, příjmení..."
+                    oninput="filterTeacherOptions()" />
+
+                <div class="admin-multiselect__box" id="teacherOptions">
+
+                    @foreach (var teacher in Model.TeacherItems.OrderByDescending(t => Model.SelectedTeacherIds.Contains(t.Value)).ThenBy(t => t.Text))
+                    {
+                        var isChecked = Model.SelectedTeacherIds.Contains(teacher.Value);
+
+                        <label class="admin-multiselect__item">
+
+                            <input type="checkbox"
+                                name="SelectedTeacherIds"
+                                value="@teacher.Value"
+                                @(isChecked ? "checked" : "") />
+
+                            <span>@teacher.Text</span>
+
+                        </label>
+                    }
+
+                </div>
+
             </div>
 
-            <div class="admin-form__field admin-form__field--full">
-                <label class="admin-form__label">Učitelé</label>
-                <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherItems" class="admin-form__input" multiple></select>
-            </div>
+            <div class="admin-multiselect">
+                <label asp-for="Point.Icon" class="admin-form__label">Předměty</label>
+                <input type="text"
+                    class="admin-list__search subject-search"
+                    placeholder="Vyhledejte předmět..."
+                    oninput="filterSubjectOptions()" />
 
-            <div class="admin-form__field admin-form__field--full">
-                <label class="admin-form__label">Předměty</label>
-                <select asp-for="SelectedSubjectIds" asp-items="Model.SubjectItems" class="admin-form__input" multiple></select>
+                <div class="admin-multiselect__box" id="subjectOptions">
+
+                    @foreach (var subject in Model.SubjectItems.OrderByDescending(s => Model.SelectedSubjectIds.Contains(s.Value)).ThenBy(s => s.Text))
+                    {
+                        var isChecked = Model.SelectedSubjectIds.Contains(subject.Value);
+
+                        <label class="admin-multiselect__item">
+
+                            <input type="checkbox"
+                                name="SelectedSubjectIds"
+                                value="@subject.Value"
+                                @(isChecked ? "checked" : "") />
+
+                            <span>@subject.Text</span>
+
+                        </label>
+                    }
+
+                </div>
+
             </div>
 
             <div class="admin-form__field admin-form__field--full">
@@ -56,38 +109,11 @@
                 <textarea asp-for="Point.Description" class="admin-form__textarea"></textarea>
             </div>
 
-            <div class="admin-form__field">
-                <label asp-for="Point.Icon" class="admin-form__label">Typ stanoviště</label>
-
-                <select asp-for="Point.Icon"
-                        asp-items="Model.IconItems"
-                        class="admin-form__input">
-                    <option value="">Vyberte typ stanoviště</option>
-                </select>
-
-                <span asp-validation-for="Point.Icon" class="admin-form__validation"></span>
-            </div>
-
-            <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
-                <label asp-for="Note.Text" class="admin-form__label">Poznámka od studentů</label>
-                <textarea asp-for="Note.Text" class="admin-form__textarea"></textarea>
-                <span asp-validation-for="Note.Text" class="admin-form__validation"></span>
-            </div>
-
-            <div style="display:flex; flex-direction: row; gap: 1rem;" class="admin-form__field admin-form__field--full">
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentName" class="admin-form__label">Křestní jméno</label>
-                    <input asp-for="Note.StudentName" class="admin-form__input" />
-                    <span asp-validation-for="Note.StudentName" class="admin-form__validation"></span>
-                </div>
-
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentField" class="admin-form__label">Obor</label>
-                    <select asp-for="Note.StudentField" asp-items="Model.NoteFieldItems" class="admin-form__input">
-                        <option value="">Vyberte obor</option>
-                    </select>
-                    <span asp-validation-for="Note.StudentField" class="admin-form__validation"></span>
-                </div>
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__label">
+                    <input type="checkbox" asp-for="Point.AreStudents" class="admin-form__checkbox" />
+                    Budou na stanovišti přítomni studenti
+                </label>
             </div>
 
         </div>
@@ -102,4 +128,31 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+    function filterTeacherOptions() {
+        const search = document.querySelector('.teacher-search').value.toLowerCase();
+        const items = document.querySelectorAll('#teacherOptions .admin-multiselect__item');
+
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+
+            item.style.display = text.includes(search)
+                ? 'flex'
+                : 'none';
+        });
+    }
+
+    function filterSubjectOptions() {
+        const search = document.querySelector('.subject-search').value.toLowerCase();
+        const items = document.querySelectorAll('#subjectOptions .admin-multiselect__item');
+
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+
+            item.style.display = text.includes(search)
+                ? 'flex'
+                : 'none';
+        });
+    }
+</script>
 }

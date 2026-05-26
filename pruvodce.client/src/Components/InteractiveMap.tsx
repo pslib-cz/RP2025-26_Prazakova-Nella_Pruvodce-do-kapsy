@@ -11,7 +11,7 @@ import { RoomType, type FloorData, type Point } from '../Types/MapType';
 const roomColors: Record<number, { bg: string; hover: string; border: string }> = {
   [RoomType.Classroom]: {
     bg: 'url(#gradient-classroom)',
-    hover: 'rgba(205, 205, 205, 0.7)',
+    hover: '#c1c1c1',
     border: '#50555A',
   },
   [RoomType.Specialized]: {
@@ -21,22 +21,22 @@ const roomColors: Record<number, { bg: string; hover: string; border: string }> 
   },
   [RoomType.Office]: {
     bg: 'url(#gradient-office)',
-    hover: 'rgba(170, 170, 170, 0.7)',
+    hover: '#9b9d9e',
     border: '#50555A',
   },
   [RoomType.Toilets]: {
     bg: 'url(#gradient-wc)',
-    hover: 'rgba(181, 198, 212, 0.7)',
+    hover: '#99b4cd',
     border: '#50555A',
   },
   [RoomType.Elevator]: {
     bg: 'url(#gradient-elevator)',
-    hover: 'rgba(107, 112, 116, 0.7)',
-    border: '#50555A',
+    hover: '#A3735C',
+    border: '#744935',
   },
   [RoomType.Other]: {
     bg: 'url(#gradient-other)',
-    hover: 'rgba(200, 200, 200, 0.7)',
+    hover: '#606366',
     border: '#50555A',
   },
 };
@@ -46,6 +46,8 @@ interface InteractiveMapProps {
   activeFloorId: number;
   buildingId: number;
   className?: string;
+  onPointSelect?: (point: Point) => void;
+  onMapClick?: () => void;
 }
 
 function useIsDesktop(): boolean {
@@ -64,7 +66,6 @@ function useIsDesktop(): boolean {
     };
 
     handleChange();
-
     mediaQuery.addEventListener('change', handleChange);
 
     return () => {
@@ -93,34 +94,20 @@ function getPointCoordinate(
   };
 }
 
-function getPointTitle(point: Point): string {
-  const rawPoint = point as Point & {
-    label?: string;
-    name?: string;
-    title?: string;
-  };
-
-  return rawPoint.label ?? rawPoint.name ?? rawPoint.title ?? 'Stanoviště';
-}
-
 const InteractiveMap: React.FC<InteractiveMapProps> = ({
   floors,
   activeFloorId,
   buildingId,
   className,
+  onPointSelect,
+  onMapClick,
 }) => {
-  const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
-
   const isDesktop = useIsDesktop();
 
   const activeFloorData = useMemo(() => {
     return floors.find(floor => floor.floorId === activeFloorId) ?? floors[0];
   }, [floors, activeFloorId]);
-
-  useEffect(() => {
-    setSelectedPoint(null);
-  }, [activeFloorId, buildingId]);
 
   const backgroundMap: Record<number, React.FC<{ zoomLevel: number }>> = {
     1: BackgroundM,
@@ -139,19 +126,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         const fallbackX = room.coordinateX ?? 0;
         const fallbackY = room.coordinateY ?? 0;
 
-        const pointBaseCoordinate = getPointCoordinate(
-          point,
-          fallbackX,
-          fallbackY
-        );
+        const pointBaseCoordinate = getPointCoordinate(point, fallbackX, fallbackY);
 
-        /**
-         * Když je v jedné místnosti více bodů a nemají vlastní souřadnice,
-         * lehce je rozsadíme, aby neležely přesně na sobě.
-         */
         const hasOwnCoordinates =
-          (point as Point & { coordinateX?: number; coordinateY?: number })
-            .coordinateX != null ||
+          (point as Point & { coordinateX?: number; coordinateY?: number }).coordinateX != null ||
           (point as Point & { x?: number; y?: number }).x != null;
 
         if (hasOwnCoordinates) {
@@ -186,6 +164,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   return (
     <div
       className={`map-wrapper ${className ?? ''}`}
+      onClick={onMapClick}
       style={{
         position: 'relative',
         width: '100%',
@@ -193,83 +172,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         overflow: 'hidden',
       }}
     >
-      {selectedPoint && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 16,
-            left: 16,
-            zIndex: 20,
-            background: 'white',
-            padding: '10px 14px',
-            borderRadius: 10,
-            boxShadow: '0 4px 18px rgba(0,0,0,0.18)',
-            maxWidth: 300,
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setSelectedPoint(null)}
-            style={{
-              float: 'right',
-              border: 'none',
-              background: 'transparent',
-              cursor: 'pointer',
-              fontSize: 18,
-              lineHeight: 1,
-              marginLeft: 8,
-            }}
-            aria-label="Zavřít detail"
-          >
-            ×
-          </button>
-
-          <strong>{getPointTitle(selectedPoint)}</strong>
-
-          {'description' in selectedPoint && selectedPoint.description && (
-            <div style={{ marginTop: 4 }}>{selectedPoint.description}</div>
-          )}
-
-          {'event' in selectedPoint && selectedPoint.event && (
-            <div style={{ marginTop: 6 }}>
-              <small>Akce: {selectedPoint.event.name}</small>
-            </div>
-          )}
-
-          {'specialization' in selectedPoint && selectedPoint.specialization && (
-            <div>
-              <small>Obor: {selectedPoint.specialization.name}</small>
-            </div>
-          )}
-
-          {'teachers' in selectedPoint &&
-            selectedPoint.teachers &&
-            selectedPoint.teachers.length > 0 && (
-              <div>
-                <small>
-                  Učitelé:{' '}
-                  {selectedPoint.teachers
-                    .map(teacher => `${teacher.firstN} ${teacher.lastN}`)
-                    .join(', ')}
-                </small>
-              </div>
-            )}
-
-          {'subjects' in selectedPoint &&
-            selectedPoint.subjects &&
-            selectedPoint.subjects.length > 0 && (
-              <div>
-                <small>
-                  Předměty:{' '}
-                  {selectedPoint.subjects
-                    .map(subject => subject.acronym || subject.name)
-                    .join(', ')}
-                </small>
-              </div>
-            )}
-        </div>
-      )}
-
       <TransformWrapper
         key={`${buildingId}-${activeFloorId}-${isDesktop ? 'desktop' : 'mobile'}`}
         onTransform={ref => setZoomLevel(ref.state.scale)}
@@ -378,18 +280,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               </radialGradient>
             </defs>
 
-            {!activeFloorData.backgroundUrl && (
-              <SelectedBackground zoomLevel={zoomLevel} />
-            )}
+            {!activeFloorData.backgroundUrl && <SelectedBackground zoomLevel={zoomLevel} />}
 
             {activeFloorData.backgroundUrl && (
-              <image
-                href={activeFloorData.backgroundUrl}
-                x="0"
-                y="0"
-                width="540"
-                height="900"
-              />
+              <image href={activeFloorData.backgroundUrl} x="0" y="0" width="540" height="900" />
             )}
 
             <g id="rooms-layer">
@@ -399,10 +293,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 if (!pathData) return null;
 
                 const rawRoomType = Number(room.type);
-                const safeRoomType = Number.isNaN(rawRoomType)
-                  ? RoomType.Other
-                  : rawRoomType;
-
+                const safeRoomType = Number.isNaN(rawRoomType) ? RoomType.Other : rawRoomType;
                 const colors = roomColors[safeRoomType] ?? roomColors[RoomType.Other];
 
                 return (
@@ -412,8 +303,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     fill={colors.bg}
                     stroke={colors.border}
                     strokeWidth={1 / zoomLevel}
-                    onClick={() => {
-                      console.log('Kliknuto na místnost:', room.label || room.roomId);
+                    onClick={event => {
+                      event.stopPropagation();
+                      onMapClick?.();
                     }}
                     style={{
                       cursor: 'pointer',
@@ -434,9 +326,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             <g id="room-labels-layer">
               {activeFloorData.rooms.map(room => {
                 const rawRoomType = Number(room.type);
-                const safeRoomType = Number.isNaN(rawRoomType)
-                  ? RoomType.Other
-                  : rawRoomType;
+                const safeRoomType = Number.isNaN(rawRoomType) ? RoomType.Other : rawRoomType;
 
                 const isToilets = safeRoomType === RoomType.Toilets;
                 const isElevator = safeRoomType === RoomType.Elevator;
@@ -528,7 +418,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   x={x}
                   y={y}
                   zoomLevel={zoomLevel}
-                  onClick={setSelectedPoint}
+                  onClick={selected => {
+                    onPointSelect?.(selected);
+                  }}
                 />
               ))}
             </g>

@@ -1,0 +1,86 @@
+@page
+@model pruvodce.server.Pages.Events.EditModel
+@{
+    ViewData["Title"] = "Upravit akci";
+}
+
+<section class="admin-form">
+    <form method="post" class="admin-form__card">
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">Upravte údaje vybrané akce</h2>
+            <p class="admin-form__subtitle">Údaje můžete kdykoli znovu upravit</p>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
+
+        <div class="admin-form__grid">
+            <div class="admin-form__field">
+                <label asp-for="Event.Name" class="admin-form__label">Název</label>
+                <input asp-for="Event.Name" class="admin-form__input" />
+                <p class="admin-form__hint">
+                    *Zadejte jasný název, například „Den otevřených dveří, Leden 2026“.
+                </p>
+                <span asp-validation-for="Event.Name" class="admin-form__validation"></span>
+            </div>
+
+        <div class="admin-form__field">
+            <span class="admin-form__label">Budovy</span>
+
+            <div class="admin-form__checkbox-list">
+                @foreach (var building in Model.BuildingItems)
+                {
+                    <label class="admin-form__checkbox-card">
+                        <input type="checkbox"
+                            name="SelectedBuildingIds"
+                            value="@building.Value"
+                            checked="@building.Selected" />
+                        <span>@building.Text</span>
+                    </label>
+                }
+            </div>
+
+            <span asp-validation-for="SelectedBuildingIds" class="admin-form__validation"></span>
+        </div>
+
+            <div class="admin-form__field">
+                <label asp-for="Event.StartDate" class="admin-form__label">Začátek akce</label>
+                <input asp-for="Event.StartDate" class="admin-form__input" type="datetime-local" />
+                <span asp-validation-for="Event.StartDate" class="admin-form__validation"></span>
+            </div>
+
+            <div class="admin-form__field">
+                <label asp-for="Event.EndDate" class="admin-form__label">Konec akce</label>
+                <input asp-for="Event.EndDate" class="admin-form__input" type="datetime-local" />
+                <span asp-validation-for="Event.EndDate" class="admin-form__validation"></span>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full">
+                <label asp-for="Event.Description" class="admin-form__label">Popis</label>
+                <textarea asp-for="Event.Description" class="admin-form__textarea"></textarea>
+                <span asp-validation-for="Event.Description" class="admin-form__validation"></span>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__checkbox-row">
+                    <input asp-for="Event.IsActive" />
+                    <span>Aktivní akce</span>
+                </label>
+                <p class="admin-form__hint">
+                    *Aktivní akce se zobrazuje i mimo datum konání.
+                </p>
+                <span asp-validation-for="Event.IsActive" class="admin-form__validation"></span>
+            </div>
+        </div>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">Uložit</button>
+            <a asp-page="Index" class="admin-button admin-button--secondary">Zpět</a>
+        </div>
+        <input type="hidden" asp-for="Event.EventId" />
+    </form>
+    
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

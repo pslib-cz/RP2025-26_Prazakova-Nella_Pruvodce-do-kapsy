@@ -1,5 +1,8 @@
 .introContainer {
-  background: #ededed;
+  background-image: url('/intro-background1.png');
+  background-size: cover;
+  background-position: center;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,15 +52,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: clamp(40px, 10vh, 96px);
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .title {
   margin: 0 0 18px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.02em;
   color: #111;
   text-align: center;
+  font-size: 2.7rem;
 }
 
 .buttonGroup {
@@ -70,13 +75,13 @@
 .buildingButton {
   width: 100%;
   min-height: 40px;
-  padding: 1rem 2rem;
-  border-radius: 999px;
+  padding: 1rem 2.5rem;
+  border-radius: 18px;
   background: transparent;
   font-weight: 300;
   letter-spacing: 0.01em;
-    color: #222222;
-  background-color: #E2E2E2;
+    color: #ffffff;
+  background-color: #3F4BF7;
   cursor: pointer;
   transition:
     background-color 160ms ease,
@@ -84,16 +89,17 @@
     box-shadow 160ms ease;
 }
 
-.masarykovaButton {
-  border: 1px solid #8fb5d0;
+.introText {
+  margin: 2rem 0;
 }
 
-.tyrsovaButton {
-  border: 1px solid #c78973;
+.introText p {
+  font-size: 0.7rem;
+  color: #000
 }
 
 .buildingButton:hover {
-  background: rgba(255, 255, 255, 0.45);
+  background: #1c2494;
   transform: translateY(-1px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
 }
@@ -103,17 +109,24 @@
   box-shadow: none;
 }
 
+.introContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .7rem;
+}
+
 .quizText {
-  margin: 18px 0 0;
   color: #8a8a8a;
   text-align: center;
+  font-size: .8rem;
 }
 
 .quizLink {
   padding: 0;
   border: none;
   background: transparent;
-  color: #767676;
+  color: #3F4BF7;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -156,12 +169,6 @@
   padding: 28px 20px 18px;
 }
 
-.panelSection {
-  padding-bottom: 24px;
-  margin-bottom: 22px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
 .panelSection:last-child {
   border-bottom: 0;
   margin-bottom: 0;
@@ -202,7 +209,6 @@
   display: none;
 }
 
-/* Building select */
 
 .buildingSelect {
   position: relative;
@@ -546,7 +552,6 @@
   cursor: pointer;
 }
 
-/* Mobile */
 
 @media (max-width: 768px) {
   .page {
@@ -663,6 +668,8 @@
   }
 }
 
-@media (max-height: 640px) {
-
+@media (min-width: 780px) {
+  .introContainer {
+    background-image: url('/intro-background2.png');
+  }
 }

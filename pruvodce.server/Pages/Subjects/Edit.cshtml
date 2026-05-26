@@ -7,6 +7,8 @@
 <section class="admin-form">
     <form method="post" class="admin-form__card">
 
+    <input type="hidden" asp-for="Subject.SubjectId" />
+
         <div class="admin-form__header">
             <h2 class="admin-form__title">Upravit předmět</h2>
             <p class="admin-form__subtitle">Zadejte základní údaje</p>
@@ -17,43 +19,87 @@
         <div class="admin-form__grid">
 
             <div class="admin-form__field admin-form__field--full">
+                <div class="admin-form__field">
+                    <label asp-for="Subject.Name" class="admin-form__label">Název</label>
+                    <input asp-for="Subject.Name" class="admin-form__input"/>
+                    <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
+                </div>
 
-            <div class="admin-form__field">
-                <label asp-for="Subject.Name" class="admin-form__label">Název</label>
-                <input asp-for="Subject.Name" class="admin-form__input"/>
-                <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
+                <div class="admin-form__field">
+                    <label asp-for="Subject.Acronym" class="admin-form__label">Zkratka</label>
+                    <input asp-for="Subject.Acronym" class="admin-form__input"/>
+                    <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
+                </div>
             </div>
-
-            <div class="admin-form__field">
-                <label asp-for="Subject.Acronym" class="admin-form__label">Zkratka</label>
-                <input asp-for="Subject.Acronym" class="admin-form__input"/>
-                <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
-            </div>
-
-            <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
-            <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
-
 
             <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
-                <label asp-for="Note.Text" class="admin-form__label">Poznámka od studentů</label>
-                <textarea asp-for="Note.Text" class="admin-form__textarea"></textarea>
-                <span asp-validation-for="Note.Text" class="admin-form__validation"></span>
-            </div>
+                <label class="admin-form__label">Poznámka od studentů</label>
 
-            <div style="display:flex; flex-direction: row; gap: 1rem;" class="admin-form__field admin-form__field--full">
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentName" class="admin-form__label">Křestní jméno</label>
-                    <input asp-for="Note.StudentName" class="admin-form__input" />
-                    <span asp-validation-for="Note.StudentName" class="admin-form__validation"></span>
-                </div>
+                @if (Model.AvailableNotes.Any())
+                {
+                    <div class="notes-box">
+                        @foreach (var note in Model.AvailableNotes)
+                        {
+                            <label class="notes-box__item">
+                                <input type="radio"
+                                    name="SelectedActiveNoteId"
+                                    value="@note.StudentNoteId"
+                                    @(note.StudentNoteId == Model.SelectedActiveNoteId ? "checked" : "") />
 
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentField" class="admin-form__label">Obor</label>
-                    <select asp-for="Note.StudentField" asp-items="Model.NoteFieldItems" class="admin-form__input">
-                        <option value="">Vyberte obor</option>
-                    </select>
-                    <span asp-validation-for="Note.StudentField" class="admin-form__validation"></span>
-                </div>
+                                <div class="notes-box__content">
+
+                                    <div class="notes-box__header">
+
+                                        <div class="notes-box__title">
+                                            @note.StudentName, @note.StudentClass
+                                        </div>
+
+                                        <form method="post" asp-page-handler="DeleteNote" class="notes-box__delete-form">
+                                            <input type="hidden" name="noteId" value="@note.StudentNoteId" />
+
+                                            <button type="submit"
+                                                    class="notes-box__delete"
+                                                    title="Pro nenávratné odstranění neslušných či nevyhovujících poznámek">
+                                                
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                                <path d="M0 0h24v24H0z" fill="none" />
+                                                <path fill="none" stroke="#fb0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m18 9l-.84 8.398c-.127 1.273-.19 1.909-.48 2.39a2.5 2.5 0 0 1-1.075.973C15.098 21 14.46 21 13.18 21h-2.36c-1.279 0-1.918 0-2.425-.24a2.5 2.5 0 0 1-1.076-.973c-.288-.48-.352-1.116-.48-2.389L6 9m7.5 6.5v-5m-3 5v-5m-6-4h4.615m0 0l.386-2.672c.112-.486.516-.828.98-.828h3.038c.464 0 .867.342.98.828l.386 2.672m-5.77 0h5.77m0 0H19.5" />
+                                                </svg>
+
+                                                <span class="notes-box__tooltip">
+                                                    Pro nenávratné odstranění neslušných či nevyhovujících poznámek
+                                                </span>
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                    <div class="notes-box__text">
+                                        @note.Text
+                                    </div>
+
+                                </div>
+                            </label>
+                        }
+
+                        <label class="notes-box__item notes-box__none">
+                            <input type="radio"
+                                name="SelectedActiveNoteId"
+                                value=""
+                                @(string.IsNullOrEmpty(Model.SelectedActiveNoteId) ? "checked" : "") />
+
+                            <div class="notes-box__content">
+                                <div class="notes-box__title">
+                                    Bez poznámky
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <p style="color: #999;">Zatím nejsou k tomuto předmětu žádné poznámky od studentů.</p>
+                }
             </div>
 
         </div>
@@ -62,6 +108,7 @@
             <button type="submit" class="admin-button admin-button--primary">
                 Uložit
             </button>
+
             <a asp-page="Index" class="admin-button admin-button--secondary">
                 Zpět
             </a>
@@ -69,6 +116,32 @@
 
     </form>
 </section>
+
+<style>
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin-form__label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form__input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .notes-box__text {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

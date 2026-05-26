@@ -1,7 +1,8 @@
 import { Icon } from '@iconify/react';
 import type { Point } from '../Types/MapType';
 import style from '../Styles/Point.module.css';
-import { getPointIconName } from '../pointIconUtils';
+
+import { getPointIconFromPoint, getPointMapColorClass } from '../pointIconUtils';
 
 interface InteractivePointProps {
   point: Point;
@@ -9,101 +10,6 @@ interface InteractivePointProps {
   y: number;
   zoomLevel: number;
   onClick: (point: Point) => void;
-}
-
-type FieldTypeKey = 'IT' | 'EL' | 'ST' | 'TL' | 'OD' | 'TE';
-type PointIconKey = 'Talk' | 'Hand' | 'Ucebna' | 'Jine';
-
-const fieldTypeByNumber: Record<number, FieldTypeKey> = {
-  0: 'IT',
-  1: 'EL',
-  2: 'ST',
-  3: 'TL',
-  4: 'OD',
-  5: 'TE',
-};
-
-const pointIconByNumber: Record<number, PointIconKey> = {
-  0: 'Talk',
-  1: 'Hand',
-  2: 'Ucebna',
-  3: 'Jine',
-};
-
-const iconByPointType: Record<PointIconKey, string> = {
-  Talk: 'lucide:presentation',
-  Hand: 'lucide:hand',
-  Ucebna: 'lucide:door-open',
-  Jine: 'lucide:map-pin',
-};
-
-function getFieldTypeKey(type: unknown): FieldTypeKey | null {
-  if (typeof type === 'number') {
-    return fieldTypeByNumber[type] ?? null;
-  }
-
-  if (typeof type === 'string') {
-    const normalized = type.trim().toUpperCase();
-
-    const asNumber = Number(normalized);
-    if (!Number.isNaN(asNumber) && asNumber in fieldTypeByNumber) {
-      return fieldTypeByNumber[asNumber];
-    }
-
-    if (['IT', 'EL', 'ST', 'TL', 'OD', 'TE'].includes(normalized)) {
-      return normalized as FieldTypeKey;
-    }
-  }
-
-  return null;
-}
-
-function getPointIconKey(icon: unknown): PointIconKey {
-  if (typeof icon === 'number') {
-    return pointIconByNumber[icon] ?? 'Jine';
-  }
-
-  if (typeof icon === 'string') {
-    const normalized = icon.trim();
-
-    const asNumber = Number(normalized);
-    if (!Number.isNaN(asNumber) && asNumber in pointIconByNumber) {
-      return pointIconByNumber[asNumber];
-    }
-
-    if (normalized === 'Talk') return 'Talk';
-    if (normalized === 'Hand') return 'Hand';
-    if (normalized === 'Ucebna') return 'Ucebna';
-    if (normalized === 'Jine') return 'Jine';
-  }
-
-  return 'Jine';
-}
-
-function getPointTypeClass(point: Point): string {
-  const typeKey = getFieldTypeKey(point.specialization?.type);
-
-  switch (typeKey) {
-    case 'IT':
-      return style.typeIT;
-    case 'EL':
-      return style.typeEL;
-    case 'ST':
-      return style.typeST;
-    case 'TL':
-      return style.typeTL;
-    case 'OD':
-      return style.typeOD;
-    case 'TE':
-      return style.typeTE;
-    default:
-      return style.typeDefault;
-  }
-}
-
-function getPointIcon(point: Point): string {
-  const iconKey = getPointIconKey(point.icon);
-  return iconByPointType[iconKey];
 }
 
 function getPointScale(zoomLevel: number): number {
@@ -120,8 +26,8 @@ const InteractivePoint: React.FC<InteractivePointProps> = ({
   zoomLevel,
   onClick,
 }) => {
-  const typeClass = getPointTypeClass(point);
-  const iconName = getPointIconName(point.icon);
+  const typeClass = getPointMapColorClass(point, style);
+  const iconName = getPointIconFromPoint(point);
   const pointScale = getPointScale(zoomLevel);
 
   return (

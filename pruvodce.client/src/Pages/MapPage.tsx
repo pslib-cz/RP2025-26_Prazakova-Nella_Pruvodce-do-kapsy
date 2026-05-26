@@ -10,6 +10,8 @@ import BuildingSelect from '../Components/Map/BuildingSelect';
 import MapFiltersPanel from '../Components/Map/MapFiltersPanel';
 import FloorControls from '../Components/Map/FloorControls';
 
+import PointDetailPanel from '../Components/Map/PointDetailPanel';
+
 import type { BuildingData, FloorData, Point } from '../Types/MapType';
 
 import { mergePointsIntoRooms } from '../mapUtils';
@@ -30,9 +32,38 @@ function getPointIconType(point: Point): PointIcon {
   return rawPoint.iconType ?? rawPoint.pointIcon ?? rawPoint.icon ?? 'Jine';
 }
 
+function useIsDesktop(): boolean {
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+
+    const handleChange = () => {
+      setIsDesktop(mediaQuery.matches);
+    };
+
+    handleChange();
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
+
+  return isDesktop;
+}
+
 const MapPage: React.FC = () => {
   const { buildingId } = useParams<{ buildingId: string }>();
   const navigate = useNavigate();
+
+  const isDesktop = useIsDesktop();
+const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 
   const buildingIdNumber = Number(buildingId);
 
@@ -92,6 +123,10 @@ const MapPage: React.FC = () => {
       return stillExists ? previous : buildingFloors[0].floorId;
     });
   }, [buildingFloors]);
+
+  useEffect(() => {
+  setSelectedPoint(null);
+}, [buildingId, currentFloorId]);
 
   const currentFloor = useMemo(() => {
     return buildingFloors.find(floor => floor.floorId === currentFloorId) ?? null;
@@ -186,6 +221,14 @@ const MapPage: React.FC = () => {
             activeFloorId={currentFloorId}
             buildingId={buildingIdNumber}
             className="main-map"
+            onPointSelect={point => {
+              setSelectedPoint(point);
+              setIsMobilePanelOpen(false);
+              setIsDropdownOpen(false);
+            }}
+            onMapClick={() => {
+              setSelectedPoint(null);
+            }}
           />
         </div>
 
@@ -240,7 +283,13 @@ const MapPage: React.FC = () => {
           hideBuildingSelect
           hideFloorSelect
         />
+        
       </section>
+      <PointDetailPanel
+          point={selectedPoint}
+          isDesktop={isDesktop}
+          onClose={() => setSelectedPoint(null)}
+        />
     </div>
   );
 };

@@ -1,8 +1,7 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import IntroPage from './Pages/IntroPage';
 import MapPage from './Pages/MapPage';
-// import QuizPage from './pages/QuizPage';
 
 const App = () => {
   return (
@@ -10,7 +9,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<IntroPage />} />
         <Route path="/map/:buildingId" element={<MapPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
+
       </Routes>
     </BrowserRouter>
   );

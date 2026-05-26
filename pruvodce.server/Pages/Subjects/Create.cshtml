@@ -17,42 +17,16 @@
         <div class="admin-form__grid">
 
             <div class="admin-form__field admin-form__field--full">
-
-            <div class="admin-form__field">
-                <label asp-for="Subject.Name" class="admin-form__label">Název</label>
-                <input asp-for="Subject.Name" class="admin-form__input"/>
-                <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
-            </div>
-
-            <div class="admin-form__field">
-                <label asp-for="Subject.Acronym" class="admin-form__label">Zkratka</label>
-                <input asp-for="Subject.Acronym" class="admin-form__input"/>
-                <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
-            </div>
-
-            <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
-            <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
-
-
-            <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
-                <label asp-for="Note.Text" class="admin-form__label">Poznámka od studentů</label>
-                <textarea asp-for="Note.Text" class="admin-form__textarea"></textarea>
-                <span asp-validation-for="Note.Text" class="admin-form__validation"></span>
-            </div>
-
-            <div style="display:flex; flex-direction: row; gap: 1rem;" class="admin-form__field admin-form__field--full">
                 <div class="admin-form__field">
-                    <label asp-for="Note.StudentName" class="admin-form__label">Křestní jméno</label>
-                    <input asp-for="Note.StudentName" class="admin-form__input" />
-                    <span asp-validation-for="Note.StudentName" class="admin-form__validation"></span>
+                    <label asp-for="Subject.Name" class="admin-form__label">Název</label>
+                    <input asp-for="Subject.Name" class="admin-form__input"/>
+                    <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
                 </div>
 
                 <div class="admin-form__field">
-                    <label asp-for="Note.StudentField" class="admin-form__label">Obor</label>
-                    <select asp-for="Note.StudentField" asp-items="Model.NoteFieldItems" class="admin-form__input">
-                        <option value="">Vyberte obor</option>
-                    </select>
-                    <span asp-validation-for="Note.StudentField" class="admin-form__validation"></span>
+                    <label asp-for="Subject.Acronym" class="admin-form__label">Zkratka</label>
+                    <input asp-for="Subject.Acronym" class="admin-form__input"/>
+                    <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
                 </div>
             </div>
 
@@ -62,6 +36,7 @@
             <button type="submit" class="admin-button admin-button--primary">
                 Vytvořit
             </button>
+
             <a asp-page="Index" class="admin-button admin-button--secondary">
                 Zpět
             </a>
@@ -69,6 +44,26 @@
 
     </form>
 </section>
+
+<style>
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin-form__label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form__input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

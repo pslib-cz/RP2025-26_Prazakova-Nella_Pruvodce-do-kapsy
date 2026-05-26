@@ -17,19 +17,196 @@ namespace pruvodce.server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
-            modelBuilder.Entity("PointTeacher", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<string>("PointsPointId")
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TeachersTeacherId")
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("PointsPointId", "TeachersTeacherId");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("TeachersTeacherId");
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("PointTeacher");
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.AdminUser", b =>
@@ -65,7 +242,7 @@ namespace pruvodce.server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
@@ -76,7 +253,7 @@ namespace pruvodce.server.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("EventId");
@@ -100,16 +277,31 @@ namespace pruvodce.server.Migrations
                     b.ToTable("EventBuildings");
                 });
 
+            modelBuilder.Entity("pruvodce.server.Models.EventPoint", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PointId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("EventId", "PointId");
+
+                    b.HasIndex("PointId");
+
+                    b.ToTable("EventPoints");
+                });
+
             modelBuilder.Entity("pruvodce.server.Models.Point", b =>
                 {
                     b.Property<string>("PointId")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("AreStudents")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Icon")
                         .HasColumnType("INTEGER");
@@ -118,21 +310,15 @@ namespace pruvodce.server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("NoteId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("RoomId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SpecializationId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("PointId");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("NoteId");
 
                     b.HasIndex("SpecializationId");
 
@@ -152,6 +338,28 @@ namespace pruvodce.server.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("PointSubjects");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.PointTeacher", b =>
+                {
+                    b.Property<string>("PointTeacherId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PointId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TeacherId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PointTeacherId");
+
+                    b.HasIndex("PointId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("PointTeachers");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Specialization", b =>
@@ -182,21 +390,41 @@ namespace pruvodce.server.Migrations
                     b.Property<string>("StudentNoteId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("StudentField")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("StudentName")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("StudentYear")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("StudentClass")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubjectId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TeacherId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(300)
                         .HasColumnType("TEXT");
 
                     b.HasKey("StudentNoteId");
 
-                    b.ToTable("StudentNote");
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("StudentNotes");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
@@ -209,12 +437,12 @@ namespace pruvodce.server.Migrations
                         .HasMaxLength(7)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ActiveNoteStudentNoteId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NoteId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("SubjectId");
@@ -222,7 +450,7 @@ namespace pruvodce.server.Migrations
                     b.HasIndex("Acronym")
                         .IsUnique();
 
-                    b.HasIndex("NoteId");
+                    b.HasIndex("ActiveNoteStudentNoteId");
 
                     b.ToTable("Subjects");
                 });
@@ -246,27 +474,61 @@ namespace pruvodce.server.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("NoteId")
+                    b.Property<string>("SelectedNoteIds")
                         .HasColumnType("TEXT");
 
                     b.HasKey("TeacherId");
 
-                    b.HasIndex("NoteId");
-
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("PointTeacher", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("pruvodce.server.Models.Point", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
-                        .HasForeignKey("PointsPointId")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("pruvodce.server.Models.Teacher", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
-                        .HasForeignKey("TeachersTeacherId")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -282,25 +544,32 @@ namespace pruvodce.server.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("pruvodce.server.Models.Point", b =>
+            modelBuilder.Entity("pruvodce.server.Models.EventPoint", b =>
                 {
                     b.HasOne("pruvodce.server.Models.Event", "Event")
-                        .WithMany("Points")
+                        .WithMany("EventPoints")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("pruvodce.server.Models.StudentNote", "Note")
-                        .WithMany()
-                        .HasForeignKey("NoteId");
-
-                    b.HasOne("pruvodce.server.Models.Specialization", "Specialization")
-                        .WithMany("Points")
-                        .HasForeignKey("SpecializationId");
+                    b.HasOne("pruvodce.server.Models.Point", "Point")
+                        .WithMany("EventPoints")
+                        .HasForeignKey("PointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Event");
 
-                    b.Navigation("Note");
+                    b.Navigation("Point");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Point", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.Specialization", "Specialization")
+                        .WithMany("Points")
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Specialization");
                 });
@@ -324,34 +593,66 @@ namespace pruvodce.server.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
+            modelBuilder.Entity("pruvodce.server.Models.PointTeacher", b =>
                 {
-                    b.HasOne("pruvodce.server.Models.StudentNote", "Note")
-                        .WithMany()
-                        .HasForeignKey("NoteId");
+                    b.HasOne("pruvodce.server.Models.Point", "Point")
+                        .WithMany("PointTeachers")
+                        .HasForeignKey("PointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Note");
+                    b.HasOne("pruvodce.server.Models.Teacher", "Teacher")
+                        .WithMany("PointTeachers")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Point");
+
+                    b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("pruvodce.server.Models.Teacher", b =>
+            modelBuilder.Entity("pruvodce.server.Models.StudentNote", b =>
                 {
-                    b.HasOne("pruvodce.server.Models.StudentNote", "Note")
-                        .WithMany()
-                        .HasForeignKey("NoteId");
+                    b.HasOne("pruvodce.server.Models.Subject", "Subject")
+                        .WithMany("Notes")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Note");
+                    b.HasOne("pruvodce.server.Models.Teacher", "Teacher")
+                        .WithMany("Notes")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
+                {
+                    b.HasOne("pruvodce.server.Models.StudentNote", "ActiveNote")
+                        .WithMany()
+                        .HasForeignKey("ActiveNoteStudentNoteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ActiveNote");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Event", b =>
                 {
                     b.Navigation("EventBuildings");
 
-                    b.Navigation("Points");
+                    b.Navigation("EventPoints");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Point", b =>
                 {
+                    b.Navigation("EventPoints");
+
                     b.Navigation("PointSubjects");
+
+                    b.Navigation("PointTeachers");
                 });
 
             modelBuilder.Entity("pruvodce.server.Models.Specialization", b =>
@@ -361,7 +662,16 @@ namespace pruvodce.server.Migrations
 
             modelBuilder.Entity("pruvodce.server.Models.Subject", b =>
                 {
+                    b.Navigation("Notes");
+
                     b.Navigation("PointSubjects");
+                });
+
+            modelBuilder.Entity("pruvodce.server.Models.Teacher", b =>
+                {
+                    b.Navigation("Notes");
+
+                    b.Navigation("PointTeachers");
                 });
 #pragma warning restore 612, 618
         }

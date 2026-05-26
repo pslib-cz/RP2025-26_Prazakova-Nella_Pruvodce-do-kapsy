@@ -307,7 +307,7 @@
 }
 
 .floorButton:hover {
-  background: #f4f4f4;
+  background: #525050;
 }
 
 .floorButtonActive {
@@ -316,7 +316,6 @@
   border-color: #666a6d;
 }
 
-/* Point list */
 
 .PointList {
   flex: 1;

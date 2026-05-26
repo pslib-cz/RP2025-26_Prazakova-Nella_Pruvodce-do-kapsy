@@ -1,0 +1,85 @@
+@page
+@using pruvodce.server.Models
+@model pruvodce.server.Pages.Specializations.CreateModel
+
+@{
+    ViewData["Title"] = "Vytvořit zaměření";
+}
+
+<section class="admin-form">
+    <form method="post" class="admin-form__card">
+
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">Vytvořit zaměření</h2>
+            <p class="admin-form__subtitle">
+                Zadejte název, popis a typ oboru, ke kterému bude zaměření patřit.
+            </p>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
+
+        <div class="admin-form__grid">
+
+            <div class="admin-form__field admin-form__field--full">
+                <div class="admin-form__row">
+                    <div class="admin-form__field">
+                        <label asp-for="Specialization.Name" class="admin-form__label">
+                            Název
+                        </label>
+
+                        <input asp-for="Specialization.Name"
+                               class="admin-form__input"
+                               placeholder="Např. Informační technologie" />
+
+                        <span asp-validation-for="Specialization.Name"
+                              class="admin-form__validation"></span>
+                    </div>
+
+                    <div class="admin-form__field">
+                        <label asp-for="Specialization.Type" class="admin-form__label">
+                            Typ oboru
+                        </label>
+
+                        <select asp-for="Specialization.Type"
+                                asp-items="Html.GetEnumSelectList<FieldType>()"
+                                class="admin-form__input">
+                            <option value="">Vyberte typ oboru</option>
+                        </select>
+
+                        <span asp-validation-for="Specialization.Type"
+                              class="admin-form__validation"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full">
+                <label asp-for="Specialization.Description" class="admin-form__label">
+                    Popis
+                </label>
+
+                <textarea asp-for="Specialization.Description"
+                          class="admin-form__textarea admin-form__textarea--longer"
+                          placeholder="Stručně popište zaměření"></textarea>
+
+                <span asp-validation-for="Specialization.Description"
+                      class="admin-form__validation"></span>
+            </div>
+
+        </div>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Vytvořit
+            </button>
+
+            <a asp-page="Index" class="admin-button admin-button--secondary">
+                Zpět
+            </a>
+        </div>
+
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

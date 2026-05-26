@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using pruvodce.server.Data;
 using pruvodce.server.Models;
 using pruvodce.server.Services;
 
 namespace pruvodce.server.Pages
 {
+    [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -123,35 +126,38 @@ namespace pruvodce.server.Pages
                 .Distinct()
                 .ToList();
 
-            var rawPoints = await _context.Points
-                .Include(p => p.Event)
-                    .ThenInclude(e => e!.EventBuildings)
-                .Include(p => p.Specialization)
+            // Get points through EventPoint junction
+            var rawPoints = await _context.EventPoints
+                .Where(ep => visibleEventIds.Contains(ep.EventId))
+                .Include(ep => ep.Point)
+                    .ThenInclude(p => p!.Specialization)
                 .AsNoTracking()
-                .Where(p => p.EventId != null && visibleEventIds.Contains(p.EventId.Value))
                 .ToListAsync();
 
             var filtered = rawPoints
-                .Where(p =>
-                    !string.IsNullOrWhiteSpace(p.RoomId) &&
-                    roomBuildingMap.TryGetValue(p.RoomId, out var pointBuildingId) &&
+                .Where(ep =>
+                    ep.Point != null &&
+                    !string.IsNullOrWhiteSpace(ep.Point.RoomId) &&
+                    roomBuildingMap.TryGetValue(ep.Point.RoomId, out var pointBuildingId) &&
                     visiblePairs.Any(v =>
-                        v.EventId == p.EventId &&
+                        v.EventId == ep.EventId &&
                         v.BuildingId == pointBuildingId))
-                .Select(p =>
+                .Select(ep =>
                 {
-                    var pointBuildingId = roomBuildingMap[p.RoomId!];
+                    var pointBuildingId = roomBuildingMap[ep.Point!.RoomId!];
 
                     return new PointRowViewModel
                     {
-                        Label = p.Label,
+                        Label = ep.Point.Label,
                         Building = buildingNameMap.TryGetValue(pointBuildingId, out var buildingName)
                             ? buildingName
                             : "-",
-                        Room = p.RoomId ?? "-",
-                        Specialization = p.Specialization?.Name ?? "-"
+                        Room = ep.Point.RoomId ?? "-",
+                        Specialization = ep.Point.Specialization?.Name ?? "-",
+                        AreStudents = ep.Point.AreStudents
                     };
                 })
+                .DistinctBy(p => p.Label + p.Room)
                 .ToList();
 
             if (!string.IsNullOrWhiteSpace(Search))
@@ -210,8 +216,12 @@ namespace pruvodce.server.Pages
                 .GroupBy(x => x.BuildingId)
                 .Select(group =>
                 {
+                    // Check for currently running event within date range
                     var currentlyRunning = group
-                        .Where(x => x.Event.StartDate <= now && x.Event.EndDate >= now)
+                        .Where(x =>
+                            (!x.Event.StartDate.HasValue || x.Event.StartDate <= now) &&
+                            (!x.Event.EndDate.HasValue || x.Event.EndDate >= now) &&
+                            x.Event.IsActive)
                         .OrderByDescending(x => x.Event.CreatedAt)
                         .FirstOrDefault();
 
@@ -225,8 +235,11 @@ namespace pruvodce.server.Pages
                         };
                     }
 
+                    // Check for manually active event
                     var manuallyActive = group
-                        .Where(x => x.Event.IsActive)
+                        .Where(x => x.Event.IsActive &&
+                            (!x.Event.StartDate.HasValue || x.Event.StartDate <= now) &&
+                            (!x.Event.EndDate.HasValue || x.Event.EndDate >= now))
                         .OrderByDescending(x => x.Event.CreatedAt)
                         .FirstOrDefault();
 
@@ -280,6 +293,7 @@ namespace pruvodce.server.Pages
             public string Building { get; set; } = "-";
             public string Room { get; set; } = "-";
             public string Specialization { get; set; } = "-";
+            public bool AreStudents { get; set; }
         }
 
         private class VisibleEventForBuilding

@@ -1,0 +1,180 @@
+@page "{id}"
+@model pruvodce.server.Pages.Teachers.EditModel
+@{
+    ViewData["Title"] = "Upravit učitele";
+}
+
+<section class="admin-form">
+    <form method="post" class="admin-form__card">
+
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">Upravit vyučujícího</h2>
+            <p class="admin-form__subtitle">Změňte údaje vyučujícího. Kdykoli je můžete upravit znovu.</p>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
+
+        <input type="hidden" asp-for="Teacher.TeacherId" />
+
+        <div class="admin-form__grid">
+
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__label">Celé jméno</label>
+
+                <div style="display:flex; gap:12px;">
+                    <input asp-for="Teacher.Degree"
+                           class="admin-form__input"
+                           placeholder="Titul" />
+
+                    <input asp-for="Teacher.FirstN"
+                           class="admin-form__input"
+                           placeholder="Jméno" />
+
+                    <input asp-for="Teacher.LastN"
+                           class="admin-form__input"
+                           placeholder="Příjmení" />
+                </div>
+
+                <span asp-validation-for="Teacher.Degree" class="admin-form__validation"></span>
+                <span asp-validation-for="Teacher.FirstN" class="admin-form__validation"></span>
+                <span asp-validation-for="Teacher.LastN" class="admin-form__validation"></span>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__label">Poznámky od studentů <span style="color: #999;">(max 3 poznámky)</span></label>
+                
+                @if (Model.AvailableNotes.Any())
+                {
+                    <div class="notes-box">
+                        @foreach (var note in Model.AvailableNotes)
+                        {
+                            var isSelected = Model.SelectedNoteIds.Contains(note.StudentNoteId);
+
+                            <label class="notes-box__item">
+                                <input type="checkbox"
+                                    name="SelectedNoteIds"
+                                    value="@note.StudentNoteId"
+                                    @(isSelected ? "checked" : "")
+                                    onchange="limitCheckboxes()" />
+
+                                <div class="notes-box__content">
+                                    <div class="notes-box__title">
+                                        @note.StudentName, @note.StudentClass
+                                    </div>
+                                    <div class="notes-box__text">
+                                        @note.Text
+                                    </div>
+                                </div>
+                            </label>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p style="color: #999;">Zatím nejsou k tomuto učiteli žádné poznámky od studentů.</p>
+                }
+            </div>
+
+        </div>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Uložit
+            </button>
+            <a asp-page="Index" class="admin-button admin-button--secondary">
+                Zpět
+            </a>
+        </div>
+
+    </form>
+</section>
+
+<style>
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin-form__label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form__input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .notes-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .notes-box__item {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .notes-box__item:hover {
+        background-color: #f9f9f9;
+    }
+
+    .notes-box__item input[type="checkbox"] {
+        margin-top: 0.25rem;
+        cursor: pointer;
+    }
+
+    .notes-box__content {
+        flex: 1;
+    }
+
+    .notes-box__title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .notes-box__text {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .notes-box__none {
+        background-color: #f5f5f5;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function limitCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[name="SelectedNoteIds"]:checked');
+            const allCheckboxes = document.querySelectorAll('input[name="SelectedNoteIds"]');
+            
+            if (checkboxes.length > 3) {
+                allCheckboxes.forEach(cb => {
+                    if (cb.checked && checkboxes.length > 3) {
+                        const checkedArray = Array.from(checkboxes);
+                        const lastChecked = checkedArray[checkedArray.length - 1];
+                        if (cb !== lastChecked) {
+                            cb.checked = false;
+                        }
+                    }
+                });
+                
+                const newChecked = document.querySelectorAll('input[name="SelectedNoteIds"]:checked');
+                while (newChecked.length > 3) {
+                    newChecked[0].checked = false;
+                }
+            }
+        }
+    </script>
+}

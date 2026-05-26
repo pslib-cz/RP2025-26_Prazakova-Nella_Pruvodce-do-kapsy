@@ -40,26 +40,64 @@
                 <span asp-validation-for="Teacher.LastN" class="admin-form__validation"></span>
             </div>
 
-            <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
-                <label asp-for="Note.Text" class="admin-form__label">Poznámka od studentů</label>
-                <textarea asp-for="Note.Text" class="admin-form__textarea"></textarea>
-                <span asp-validation-for="Note.Text" class="admin-form__validation"></span>
-            </div>
+            <div class="admin-form__field admin-form__field--full">
+                <label class="admin-form__label">Poznámky od studentů <span style="color: #999;">(max 3 poznámky)</span></label>
+                
+                @if (Model.AvailableNotes.Any())
+                {
+                    <div class="notes-box">
+                        @foreach (var note in Model.AvailableNotes)
+                        {
+                            var isSelected = Model.SelectedNoteIds.Contains(note.StudentNoteId);
 
-            <div style="display:flex; flex-direction: row; gap: 1rem;" class="admin-form__field admin-form__field--full">
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentName" class="admin-form__label">Křestní jméno</label>
-                    <input asp-for="Note.StudentName" class="admin-form__input" />
-                    <span asp-validation-for="Note.StudentName" class="admin-form__validation"></span>
-                </div>
+                            <label class="notes-box__item">
+                                <input type="checkbox"
+                                    name="SelectedNoteIds"
+                                    value="@note.StudentNoteId"
+                                    @(isSelected ? "checked" : "")
+                                    onchange="limitCheckboxes()" />
 
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentField" class="admin-form__label">Obor</label>
-                    <select asp-for="Note.StudentField" asp-items="Model.NoteFieldItems" class="admin-form__input">
-                        <option value="">Vyberte obor</option>
-                    </select>
-                    <span asp-validation-for="Note.StudentField" class="admin-form__validation"></span>
-                </div>
+                                <div class="notes-box__content">
+
+                                    <div class="notes-box__header">
+
+                                        <div class="notes-box__title">
+                                            @note.StudentName, @note.StudentClass
+                                        </div>
+
+                                        <button type="submit"
+                                            name="noteId"
+                                            value="@note.StudentNoteId"
+                                            formaction="?handler=DeleteNote"
+                                            formmethod="post"
+                                            class="notes-box__delete"
+                                            title="Pro nenávratné odstranění neslušných či nevyhovujících poznámek">
+
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 24 24">
+                                                <path d="M0 0h24v24H0z" fill="none" />
+                                                <path fill="none" stroke="#fb0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m18 9l-.84 8.398c-.127 1.273-.19 1.909-.48 2.39a2.5 2.5 0 0 1-1.075.973C15.098 21 14.46 21 13.18 21h-2.36c-1.279 0-1.918 0-2.425-.24a2.5 2.5 0 0 1-1.076-.973c-.288-.48-.352-1.116-.48-2.389L6 9m7.5 6.5v-5m-3 5v-5m-6-4h4.615m0 0l.386-2.672c.112-.486.516-.828.98-.828h3.038c.464 0 .867.342.98.828l.386 2.672m-5.77 0h5.77m0 0H19.5" />
+                                                </svg>
+
+                                                <span class="notes-box__tooltip">
+                                                    Pro nenávratné odstranění neslušných či nevyhovujících poznámek
+                                                </span>
+                                        </button>
+
+                                    </div>
+
+                                    <div class="notes-box__text">
+                                        @note.Text
+                                    </div>
+
+                                </div>
+                            </label>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p style="color: #999;">Zatím nejsou k tomuto učiteli žádné poznámky od studentů.</p>
+                }
             </div>
 
         </div>
@@ -76,6 +114,92 @@
     </form>
 </section>
 
+<style>
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin-form__label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form__input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .notes-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .notes-box__item {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .notes-box__item:hover {
+        background-color: #f9f9f9;
+    }
+
+    .notes-box__item input[type="checkbox"] {
+        margin-top: 0.25rem;
+        cursor: pointer;
+    }
+
+    .notes-box__content {
+        flex: 1;
+    }
+
+    .notes-box__title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .notes-box__text {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .notes-box__none {
+        background-color: #f5f5f5;
+    }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function limitCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[name="SelectedNoteIds"]:checked');
+            const allCheckboxes = document.querySelectorAll('input[name="SelectedNoteIds"]');
+            
+            if (checkboxes.length > 3) {
+                allCheckboxes.forEach(cb => {
+                    if (cb.checked && checkboxes.length > 3) {
+                        const checkedArray = Array.from(checkboxes);
+                        const lastChecked = checkedArray[checkedArray.length - 1];
+                        if (cb !== lastChecked) {
+                            cb.checked = false;
+                        }
+                    }
+                });
+                
+                const newChecked = document.querySelectorAll('input[name="SelectedNoteIds"]:checked');
+                while (newChecked.length > 3) {
+                    newChecked[0].checked = false;
+                }
+            }
+        }
+    </script>
 }

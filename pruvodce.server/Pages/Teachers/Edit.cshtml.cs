@@ -1,142 +1,108 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pruvodce.server.Data;
 using pruvodce.server.Models;
-
+using System.Text.Json;
+ 
 namespace pruvodce.server.Pages.Teachers
 {
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-
+ 
         public EditModel(ApplicationDbContext context)
         {
             _context = context;
         }
-
+ 
         [BindProperty]
         public Teacher Teacher { get; set; } = default!;
-
+ 
         [BindProperty]
-        public StudentNote Note { get; set; } = new()
-        {
-            Text = string.Empty,
-            StudentName = "Student"
-        };
-
-        public SelectList NoteFieldItems { get; set; } = default!;
-
+        public List<string> SelectedNoteIds { get; set; } = new();
+ 
+        public List<StudentNote> AvailableNotes { get; set; } = new();
+ 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (string.IsNullOrEmpty(id))
                 return NotFound();
-
+ 
             var item = await _context.Teachers
-                .Include(t => t.Note)
+                .Include(t => t.Notes)
                 .FirstOrDefaultAsync(t => t.TeacherId == id);
-
+ 
             if (item == null)
                 return NotFound();
-
+ 
             Teacher = item;
-
-            Note = item.Note ?? new StudentNote
+ 
+            if (!string.IsNullOrEmpty(Teacher.SelectedNoteIds))
             {
-                Text = string.Empty,
-                StudentName = "Student"
-            };
-
-            LoadNoteFields();
-
+                try
+                {
+                    SelectedNoteIds = JsonSerializer.Deserialize<List<string>>(Teacher.SelectedNoteIds) ?? new();
+                }
+                catch
+                {
+                    SelectedNoteIds = new();
+                }
+            }
+ 
+            await LoadAvailableNotesAsync();
+ 
             return Page();
         }
-
+ 
         public async Task<IActionResult> OnPostAsync()
         {
-            ModelState.Remove("Teacher.Note");
-
-            var noteHasAnyValue =
-                !string.IsNullOrWhiteSpace(Note.Text) ||
-                (!string.IsNullOrWhiteSpace(Note.StudentName) && Note.StudentName != "Student") ||
-                Note.StudentField != null;
-
-            ModelState.Remove("Note.Text");
-            ModelState.Remove("Note.StudentName");
-            ModelState.Remove("Note.StudentField");
-            ModelState.Remove("Note.StudentYear");
-
-            if (noteHasAnyValue)
-            {
-                if (string.IsNullOrWhiteSpace(Note.Text))
-                    ModelState.AddModelError("Note.Text", "Poznámka je povinná.");
-
-                if (Note.StudentField == null)
-                    ModelState.AddModelError("Note.StudentField", "Obor je povinný.");
-            }
-
             if (!ModelState.IsValid)
             {
-                LoadNoteFields();
+                await LoadAvailableNotesAsync();
                 return Page();
             }
-
+ 
             var existing = await _context.Teachers
-                .Include(t => t.Note)
                 .FirstOrDefaultAsync(t => t.TeacherId == Teacher.TeacherId);
-
+ 
             if (existing == null)
                 return NotFound();
-
+ 
             existing.FirstN = Teacher.FirstN;
             existing.LastN = Teacher.LastN;
             existing.Degree = Teacher.Degree;
-
-            if (noteHasAnyValue)
-            {
-                if (existing.Note == null)
-                {
-                    existing.Note = new StudentNote
-                    {
-                        StudentNoteId = Guid.NewGuid().ToString()
-                    };
-                }
-
-                existing.Note.Text = Note.Text?.Trim() ?? string.Empty;
-                existing.Note.StudentName = string.IsNullOrWhiteSpace(Note.StudentName)
-                    ? "Student"
-                    : Note.StudentName.Trim();
-                existing.Note.StudentField = Note.StudentField;
-                existing.Note.StudentYear = null;
-            }
-            else
-            {
-                if (existing.Note != null)
-                    _context.Remove(existing.Note);
-
-                existing.Note = null;
-                existing.NoteId = null;
-            }
-
+ 
+            var limitedNoteIds = SelectedNoteIds.Take(3).ToList();
+            existing.SelectedNoteIds = limitedNoteIds.Any()
+                ? JsonSerializer.Serialize(limitedNoteIds)
+                : null;
+ 
             await _context.SaveChangesAsync();
-
+ 
             return RedirectToPage("Index");
         }
 
-        private void LoadNoteFields()
+        public async Task<IActionResult> OnPostDeleteNoteAsync(string noteId)
         {
-            NoteFieldItems = new SelectList(
-                Enum.GetValues<FieldType>()
-                    .Select(field => new SelectListItem
-                    {
-                        Value = field.ToString(),
-                        Text = field.ToString()
-                    }),
-                "Value",
-                "Text",
-                Note.StudentField
-            );
+            var note = await _context.StudentNotes
+                .FirstOrDefaultAsync(n => n.StudentNoteId == noteId);
+
+            if (note != null)
+            {
+                _context.StudentNotes.Remove(note);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage();
+        }
+ 
+        private async Task LoadAvailableNotesAsync()
+        {
+            AvailableNotes = await _context.StudentNotes
+                .Where(n => n.TargetType.ToUpper() == "TEACHER" && n.TeacherId == Teacher.TeacherId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
         }
     }
 }

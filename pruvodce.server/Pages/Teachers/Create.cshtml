@@ -19,7 +19,7 @@
             <div class="admin-form__field admin-form__field--full">
                 <label class="admin-form__label">Celé jméno</label>
 
-                <div style="display:flex; justify-content: space-between;">
+                <div style="display:flex; gap: 0.75rem;">
                     <input asp-for="Teacher.Degree"
                            class="admin-form__input"
                            placeholder="Titul" />
@@ -38,34 +38,13 @@
                 <span asp-validation-for="Teacher.LastN" class="admin-form__validation"></span>
             </div>
 
-            <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
-                <label asp-for="Note.Text" class="admin-form__label">Poznámka od studentů</label>
-                <textarea asp-for="Note.Text" class="admin-form__textarea"></textarea>
-                <span asp-validation-for="Note.Text" class="admin-form__validation"></span>
-            </div>
-
-            <div style="display:flex; flex-direction: row; gap: 1rem;" class="admin-form__field admin-form__field--full">
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentName" class="admin-form__label">Křestní jméno</label>
-                    <input asp-for="Note.StudentName" class="admin-form__input" />
-                    <span asp-validation-for="Note.StudentName" class="admin-form__validation"></span>
-                </div>
-
-                <div class="admin-form__field">
-                    <label asp-for="Note.StudentField" class="admin-form__label">Obor</label>
-                    <select asp-for="Note.StudentField" asp-items="Model.NoteFieldItems" class="admin-form__input">
-                        <option value="">Vyberte obor</option>
-                    </select>
-                    <span asp-validation-for="Note.StudentField" class="admin-form__validation"></span>
-                </div>
-            </div>
-
         </div>
 
         <div class="admin-form__actions">
             <button type="submit" class="admin-button admin-button--primary">
                 Vytvořit
             </button>
+
             <a asp-page="Index" class="admin-button admin-button--secondary">
                 Zpět
             </a>
@@ -74,6 +53,50 @@
     </form>
 </section>
 
+<style>
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin-form__label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form__input,
+    .admin-form__multiselect {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .admin-form__multiselect {
+        min-height: 180px;
+    }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const select = document.getElementById('notesSelect');
+
+            select.addEventListener('change', function () {
+
+                const selected = Array.from(select.selectedOptions);
+
+                if (selected.length > 3) {
+
+                    selected[selected.length - 1].selected = false;
+
+                    alert('Můžete vybrat maximálně 3 poznámky.');
+                }
+            });
+        });
+    </script>
 }

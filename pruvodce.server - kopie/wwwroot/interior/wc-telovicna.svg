@@ -1,0 +1,51 @@
+<svg width="26" height="23" viewBox="0 0 26 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_172_60)">
+<g clip-path="url(#clip1_172_60)">
+<path d="M0 1L25 1" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 3L25 3" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 5L25 5" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 7L25 7" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 9L25 9" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 11L25 11" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 13L25 13" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 15L25 15" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 17L25 17" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 19H25" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 21L25 21" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M0 23L25 23" stroke="#ACBECE" stroke-width="0.2"/>
+</g>
+<g clip-path="url(#clip2_172_60)">
+<path d="M25 1L25 24" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M23 1L23 24" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M21 1L21 24" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M19 1L19 24" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M17 1L17 24" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M15 1L15 44" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M13 1L13 40" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M11 1L11 42" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M9 1L9 43" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M7 1L7 45" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M5 1L5 51" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M3 1L3 44" stroke="#ACBECE" stroke-width="0.2"/>
+<path d="M1 1L1 44" stroke="#ACBECE" stroke-width="0.2"/>
+</g>
+<g clip-path="url(#clip3_172_60)">
+<path d="M22.5 16.5C19.5 16.6667 15 17.2 15 24" stroke="#94ABBE" stroke-width="0.3"/>
+<rect width="8" height="0.8" transform="matrix(0 1 1 0 22 16)" fill="#50555A"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_172_60">
+<rect width="26" height="23" fill="white"/>
+</clipPath>
+<clipPath id="clip1_172_60">
+<rect width="25" height="23" fill="white" transform="translate(0 1)"/>
+</clipPath>
+<clipPath id="clip2_172_60">
+<rect width="23" height="27" fill="white" transform="matrix(0 1 -1 0 25 1)"/>
+</clipPath>
+<clipPath id="clip3_172_60">
+<rect width="8" height="8" fill="white" transform="matrix(0 1 1 0 15 16)"/>
+</clipPath>
+</defs>
+</svg>

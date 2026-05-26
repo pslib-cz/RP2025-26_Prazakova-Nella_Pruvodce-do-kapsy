@@ -22,15 +22,11 @@ namespace pruvodce.server.Pages.Points
         [BindProperty]
         public Point Point { get; set; } = new()
         {
+            PointId = string.Empty,
             Label = string.Empty,
-            Icon = PointIcon.Jine
-        };
-
-        [BindProperty]
-        public StudentNote Note { get; set; } = new()
-        {
-            Text = string.Empty,
-            StudentName = "Student"
+            Icon = PointIcon.Jine,
+            AreStudents = false,
+            SpecializationId = string.Empty
         };
 
         [BindProperty]
@@ -42,47 +38,27 @@ namespace pruvodce.server.Pages.Points
         public SelectList RoomItems { get; set; } = default!;
         public MultiSelectList TeacherItems { get; set; } = default!;
         public MultiSelectList SubjectItems { get; set; } = default!;
-        public SelectList EventItems { get; set; } = default!;
         public SelectList SpecializationItems { get; set; } = default!;
-        public SelectList NoteFieldItems { get; set; } = default!;
         public List<SelectListItem> IconItems { get; set; } = new();
 
-        public async Task OnGetAsync(int? eventId)
+        public async Task OnGetAsync()
         {
-            Point.Icon ??= PointIcon.Jine;
-
-            if (eventId.HasValue)
-            {
-                Point.EventId = eventId.Value;
-            }
-
+            Point.Icon = PointIcon.Jine;
             await LoadSelectListsAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Point.PointId ??= Guid.NewGuid().ToString();
-            Point.Icon ??= PointIcon.Jine;
+            if (string.IsNullOrWhiteSpace(Point.PointId))
+            {
+                Point.PointId = Guid.NewGuid().ToString();
+            }
 
             ModelState.Remove("Point.PointId");
             ModelState.Remove("Point.Teachers");
             ModelState.Remove("Point.PointSubjects");
-            ModelState.Remove("Point.Event");
             ModelState.Remove("Point.Specialization");
-            ModelState.Remove("Point.Note");
-
-            var noteHasAnyValue =
-                !string.IsNullOrWhiteSpace(Note.Text) ||
-                (!string.IsNullOrWhiteSpace(Note.StudentName) && Note.StudentName != "Student") ||
-                Note.StudentField != null;
-
-            if (!noteHasAnyValue)
-            {
-                ModelState.Remove("Note.Text");
-                ModelState.Remove("Note.StudentName");
-                ModelState.Remove("Note.StudentField");
-                ModelState.Remove("Note.StudentYear");
-            }
+            ModelState.Remove("Point.EventPoints");
 
             if (!ModelState.IsValid)
             {
@@ -97,6 +73,45 @@ namespace pruvodce.server.Pages.Points
                 return Page();
             }
 
+            if (!await SpecializationExistsAsync(Point.SpecializationId))
+            {
+                ModelState.AddModelError("Point.SpecializationId", "Vyberte existující zaměření.");
+                await LoadSelectListsAsync();
+                return Page();
+            }
+
+            if (SelectedTeacherIds.Any())
+            {
+                var validTeacherIds = await _context.Teachers
+                    .Where(t => SelectedTeacherIds.Contains(t.TeacherId))
+                    .Select(t => t.TeacherId)
+                    .ToListAsync();
+
+                var invalidIds = SelectedTeacherIds.Except(validTeacherIds).ToList();
+                if (invalidIds.Any())
+                {
+                    ModelState.AddModelError("SelectedTeacherIds", "Někteří vybraní učitelé neexistují.");
+                    await LoadSelectListsAsync();
+                    return Page();
+                }
+            }
+
+            if (SelectedSubjectIds.Any())
+            {
+                var validSubjectIds = await _context.Subjects
+                    .Where(s => SelectedSubjectIds.Contains(s.SubjectId))
+                    .Select(s => s.SubjectId)
+                    .ToListAsync();
+
+                var invalidIds = SelectedSubjectIds.Except(validSubjectIds).ToList();
+                if (invalidIds.Any())
+                {
+                    ModelState.AddModelError("SelectedSubjectIds", "Některé vybrané předměty neexistují.");
+                    await LoadSelectListsAsync();
+                    return Page();
+                }
+            }
+
             Point.Label = Point.Label.Trim();
 
             if (!string.IsNullOrWhiteSpace(Point.Description))
@@ -104,9 +119,14 @@ namespace pruvodce.server.Pages.Points
                 Point.Description = Point.Description.Trim();
             }
 
-            Point.Teachers = await _context.Teachers
-                .Where(t => SelectedTeacherIds.Contains(t.TeacherId))
-                .ToListAsync();
+            Point.PointTeachers = SelectedTeacherIds
+                .Select(id => new PointTeacher
+                {
+                    PointTeacherId = Guid.NewGuid().ToString(),
+                    PointId = Point.PointId,
+                    TeacherId = id
+                })
+                .ToList();
 
             Point.PointSubjects = SelectedSubjectIds
                 .Select(id => new PointSubject
@@ -116,31 +136,19 @@ namespace pruvodce.server.Pages.Points
                 })
                 .ToList();
 
-            if (noteHasAnyValue)
-            {
-                Note.StudentNoteId = Guid.NewGuid().ToString();
-                Note.StudentName = string.IsNullOrWhiteSpace(Note.StudentName)
-                    ? "Student"
-                    : Note.StudentName.Trim();
-
-                if (!string.IsNullOrWhiteSpace(Note.Text))
-                {
-                    Note.Text = Note.Text.Trim();
-                }
-
-                Point.Note = Note;
-                Point.NoteId = Note.StudentNoteId;
-            }
-            else
-            {
-                Point.Note = null;
-                Point.NoteId = null;
-            }
-
             _context.Points.Add(Point);
+
             await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
+        }
+
+        private async Task<bool> SpecializationExistsAsync(string? specializationId)
+        {
+            if (string.IsNullOrWhiteSpace(specializationId))
+                return false;
+
+            return await _context.Specializations.AnyAsync(s => s.SpecializationId == specializationId);
         }
 
         private async Task LoadSelectListsAsync()
@@ -177,16 +185,6 @@ namespace pruvodce.server.Pages.Points
                 SelectedSubjectIds
             );
 
-            EventItems = new SelectList(
-                await _context.Events
-                    .AsNoTracking()
-                    .OrderBy(e => e.Name)
-                    .ToListAsync(),
-                "EventId",
-                "Name",
-                Point.EventId
-            );
-
             SpecializationItems = new SelectList(
                 await _context.Specializations
                     .AsNoTracking()
@@ -195,18 +193,6 @@ namespace pruvodce.server.Pages.Points
                 "SpecializationId",
                 "Name",
                 Point.SpecializationId
-            );
-
-            NoteFieldItems = new SelectList(
-                Enum.GetValues<FieldType>()
-                    .Select(field => new SelectListItem
-                    {
-                        Value = field.ToString(),
-                        Text = GetFieldTypeLabel(field)
-                    }),
-                "Value",
-                "Text",
-                Note.StudentField
             );
 
             IconItems = Enum.GetValues<PointIcon>()

@@ -1,0 +1,85 @@
+@page
+@model pruvodce.server.Pages.Subjects.CreateModel
+@{
+    ViewData["Title"] = "Vytvořit předmět";
+}
+
+<section class="admin-form">
+    <form method="post" class="admin-form__card">
+
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">Vytvořit předmět</h2>
+            <p class="admin-form__subtitle">Zadejte základní údaje</p>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="admin-form__validation"></div>
+
+        <div class="admin-form__grid">
+
+            <div class="admin-form__field admin-form__field--full">
+                <div class="admin-form__field">
+                    <label asp-for="Subject.Name" class="admin-form__label">Název</label>
+                    <input asp-for="Subject.Name" class="admin-form__input"/>
+                    <span asp-validation-for="Subject.Name" class="admin-form__validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="Subject.Acronym" class="admin-form__label">Zkratka</label>
+                    <input asp-for="Subject.Acronym" class="admin-form__input"/>
+                    <span asp-validation-for="Subject.Acronym" class="admin-form__validation"></span>
+                </div>
+            </div>
+
+            <div class="admin-form__field admin-form__field--full" style="padding-top: 1.5rem;">
+                <label class="admin-form__label">Poznámka od studentů</label>
+
+                <div class="admin-form__field">
+                    <label class="admin-form__label">Vybrat existující poznámku</label>
+
+                    <select asp-for="SelectedNoteId"
+                            asp-items="@Model.AvailableNotes"
+                            class="admin-form__input">
+
+                        <option value="">-- Bez poznámky --</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Vytvořit
+            </button>
+
+            <a asp-page="Index" class="admin-button admin-button--secondary">
+                Zpět
+            </a>
+        </div>
+
+    </form>
+</section>
+
+<style>
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin-form__label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form__input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

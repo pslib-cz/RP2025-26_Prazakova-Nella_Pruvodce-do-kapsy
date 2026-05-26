@@ -26,7 +26,7 @@ const options: {
     value: 'Hand',
     title: 'Praktické stanoviště',
     description: 'Vyzkoušejte si něco z oboru',
-    icon: 'lucide:messages-square',
+    icon: 'lucide:hand',
     className: 'pointHand',
   },
   {
