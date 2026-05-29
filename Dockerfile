@@ -17,7 +17,7 @@ RUN dotnet restore
 
 COPY pruvodce.server/ ./
 
-COPY --from=client-build /app/pruvodce.client/dist ./wwwroot/app
+COPY --from=client-build /app/pruvodce.server/wwwroot/app ./wwwroot/app
 
 RUN dotnet publish -c Release -o /publish
 
