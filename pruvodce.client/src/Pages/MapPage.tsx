@@ -12,7 +12,7 @@ import FloorControls from '../Components/Map/FloorControls';
 
 import PointDetailPanel from '../Components/Map/PointDetailPanel';
 
-import type { BuildingData, FloorData, Point } from '../Types/MapType';
+import type { Point } from '../Types/MapType';
 
 import { mergePointsIntoRooms } from '../mapUtils';
 

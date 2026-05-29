@@ -18,13 +18,6 @@ const fieldClassMap: Record<string, string> = {
   TE: 'fieldTe',
 };
 
-const iconMap: Record<string, string> = {
-  Talk: 'lucide:presentation',
-  Hand: 'lucide:messages-square',
-  Ucebna: 'lucide:door-open',
-  Jine: 'lucide:ellipsis',
-};
-
 function getPointTitle(point: Point): string {
   const rawPoint = point as Point & {
     label?: string;
@@ -95,16 +88,6 @@ function getPointFieldType(point: Point): string {
   }
 
   return value;
-}
-
-function getPointIconType(point: Point): string {
-  const rawPoint = point as Point & {
-    iconType?: string;
-    pointIcon?: string;
-    icon?: string;
-  };
-
-  return rawPoint.iconType ?? rawPoint.pointIcon ?? rawPoint.icon ?? 'Jine';
 }
 
 const PointList: React.FC<PointListProps> = ({ points }) => {
