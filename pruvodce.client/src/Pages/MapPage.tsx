@@ -18,7 +18,7 @@ import { mergePointsIntoRooms } from '../mapUtils';
 
 
 import style from '../Styles/MapPage.module.css';
-import '../Styles/mapItems.css';
+import '../Styles/MapItems.css';
 
 type PointIcon = 'Talk' | 'Hand' | 'Ucebna' | 'Jine';
 
