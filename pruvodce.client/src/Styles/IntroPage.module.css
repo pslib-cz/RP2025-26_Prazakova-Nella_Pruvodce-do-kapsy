@@ -2,11 +2,10 @@
   background-image: url('/intro-background1.png');
   background-size: cover;
   background-position: center;
-
+  padding: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: clamp(24px, 5vw, 64px);
   box-sizing: border-box;
   height: 100%;
 }
@@ -35,10 +34,8 @@
 }
 
 .header {
-  width: 100%;
   display: flex;
   justify-content: center;
-  padding-top: clamp(8px, 3vh, 32px);
 }
 
 .logo {
@@ -51,18 +48,35 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  text-align: left;
   gap: 2rem;
   margin-bottom: 2rem;
 }
 
+.iconWrapper {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  color: #3F4BF7;
+  font-weight: 500;
+}
+
 .title {
-  margin: 0 0 18px;
+  margin: .8rem 0;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
   color: #111;
-  text-align: center;
   font-size: 2.7rem;
+}
+
+.subtitle {
+  color: #3F4BF7;
+  font-size: .9rem;
+}
+
+.blueText {
+  color: #3F4BF7;
 }
 
 .buttonGroup {
@@ -73,40 +87,116 @@
 }
 
 .buildingButton {
-  width: 100%;
-  min-height: 40px;
-  padding: 1rem 2.5rem;
-  border-radius: 18px;
-  background: transparent;
-  font-weight: 300;
-  letter-spacing: 0.01em;
-    color: #ffffff;
-  background-color: #3F4BF7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+
   cursor: pointer;
+
   transition:
-    background-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+
+  box-shadow:
+    0 10px 30px rgba(63, 75, 247, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.buildingButton:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 40px rgba(63, 75, 247, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.buildingButtonContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.buildingTitle {
+  font-size: 1rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.buildingAddress {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 500;
+  color: #8b8b8b;
+}
+
+.buildingAddress span {
+  font-size: .9rem;
+}
+
+.locationIcon {
+  width: 22px;
+  height: 22px;
+  opacity: 0.7;
+}
+
+.buildingArrow {
+  width: 3.2rem;
+  height: 3.2rem;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(
+    135deg,
+    #4f5dff 0%,
+    #1d18ff 100%
+  );
+
+  color: white;
+
+  box-shadow:
+    0 12px 24px rgba(63, 75, 247, 0.35),
+    0 4px 10px rgba(63, 75, 247, 0.2);
+
+  transition:
     transform 160ms ease,
     box-shadow 160ms ease;
+}
+
+.arrowIcon {
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.buildingButton:hover .buildingArrow {
+  transform: scale(1.06);
+  box-shadow:
+    0 18px 32px rgba(63, 75, 247, 0.45),
+    0 4px 10px rgba(63, 75, 247, 0.25);
 }
 
 .introText {
   margin: 2rem 0;
 }
 
-.introText p {
-  font-size: 0.7rem;
-  color: #000
-}
-
 .buildingButton:hover {
-  background: #1c2494;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
-}
-
-.buildingButton:active {
-  transform: translateY(0);
-  box-shadow: none;
 }
 
 .introContent {
@@ -114,26 +204,6 @@
   flex-direction: column;
   align-items: center;
   gap: .7rem;
-}
-
-.quizText {
-  color: #8a8a8a;
-  text-align: center;
-  font-size: .8rem;
-}
-
-.quizLink {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #3F4BF7;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.quizLink:hover {
-  text-decoration: underline;
 }
 
 .statusBox {
