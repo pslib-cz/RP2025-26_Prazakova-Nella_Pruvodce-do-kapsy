@@ -18,7 +18,7 @@
                 <label asp-for="Event.Name" class="admin-form__label">Název</label>
                 <input asp-for="Event.Name" class="admin-form__input" />
                 <p class="admin-form__hint">
-                    *Zadejte jasný název, například „Den otevřených dveří, Leden 2026“.
+                    *Zadejte jasný název, například „Den otevřených dveří“.
                 </p>
                 <span asp-validation-for="Event.Name" class="admin-form__validation"></span>
             </div>
@@ -42,33 +42,10 @@
             <span asp-validation-for="SelectedBuildingIds" class="admin-form__validation"></span>
         </div>
 
-            <div class="admin-form__field">
-                <label asp-for="Event.StartDate" class="admin-form__label">Začátek akce</label>
-                <input asp-for="Event.StartDate" class="admin-form__input" type="datetime-local" />
-                <span asp-validation-for="Event.StartDate" class="admin-form__validation"></span>
-            </div>
-
-            <div class="admin-form__field">
-                <label asp-for="Event.EndDate" class="admin-form__label">Konec akce</label>
-                <input asp-for="Event.EndDate" class="admin-form__input" type="datetime-local" />
-                <span asp-validation-for="Event.EndDate" class="admin-form__validation"></span>
-            </div>
-
             <div class="admin-form__field admin-form__field--full">
                 <label asp-for="Event.Description" class="admin-form__label">Popis</label>
                 <textarea asp-for="Event.Description" class="admin-form__textarea"></textarea>
                 <span asp-validation-for="Event.Description" class="admin-form__validation"></span>
-            </div>
-
-            <div class="admin-form__field admin-form__field--full ">
-                <label class="admin-form__checkbox-row">
-                    <input asp-for="Event.IsActive" />
-                    <span>Aktivní akce</span>
-                </label>
-                <p class="admin-form__hint">
-                    *Aktivní akce se zobrazuje i mimo datum konání.
-                </p>
-                <span asp-validation-for="Event.IsActive" class="admin-form__validation"></span>
             </div>
         </div>
 

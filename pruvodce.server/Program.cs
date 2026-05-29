@@ -6,21 +6,27 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedOrigins")
+    .Get<string[]>()
+    ?? new[] { "http://localhost:5173" };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
+var connectionString = builder.Configuration.GetConnectionString("Sqlite")
+    ?? "Data Source=/data/pruvodce.db";
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(
-        builder.Configuration.GetConnectionString("Sqlite")
-        ?? "Data Source=pruvodce.db"
-    ));
+    options.UseSqlite(connectionString));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
@@ -42,14 +48,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
 });
 
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AllowAnonymousToPage("/Login");
-
     options.Conventions.AuthorizeFolder("/Students", "StudentPolicy");
-
     options.Conventions.AuthorizeFolder("/");
 });
 
@@ -78,35 +84,25 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
+    var db = services.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+
     await SeedIdentityData(services);
 }
 
-app.UseCors("AllowFrontend");
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.MapFallbackToFile("/app/{*path:nonfile}", "/app/index.html");
+app.UseCors("AllowFrontend");
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
-/*
-app.Use(async (context, next) =>
-{
-    var path = context.Request.Path.Value?.ToLower();
-    
-    if (path == "/admin" || path == "/admin/")
-    {
-        if (!context.User?.Identity?.IsAuthenticated == true)
-        {
-            context.Response.Redirect("/login");
-            return;
-        }
-    }
-    
-    await next();
-});*/
 
 app.MapControllers();
 app.MapRazorPages();
@@ -122,9 +118,7 @@ async Task SeedIdentityData(IServiceProvider serviceProvider)
     foreach (var roleName in roleNames)
     {
         if (!await roleManager.RoleExistsAsync(roleName))
-        {
             await roleManager.CreateAsync(new IdentityRole(roleName));
-        }
     }
 
     var adminUser = await userManager.FindByNameAsync("admin");
@@ -138,9 +132,7 @@ async Task SeedIdentityData(IServiceProvider serviceProvider)
         };
         var result = await userManager.CreateAsync(adminUser, "admin123");
         if (result.Succeeded)
-        {
             await userManager.AddToRoleAsync(adminUser, "Admin");
-        }
     }
 
     var studentUser = await userManager.FindByNameAsync("student");
@@ -154,8 +146,6 @@ async Task SeedIdentityData(IServiceProvider serviceProvider)
         };
         var result = await userManager.CreateAsync(studentUser, "student123");
         if (result.Succeeded)
-        {
             await userManager.AddToRoleAsync(studentUser, "Student");
-        }
     }
 }

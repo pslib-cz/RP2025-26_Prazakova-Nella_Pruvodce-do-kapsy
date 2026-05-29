@@ -6,5 +6,6 @@ namespace pruvodce.server.Models
         public Event Event { get; set; } = default!;
 
         public int BuildingId { get; set; }
+        public Building? Building { get; set; }
     }
 }

@@ -12,131 +12,237 @@
                 <p class="admin-list__subtitle">Zde můžete spravovat akce.</p>
             </div>
 
-            <a asp-page="Create" class="admin-button admin-button--primary">
+            <a asp-page="./Create" class="admin-button admin-button--primary">
                 + Přidat akci
             </a>
         </div>
 
-        <div class="admin-table-wrap">
-            <table class="admin-table">
-                <thead>
-                    <tr class="admin-table__row">
-                        <th class="admin-table__cell admin-table__cell--head">Název</th>
-                        <th class="admin-table__cell admin-table__cell--head">Začátek</th>
-                        <th class="admin-table__cell admin-table__cell--head">Konec</th>
-                        <th class="admin-table__cell admin-table__cell--head">Stav</th>
-                        <th class="admin-table__cell admin-table__cell--head">Popis</th>
-                        <th class="admin-table__cell admin-table__cell--head"></th>
-                    </tr>
-                </thead>
+        <div class="admin-accordion">
+            @if (Model.Events?.Items?.Any() == true)
+            {
+                @foreach (var item in Model.Events.Items)
+                {
+                    <div class="admin-accordion__item" data-event-id="@item.EventId">
+                        <div class="admin-accordion__header" onclick="toggleEvent(@item.EventId)">
+                            <div class="admin-accordion__left">
+                                <div class="admin-accordion__active-info">
+                                    <form method="post"
+                                        id="toggle-form-@item.EventId"
+                                        asp-page-handler="ToggleActive"
+                                        style="display: inline-block;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="ToggleEventId" value="@item.EventId" />
+                                        <input type="hidden" name="IsActive" id="isactive-@item.EventId" value="@item.IsActive.ToString().ToLower()" />
+                                        <input type="checkbox"
+                                            class="admin-accordion__checkbox"
+                                            @(item.IsActive ? "checked" : "")
+                                            onchange="toggleEventActive(@item.EventId, this.checked, this); event.stopPropagation();">
+                                    </form>
+                                    <p class="admin-accordion__active-label">@(item.IsActive ? "Aktivní" : "Neaktivní")</p>
+                                </div>
+                                <div class="admin-accordion__info">
+                                    <p class="admin-accordion__title">@item.Name</p>
+                                    <p class="admin-accordion__desc">@item.Description</p>
+                                </div>
+                            </div>
+                            <div class="admin-accordion__actions">
+                                <a asp-page="./Edit"
+                                   asp-route-id="@item.EventId"
+                                   class="admin-accordion__action-btn"
+                                   title="Upravit"
+                                   onclick="event.stopPropagation();">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                        <path d="M0 0h24v24H0z" fill="none" />
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                            <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
+                                            <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
+                                        </g>
+                                    </svg>
+                                </a>
 
-                <tbody class="admin-table__body">
-                    @if (Model.Events.Items.Any())
-                    {
-                        @foreach (var item in Model.Events.Items)
-                        {
-                            <tr class="admin-table__row">
-                                <td class="admin-table__cell">
-                                    <span class="admin-table__primary">@item.Name</span>
-                                </td>
+                                <a asp-page="./Delete"
+                                   asp-route-id="@item.EventId"
+                                   class="admin-accordion__action-btn"
+                                   title="Smazat"
+                                   onclick="event.stopPropagation();">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                        <path d="M0 0h24v24H0z" fill="none" />
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                    </svg>
+                                </a>
 
-                                <td class="admin-table__cell">@(item.StartDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                <button class="admin-accordion__toggle-btn"
+                                        onclick="event.stopPropagation(); toggleEvent(@item.EventId)"
+                                        type="button"
+                                        title="Rozbalit/sbalit">
+                                    <svg class="admin-accordion__toggle"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="1em"
+                                        height="1em"
+                                        viewBox="0 0 24 24">
+                                        <path d="M0 0h24v24H0z" fill="none" />
+                                        <path fill="none"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="m6 10l6 6l6-6z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
 
-                                <td class="admin-table__cell">@(item.EndDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
-
-                                <td class="admin-table__cell admin-table__cell--status">
-                                    @if (item.IsActive)
-                                    {
-                                        <span class="admin-badge admin-badge--success">Aktivní</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="admin-badge admin-badge--muted">Neaktivní</span>
-                                    }
-                                </td>
-
-                                <td class="admin-table__cell admin-table__cell--description">@item.Description</td>
-
-                                <td class="admin-table__cell">
-                                    <div class="admin-table__actions">
-                                        <a asp-page="./Edit"
-                                           asp-route-id="@item.EventId"
-                                           class="admin-button admin-button--secondary">
-                                            Editovat
-                                        </a>
-
-                                        <a asp-page="./Delete"
-                                           asp-route-id="@item.EventId"
-                                           class="admin-button admin-button--danger">
-                                            Odebrat
-                                        </a>
+                        <div class="admin-accordion__content" id="content-@item.EventId">
+                            @{
+                                var pointsForEvent = Model.EventPointsMap.ContainsKey(item.EventId)
+                                    ? Model.EventPointsMap[item.EventId]
+                                    : new List<PointDto>();
+                            }
+                            <div class="admin-accordion__buildings-label">Stanoviště (@pointsForEvent.Count)</div>
+                            <div id="buildings-@item.EventId" class="admin-accordion__buildings-container">
+                                @foreach (var point in pointsForEvent)
+                                {
+                                    <div class="admin-accordion__building-item" data-point-id="@point.PointId">
+                                        <div class="admin-accordion__building-left">
+                                            <div class="admin-accordion__building-info">
+                                                <p class="admin-accordion__building-name">@point.Label</p>
+                                                <p class="admin-accordion__building-code">@point.SpecializationName</p>
+                                            </div>
+                                        </div>
+                                        <form method="post" asp-page-handler="RemovePoint"
+                                              onsubmit="event.stopPropagation(); return confirm('Opravdu chcete odebrat toto stanoviště z akce?');"
+                                              style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="RemoveEventId" value="@item.EventId" />
+                                            <input type="hidden" name="RemovePointId" value="@point.PointId" />
+                                            <button type="submit"
+                                                    class="admin-accordion__building-delete"
+                                                    title="Odebrat ze stanoviště">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                                    <path d="M0 0h24v24H0z" fill="none" />
+                                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </div>
-                                </td>
-                            </tr>
+                                }
+                            </div>
+                            <button class="admin-accordion__add-building-btn" onclick="event.stopPropagation(); window.location.href='@Url.Page("./Index", "AddPoints", new { addPointsEventId = item.EventId })';">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7h-14" />
+                                </svg>
+                                Přidat nové stanoviště
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="admin-accordion__empty">
+                    Zatím není vytvořena žádná akce.
+                </div>
+            }
+        </div>
+
+        <div class="admin-pagination">
+            <div class="admin-pagination__info">
+                Zobrazuji @((Model.Events.PageNumber - 1) * Model.Events.PageSize + 1)–@Math.Min(Model.Events.PageNumber * Model.Events.PageSize, Model.Events.TotalItems) z @Model.Events.TotalItems
+            </div>
+
+            <div class="admin-pagination__controls">
+                @if (Model.Events.PageNumber > 1)
+                {
+                    <a asp-page="./Index"
+                       asp-route-pageNumber="@(Model.Events.PageNumber - 1)"
+                       asp-route-pageSize="@Model.Events.PageSize"
+                       class="admin-pagination__button">
+                        ‹
+                    </a>
+                }
+                else
+                {
+                    <span class="admin-pagination__button admin-pagination__button--disabled">‹</span>
+                }
+
+                @{
+                    var totalPages = (int)Math.Ceiling((double)Model.Events.TotalItems / Model.Events.PageSize);
+                    for (var i = 1; i <= totalPages; i++)
+                    {
+                        if (i == Model.Events.PageNumber)
+                        {
+                            <span class="admin-pagination__button admin-pagination__button--active">@i</span>
+                        }
+                        else
+                        {
+                            <a asp-page="./Index"
+                               asp-route-pageNumber="@i"
+                               asp-route-pageSize="@Model.Events.PageSize"
+                               class="admin-pagination__button">
+                                @i
+                            </a>
+                        }
+                    }
+                }
+
+                @if (Model.Events.PageNumber < Math.Ceiling((double)Model.Events.TotalItems / Model.Events.PageSize))
+                {
+                    <a asp-page="./Index"
+                       asp-route-pageNumber="@(Model.Events.PageNumber + 1)"
+                       asp-route-pageSize="@Model.Events.PageSize"
+                       class="admin-pagination__button">
+                        ›
+                    </a>
+                }
+                else
+                {
+                    <span class="admin-pagination__button admin-pagination__button--disabled">›</span>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (Model.AddPointsEventId.HasValue)
+{
+    <div class="admin-modal-overlay" id="pointsModal" style="display: block;">
+        <div class="admin-modal">
+            <form method="post" asp-page-handler="AddPoints">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="AddPointsEventIdForm" value="@Model.AddPointsEventId" />
+                <div class="admin-modal__header">
+                    <h2 class="admin-modal__title">Označte stanoviště, která chcete přidat</h2>
+                    <a asp-page="./Index" class="admin-modal__close">&times;</a>
+                </div>
+                <div class="admin-modal__body">
+                    @if (Model.AvailablePointsForModal != null && Model.AvailablePointsForModal.Any())
+                    {
+                        @foreach (var point in Model.AvailablePointsForModal)
+                        {
+                            <label class="admin-modal__item">
+                                <input type="checkbox" name="SelectedPointIds" value="@point.PointId">
+                                <div class="admin-modal__item-info">
+                                    <p class="admin-modal__item-name">@point.Label</p>
+                                    <p class="admin-modal__item-code">@point.SpecializationName</p>
+                                </div>
+                            </label>
                         }
                     }
                     else
                     {
-                        <tr class="admin-table__row">
-                            <td colspan="5" class="admin-table__cell admin-table__cell--empty">
-                                Zatím není vytvořena žádná akce.
-                            </td>
-                        </tr>
+                        <p class="admin-loading">Všechna dostupná stanoviště jsou již přidána.</p>
                     }
-                </tbody>
-            </table>
+                </div>
+                <div class="admin-modal__footer">
+                    <a asp-page="./Index" class="admin-button admin-button--secondary">Zrušit</a>
+                    <button type="submit" class="admin-button admin-button--primary">Uložit</button>
+                </div>
+            </form>
         </div>
-        <div class="admin-pagination">
-    <div class="admin-pagination__info">
-        Zobrazuji @Model.Events.FirstItemNumber–@Model.Events.LastItemNumber z @Model.Events.TotalItems
     </div>
+}
 
-    <div class="admin-pagination__controls">
-        @if (Model.Events.HasPreviousPage)
-        {
-            <a asp-page="./Index"
-               asp-route-pageNumber="@(Model.Events.PageNumber - 1)"
-               asp-route-pageSize="@Model.Events.PageSize"
-               class="admin-pagination__button">
-                ‹
-            </a>
-        }
-        else
-        {
-            <span class="admin-pagination__button admin-pagination__button--disabled">‹</span>
-        }
-
-        @for (var i = 1; i <= Model.Events.TotalPages; i++)
-        {
-            if (i == Model.Events.PageNumber)
-            {
-                <span class="admin-pagination__button admin-pagination__button--active">@i</span>
-            }
-            else
-            {
-                <a asp-page="./Index"
-                   asp-route-pageNumber="@i"
-                   asp-route-pageSize="@Model.Events.PageSize"
-                   class="admin-pagination__button">
-                    @i
-                </a>
-            }
-        }
-
-        @if (Model.Events.HasNextPage)
-        {
-            <a asp-page="./Index"
-               asp-route-pageNumber="@(Model.Events.PageNumber + 1)"
-               asp-route-pageSize="@Model.Events.PageSize"
-               class="admin-pagination__button">
-                ›
-            </a>
-        }
-        else
-        {
-            <span class="admin-pagination__button admin-pagination__button--disabled">›</span>
-        }
-    </div>
-</div>
-    </div>
-</section>
+@section Scripts {
+    <script src="~/js/events.js"></script>
+}

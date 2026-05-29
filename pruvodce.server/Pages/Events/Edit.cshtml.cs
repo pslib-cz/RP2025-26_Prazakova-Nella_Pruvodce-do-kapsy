@@ -65,11 +65,6 @@ namespace pruvodce.server.Pages.Events
                 ModelState.AddModelError("SelectedBuildingIds", "Vyberte alespoň jednu budovu.");
             }
 
-            if (Event.EndDate <= Event.StartDate)
-            {
-                ModelState.AddModelError("Event.EndDate", "Konec akce musí být později než začátek.");
-            }
-
             var mapData = await _mapDataService.GetMapDataAsync();
 
             var validBuildingIds = mapData.Buildings
@@ -115,26 +110,11 @@ namespace pruvodce.server.Pages.Events
                 return NotFound();
             }
 
-            if (Event.IsActive)
-            {
-                var otherEvents = await _context.Events
-                    .Include(e => e.EventBuildings)
-                    .Where(e =>
-                        e.EventId != Event.EventId &&
-                        e.EventBuildings.Any(eb => selectedBuildingIds.Contains(eb.BuildingId)))
-                    .ToListAsync();
-
-                foreach (var otherEvent in otherEvents)
-                {
-                    otherEvent.IsActive = false;
-                }
-            }
-
             existing.Name = Event.Name;
             existing.StartDate = Event.StartDate;
             existing.EndDate = Event.EndDate;
-            existing.IsActive = Event.IsActive;
             existing.Description = Event.Description;
+            // IsActive se nemění — řídí se pouze přes Events/Index
 
             existing.EventBuildings.Clear();
 

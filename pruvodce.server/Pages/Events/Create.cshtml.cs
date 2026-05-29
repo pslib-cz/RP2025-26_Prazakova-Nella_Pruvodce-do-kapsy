@@ -35,9 +35,6 @@ namespace pruvodce.server.Pages.Events
             Event = new Event
             {
                 Name = string.Empty,
-                StartDate = RoundToMinute(DateTime.Now),
-                EndDate = RoundToMinute(DateTime.Now.AddHours(2)),
-                IsActive = true,
                 CreatedAt = DateTime.Now
             };
 
@@ -80,11 +77,6 @@ namespace pruvodce.server.Pages.Events
                 ModelState.AddModelError("SelectedBuildingIds", "Vyberte alespoň jednu budovu.");
             }
 
-            if (Event.EndDate <= Event.StartDate)
-            {
-                ModelState.AddModelError("Event.EndDate", "Konec akce musí být později než začátek.");
-            }
-
             if (!string.IsNullOrWhiteSpace(Event.Name))
             {
                 var eventNameExists = await _context.Events
@@ -118,19 +110,7 @@ namespace pruvodce.server.Pages.Events
                 .Distinct()
                 .ToList();
 
-            if (Event.IsActive)
-            {
-                var otherEvents = await _context.Events
-                    .Include(e => e.EventBuildings)
-                    .Where(e => e.EventBuildings.Any(eb => selectedBuildingIds.Contains(eb.BuildingId)))
-                    .ToListAsync();
-
-                foreach (var otherEvent in otherEvents)
-                {
-                    otherEvent.IsActive = false;
-                }
-            }
-
+            Event.IsActive = false;
             Event.CreatedAt = DateTime.Now;
 
             Event.EventBuildings = selectedBuildingIds
@@ -158,16 +138,5 @@ namespace pruvodce.server.Pages.Events
             );
         }
 
-        private static DateTime RoundToMinute(DateTime dateTime)
-        {
-            return new DateTime(
-                dateTime.Year,
-                dateTime.Month,
-                dateTime.Day,
-                dateTime.Hour,
-                dateTime.Minute,
-                0
-            );
-        }
     }
 }
