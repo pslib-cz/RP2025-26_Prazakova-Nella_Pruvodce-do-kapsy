@@ -107,6 +107,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapRazorPages();
 
+app.MapGet("/", () => Results.Redirect("/app/"));
 app.Run();
 
 async Task SeedIdentityData(IServiceProvider serviceProvider)
