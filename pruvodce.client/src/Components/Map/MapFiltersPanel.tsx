@@ -24,6 +24,7 @@ interface MapFiltersPanelProps {
   onActiveTypesChange: React.Dispatch<React.SetStateAction<PointIcon[]>>;
 
   points: Point[];
+  onPointSelect?: (point: Point) => void;
   hasActiveEvent: boolean;
   isEventLoading?: boolean;
   eventError?: string | null;
@@ -44,6 +45,7 @@ const MapFiltersPanel: React.FC<MapFiltersPanelProps> = ({
   activeTypes,
   onActiveTypesChange,
   points,
+  onPointSelect,
   hasActiveEvent,
   isEventLoading = false,
   eventError = null,
@@ -108,7 +110,7 @@ const MapFiltersPanel: React.FC<MapFiltersPanelProps> = ({
         )}
 
         {!isEventLoading && !eventError && hasActiveEvent && (
-          <PointList points={points} />
+          <PointList points={points} onPointSelect={onPointSelect}/>
         )}
       </section>
     </div>

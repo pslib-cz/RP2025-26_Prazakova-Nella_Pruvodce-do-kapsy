@@ -189,6 +189,11 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           activeTypes={activeTypes}
           onActiveTypesChange={setActiveTypes}
           points={currentFloorPoints}
+          onPointSelect={point => {
+            setSelectedPoint(point);
+            setIsMobilePanelOpen(false);
+            setIsDropdownOpen(false);
+          }}
           hasActiveEvent={hasActiveEvent}
           isEventLoading={eventLoading}
           eventError={eventError}
@@ -277,6 +282,10 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           activeTypes={activeTypes}
           onActiveTypesChange={setActiveTypes}
           points={currentFloorPoints}
+          onPointSelect={point => {
+            setSelectedPoint(point);
+            setIsMobilePanelOpen(false);
+          }}
           hasActiveEvent={hasActiveEvent}
           isEventLoading={eventLoading}
           eventError={eventError}

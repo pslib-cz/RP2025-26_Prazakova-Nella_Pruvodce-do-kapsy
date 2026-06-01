@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 
 namespace pruvodce.server.Pages
 {
@@ -9,15 +10,18 @@ namespace pruvodce.server.Pages
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IConfiguration _configuration;
 
         public LoginModel(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
-            ILogger<LoginModel> logger)
+            ILogger<LoginModel> logger,
+            IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -45,11 +49,14 @@ namespace pruvodce.server.Pages
         {
             string? username = null;
 
-            if (Password == "admin123")
+            var adminPassword = _configuration["LoginPasswords:Admin"];
+            var studentPassword = _configuration["LoginPasswords:Student"];
+
+            if (Password == adminPassword)
             {
                 username = "admin";
             }
-            else if (Password == "student123")
+            else if (Password == studentPassword)
             {
                 username = "student";
             }

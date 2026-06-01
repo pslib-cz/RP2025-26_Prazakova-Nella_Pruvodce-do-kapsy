@@ -7,6 +7,7 @@ import { getPointIconName } from '../../pointIconUtils';
 
 interface PointListProps {
   points: Point[];
+  onPointSelect?: (point: Point) => void;
 }
 
 const fieldClassMap: Record<string, string> = {
@@ -90,7 +91,7 @@ function getPointFieldType(point: Point): string {
   return value;
 }
 
-const PointList: React.FC<PointListProps> = ({ points }) => {
+const PointList: React.FC<PointListProps> = ({ points, onPointSelect }) => {
   if (points.length === 0) {
     return (
       <div className={style.emptyState}>
@@ -112,6 +113,7 @@ const PointList: React.FC<PointListProps> = ({ points }) => {
             key={point.pointId}
             className={style.PointCard}
             type="button"
+            onClick={() => onPointSelect?.(point)}
           >
             <span className={`${style.PointIcon} ${style[fieldClass]}`}>
               <Icon icon={icon} width="20" height="20" />

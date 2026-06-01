@@ -137,16 +137,19 @@ const PointDetailPanel: React.FC<PointDetailPanelProps> = ({
 
       <div className={style.content}>
         <header className={style.header}>
-          <div className={style.iconBox}>
-            <Icon icon={iconName} />
+          <div className={style.headerStart}>
+            <div className={`${style.iconBox} ${style[themeClass]}`}>
+              <Icon icon={iconName} />
+            </div>
+
+            <div className={style.headerText}>
+              <h2>{title}</h2>
+              <p>{room}</p>
+            </div>
           </div>
 
-          <div className={style.headerText}>
-            <h2>{title}</h2>
-            <p>{room}</p>
-          </div>
-
-          <span className={style.specializationBadge}>{fieldLabel}</span>
+          <span className={`${style.specializationBadge} ${style[themeClass]}`}>{specialization?.type}</span>
+          
         </header>
 
         {!isDesktop && !expanded && (
@@ -161,7 +164,11 @@ const PointDetailPanel: React.FC<PointDetailPanelProps> = ({
         )}
 
         <div className={style.fullContent}>
+          
           <section className={style.section}>
+            <span className={style.fieldLabel}>
+            {fieldLabel}
+          </span>
             <h3>
               <Icon icon="lucide:eye" />
               Co se dozvíte
