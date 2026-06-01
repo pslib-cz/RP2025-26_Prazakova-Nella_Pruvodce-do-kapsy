@@ -4,8 +4,9 @@ import react from '@vitejs/plugin-react';
 const backend = process.env.VITE_API_URL ?? 'http://localhost:5000';
 
 export default defineConfig({
-  plugins: [react()],
-  base: '/app/',
+  plugins: [
+    react()
+  ],
   build: {
     outDir: '../pruvodce.server/wwwroot/app',
     emptyOutDir: true,
