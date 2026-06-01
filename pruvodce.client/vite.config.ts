@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     react()
   ],
+  base: "/app/",
   build: {
     outDir: '../pruvodce.server/wwwroot/app',
     emptyOutDir: true,
