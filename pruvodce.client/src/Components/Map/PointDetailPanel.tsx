@@ -200,7 +200,7 @@ const PointDetailPanel: React.FC<PointDetailPanelProps> = ({
           <section className={style.section}>
             <h3>
               <Icon icon="lucide:menu" />
-              O oboru
+              O oboru "{specialization?.type}"
             </h3>
 
             <p>{specialization?.description || 'Popis oboru zatím nebyl vyplněn.'}</p>

@@ -656,10 +656,6 @@
     box-shadow: var(--shadow-card);
   }
 
-  .mapCanvas {
-    padding: 78px 10px 70px;
-  }
-
   .floatingFloorControls {
     right: 20px;
     bottom: 22px;
@@ -711,10 +707,10 @@
     right: 8px;
     top: 12px;
     z-index: 2;
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
     border: 0;
-    border-radius: 999px;
+    border-radius:  874px;
     background: #dddddd;
     color: #ffffff;
     cursor: pointer;

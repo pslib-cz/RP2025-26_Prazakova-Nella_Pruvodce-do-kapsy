@@ -177,7 +177,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         onTransform={ref => setZoomLevel(ref.state.scale)}
         initialScale={initialScale}
         minScale={minScale}
-        maxScale={3}
+        maxScale={4.5}
         initialPositionX={initialPositionX}
         initialPositionY={initialPositionY}
         limitToBounds
