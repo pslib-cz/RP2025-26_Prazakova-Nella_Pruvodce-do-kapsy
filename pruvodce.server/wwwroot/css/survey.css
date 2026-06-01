@@ -15,7 +15,6 @@
         }
 
         .page {
-            max-width: 38rem;
             margin: 0 auto;
         }
 
@@ -76,7 +75,6 @@
         }
 
         .info-box h2 {
-            font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
             line-height: 1.4;
@@ -257,7 +255,7 @@
             }
 
             .page {
-                max-width: 42rem;
+                max-width: 50rem;
             }
 
             .card {

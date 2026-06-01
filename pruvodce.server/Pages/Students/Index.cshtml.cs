@@ -67,6 +67,8 @@ namespace pruvodce.server.Pages.Students
         private void LoadSelects()
         {
             TeacherItems = _context.Teachers
+                .OrderBy(t => t.LastN)
+                .ThenBy(t => t.FirstN)
                 .Select(t => new SelectListItem
                 {
                     Value = t.TeacherId,
@@ -75,6 +77,7 @@ namespace pruvodce.server.Pages.Students
                 .ToList();
 
             SubjectItems = _context.Subjects
+                .OrderBy(s => s.Name)
                 .Select(s => new SelectListItem
                 {
                     Value = s.SubjectId,
