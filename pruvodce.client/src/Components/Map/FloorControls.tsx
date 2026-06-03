@@ -5,6 +5,7 @@ interface FloorControlsProps {
   currentFloorId: number;
   onFloorChange: (floorId: number) => void;
   variant?: 'floating' | 'panel';
+  reverse?: boolean;
 }
 
 const FloorControls: React.FC<FloorControlsProps> = ({
@@ -12,22 +13,17 @@ const FloorControls: React.FC<FloorControlsProps> = ({
   currentFloorId,
   onFloorChange,
   variant = 'floating',
+  reverse = false,
 }) => {
+  const orderedFloors = reverse ? [...floors].reverse() : floors;
+
   return (
-    <div
-      className={
-        variant === 'panel'
-          ? style.panelFloorControls
-          : style.floatingFloorControls
-      }
-    >
-      {[...floors].reverse().map(floor => (
+    <div className={variant === 'panel' ? style.panelFloorControls : style.floatingFloorControls}>
+      {orderedFloors.map(floor => (
         <button
           key={floor.floorId}
           onClick={() => onFloorChange(floor.floorId)}
-          className={`${style.floorButton} ${
-            currentFloorId === floor.floorId ? style.floorButtonActive : ''
-          }`}
+          className={`${style.floorButton} ${currentFloorId === floor.floorId ? style.floorButtonActive : ''}`}
           title={floor.name}
         >
           {floor.floorNumber ?? floor.floorId}

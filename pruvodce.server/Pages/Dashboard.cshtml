@@ -9,8 +9,8 @@
     <section class="admin-home__event-card">
         <div class="admin-home__event-header">
             <div>
-                <h2 class="admin-home__event-title">Aktuální akce</h2>
-                <p class="admin-home__event-name">@Model.CurrentEventTitle</p>
+                <h2 class="admin-home__event-title">@Model.CurrentEventTitle</h2>
+                <p class="admin-home__event-name">Aktuální akce</p>
             </div>
         </div>
 
@@ -20,13 +20,14 @@
                        class="admin-home__filter-input"
                        placeholder="Hledat body..."
                        oninput="submitEventFilter()" />
-
+            <label for="BuildingId">Budova
                 <select asp-for="BuildingId"
                         asp-items="Model.BuildingItems"
                         class="admin-home__filter-select"
                         onchange="this.form.submit()">
                     <option value="">Všechny budovy</option>
                 </select>
+            </label>    
             </form>
 
             <a asp-page="/Points/Create" class="admin-button admin-button--primary">

@@ -10,7 +10,7 @@
         <div class="admin-list__header">
             <div>
                 <h2 class="admin-list__title">Učitelé</h2>
-                <p class="admin-list__subtitle">Seznam všech vyučujících v systému.</p>
+                <p class="admin-list__subtitle">Seznam vyučujících, kteří se objevují na akcích.</p>
             </div>
 
             <a asp-page="Create" class="admin-button admin-button--primary">
@@ -21,7 +21,7 @@
         <form method="get" class="admin-list__filters" id="teacherFilterForm">
             <input asp-for="Search"
                    class="admin-list__search"
-                   placeholder="Hledat podle Jména, poznámky..."
+                   placeholder="Hledat podle Jména, Příjmení, Titulu..."
                    oninput="submitTeacherFilter()" />
         </form>
 
@@ -52,8 +52,8 @@
 
                                 <td class="admin-table__cell admin-table__cell--notes">
                                     @{
-                                        // Parse SelectedNoteIds to get actual count of selected notes
                                         var selectedCount = 0;
+
                                         if (!string.IsNullOrEmpty(item.SelectedNoteIds))
                                         {
                                             try
@@ -61,13 +61,19 @@
                                                 var ids = System.Text.Json.JsonSerializer.Deserialize<List<string>>(item.SelectedNoteIds);
                                                 selectedCount = ids?.Count ?? 0;
                                             }
-                                            catch { selectedCount = 0; }
+                                            catch
+                                            {
+                                                selectedCount = 0;
+                                            }
                                         }
+
+                                        var totalNotes = item.Notes?.Count ?? 0;
                                     }
+
                                     @if (selectedCount > 0)
                                     {
                                         <span class="admin-table__note-badge">
-                                            @selectedCount/3
+                                            @selectedCount/3 <span class="note-badge__hint">(celkem poznámek: @totalNotes)</span>
                                         </span>
                                     }
                                     else
@@ -83,7 +89,7 @@
                                         <a asp-page="./Edit"
                                            asp-route-id="@item.TeacherId"
                                            class="admin-button admin-button--secondary">
-                                            Editovat
+                                            Upravit
                                         </a>
 
                                         <a asp-page="./Delete"

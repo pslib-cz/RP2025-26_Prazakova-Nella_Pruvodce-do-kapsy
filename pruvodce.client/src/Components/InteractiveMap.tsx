@@ -45,6 +45,7 @@ interface InteractiveMapProps {
   floors: FloorData[];
   activeFloorId: number;
   buildingId: number;
+  points?: Point[];
   className?: string;
   onPointSelect?: (point: Point) => void;
   onMapClick?: () => void;
@@ -119,38 +120,54 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const pointRenderData = useMemo(() => {
     if (!activeFloorData) return [];
 
-    return activeFloorData.rooms.flatMap(room => {
-      const roomPoints = room.points ?? [];
+    const allPointsData: Array<{
+      point: Point;
+      x: number;
+      y: number;
+      isOtherFloor: boolean;
+    }> = [];
 
-      return roomPoints.map((point, index) => {
-        const fallbackX = room.coordinateX ?? 0;
-        const fallbackY = room.coordinateY ?? 0;
+    // Process all floors - current and other floors
+    floors.forEach(floor => {
+      const isCurrentFloor = floor.floorId === activeFloorId;
 
-        const pointBaseCoordinate = getPointCoordinate(point, fallbackX, fallbackY);
+      floor.rooms.forEach(room => {
+        const roomPoints = room.points ?? [];
 
-        const hasOwnCoordinates =
-          (point as Point & { coordinateX?: number; coordinateY?: number }).coordinateX != null ||
-          (point as Point & { x?: number; y?: number }).x != null;
+        roomPoints.forEach((point, index) => {
+          const fallbackX = room.coordinateX ?? 0;
+          const fallbackY = room.coordinateY ?? 0;
 
-        if (hasOwnCoordinates) {
-          return {
-            point,
-            x: pointBaseCoordinate.x,
-            y: pointBaseCoordinate.y,
-          };
-        }
+          const pointBaseCoordinate = getPointCoordinate(point, fallbackX, fallbackY);
 
-        const offsetStep = 14;
-        const offset = index * offsetStep;
+          const hasOwnCoordinates =
+            (point as Point & { coordinateX?: number; coordinateY?: number }).coordinateX != null ||
+            (point as Point & { x?: number; y?: number }).x != null;
 
-        return {
-          point,
-          x: pointBaseCoordinate.x + offset,
-          y: pointBaseCoordinate.y,
-        };
+          if (hasOwnCoordinates) {
+            allPointsData.push({
+              point,
+              x: pointBaseCoordinate.x,
+              y: pointBaseCoordinate.y,
+              isOtherFloor: !isCurrentFloor,
+            });
+          } else {
+            const offsetStep = 14;
+            const offset = index * offsetStep;
+
+            allPointsData.push({
+              point,
+              x: pointBaseCoordinate.x + offset,
+              y: pointBaseCoordinate.y,
+              isOtherFloor: !isCurrentFloor,
+            });
+          }
+        });
       });
     });
-  }, [activeFloorData]);
+
+    return allPointsData;
+  }, [floors, activeFloorId, activeFloorData]);
 
   if (!activeFloorData) {
     return <div>Patro nebylo nalezeno.</div>;
@@ -411,7 +428,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             )}
 
             <g id="points-layer">
-              {pointRenderData.map(({ point, x, y }) => (
+              {pointRenderData.map(({ point, x, y, isOtherFloor }) => (
                 <InteractivePoint
                   key={point.pointId}
                   point={point}
@@ -421,6 +438,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   onClick={selected => {
                     onPointSelect?.(selected);
                   }}
+                  isOtherFloor={isOtherFloor}
                 />
               ))}
             </g>

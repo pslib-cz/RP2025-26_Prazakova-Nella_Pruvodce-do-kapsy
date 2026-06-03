@@ -24,7 +24,9 @@ namespace pruvodce.server.Models
         [Display(Name = "Oděvnictví")]
         OD,
         [Display(Name = "Textnilnictví")]
-        TE
+        TE,
+        [Display(Name = "Všeobecné zaměření")]
+        Jiné,
     }
 
     public enum PointIcon

@@ -9,6 +9,7 @@
         <div class="admin-list__header">
             <div>
                 <h2 class="admin-list__title">Seznam stanovišť</h2>
+                <p class="admin-list__subtitle">Vytvářejte stanoviště, která se na akcích opkaují a pro nové použití pouze poupravte detaily.</p>
             </div>
 
             <a asp-page="Create" class="admin-button admin-button--primary">
@@ -21,14 +22,14 @@
                    class="admin-list__search"
                    placeholder="Hledat podle názvu, místnosti, akce, specializace..."
                    oninput="submitPointsFilter()" />
-
-            <select asp-for="SpecializationId"
-                asp-items="Model.SpecializationItems"
-                class="admin-list__select"
-                onchange="this.form.submit()">
-            <option value="">Všechna zaměření</option>
-        </select>
-
+            <label for="BuildingId">Zaměření
+                <select asp-for="SpecializationId"
+                    asp-items="Model.SpecializationItems"
+                    class="admin-list__select"
+                    onchange="this.form.submit()">
+                <option value="">Všechna zaměření</option>
+                 </select>
+            </label>
             <input type="hidden" name="pageSize" value="@Model.PageSize" />
         </form>
 
@@ -75,7 +76,7 @@
                                         <a asp-page="./Edit"
                                         asp-route-id="@item.PointId"
                                         class="admin-button admin-button--secondary">
-                                            Editovat
+                                            Upravit
                                         </a>
 
                                         <a asp-page="./Delete"

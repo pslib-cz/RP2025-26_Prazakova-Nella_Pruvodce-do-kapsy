@@ -13,6 +13,15 @@
           "detailUrl": "/floors/Mfirst-detail.svg",
           "roomsUrl": "/data/rooms/masarykova-1.json",
           "rooms": []
+        },
+        {
+          "floorId": 2,
+          "name": "2. Patro",
+          "floorNumber": 2,
+          "backgroundUrl": "/floors/Mfirst.svg",
+          "detailUrl": "/floors/Msecond-detail.svg",
+          "roomsUrl": "/data/rooms/masarykova-2.json",
+          "rooms": []
         }
       ]
     }

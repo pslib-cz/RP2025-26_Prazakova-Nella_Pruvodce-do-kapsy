@@ -67,3 +67,25 @@
 .typeDefault {
   --point-color: var(--field-default);
 }
+
+.otherFloor {
+  --point-color: #888888;
+  opacity: 0.6;
+}
+
+.otherFloor .pinBody {
+  fill: var(--point-color);
+}
+
+.otherFloor .pinIcon {
+  color: #666666;
+}
+
+.otherFloor .pinCircle {
+  fill: #dddddd;
+}
+
+.otherFloor:hover .pinInner {
+  transform: none;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25));
+}

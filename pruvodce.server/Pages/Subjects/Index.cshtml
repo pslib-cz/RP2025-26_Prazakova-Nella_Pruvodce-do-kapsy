@@ -10,7 +10,7 @@
         <div class="admin-list__header">
             <div>
                 <h2 class="admin-list__title">Předměty</h2>
-                <p class="admin-list__subtitle">Seznam všech předmětů v systému.</p>
+                <p class="admin-list__subtitle">Seznam předmětů, která mívají vlastní stanoviště na akcích.</p>
             </div>
 
             <a asp-page="Create" class="admin-button admin-button--primary">
@@ -54,7 +54,25 @@
                                 </td>
 
                                 <td class="admin-table__cell">
-                                    @item.ActiveNote?.Text
+                                    @{
+                                        var subjectNoteCount = item.Notes?.Count ?? 0;
+                                        var activeText = item.ActiveNote?.Text;
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(activeText))
+                                    {
+                                        @activeText
+                                    }
+                                    else if (subjectNoteCount > 0)
+                                    {
+                                        <span class="admin-table__note-empty">
+                                            ✕ <span class="note-badge__hint">(celkem poznámek: @subjectNoteCount)</span>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="admin-table__note-empty">✕</span>
+                                    }
                                 </td>
 
                                 <td class="admin-table__cell">
@@ -62,7 +80,7 @@
                                         <a asp-page="./Edit"
                                            asp-route-id="@item.SubjectId"
                                            class="admin-button admin-button--secondary">
-                                            Editovat
+                                            Upravit
                                         </a>
 
                                         <a asp-page="./Delete"

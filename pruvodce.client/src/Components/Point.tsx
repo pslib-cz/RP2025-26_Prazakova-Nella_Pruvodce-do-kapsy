@@ -10,6 +10,7 @@ interface InteractivePointProps {
   y: number;
   zoomLevel: number;
   onClick: (point: Point) => void;
+  isOtherFloor?: boolean;
 }
 
 function getPointScale(zoomLevel: number): number {
@@ -25,6 +26,7 @@ const InteractivePoint: React.FC<InteractivePointProps> = ({
   y,
   zoomLevel,
   onClick,
+  isOtherFloor = false,
 }) => {
   const typeClass = getPointMapColorClass(point, style);
   const iconName = getPointIconFromPoint(point);
@@ -32,7 +34,7 @@ const InteractivePoint: React.FC<InteractivePointProps> = ({
 
   return (
     <g
-      className={`${style.point} ${typeClass}`}
+      className={`${style.point} ${typeClass} ${isOtherFloor ? style.otherFloor : ''}`}
       transform={`translate(${x} ${y}) scale(${pointScale})`}
       onClick={event => {
         event.stopPropagation();

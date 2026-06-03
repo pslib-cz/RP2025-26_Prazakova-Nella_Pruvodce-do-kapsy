@@ -132,11 +132,18 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
     return buildingFloors.find(floor => floor.floorId === currentFloorId) ?? null;
   }, [buildingFloors, currentFloorId]);
 
-  const currentFloorPoints = useMemo(() => {
-    if (!currentFloor || !hasActiveEvent) return [];
+  const allPoints = useMemo(() => {
+  if (!hasActiveEvent) return [];
 
-    return currentFloor.rooms.flatMap(room => room.points ?? []);
-  }, [currentFloor, hasActiveEvent]);
+    return buildingFloors.flatMap(floor =>
+      floor.rooms.flatMap(room =>
+        (room.points ?? []).map(point => ({
+          ...point,
+          floorId: floor.floorId,
+        }))
+      )
+    );
+  }, [buildingFloors, hasActiveEvent]);
 
   const handleBuildingChange = (nextBuildingId: number) => {
     setIsDropdownOpen(false);
@@ -188,7 +195,7 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           onFloorChange={handleFloorChange}
           activeTypes={activeTypes}
           onActiveTypesChange={setActiveTypes}
-          points={currentFloorPoints}
+          points={allPoints}
           onPointSelect={point => {
             setSelectedPoint(point);
             setIsMobilePanelOpen(false);
@@ -224,6 +231,7 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           <InteractiveMap
             floors={buildingFloors}
             activeFloorId={currentFloorId}
+            points={allPoints}
             buildingId={buildingIdNumber}
             className="main-map"
             onPointSelect={point => {
@@ -241,6 +249,7 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           floors={buildingFloors}
           currentFloorId={currentFloorId}
           onFloorChange={handleFloorChange}
+          reverse
         />
       </main>
 
@@ -281,7 +290,7 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           onFloorChange={handleFloorChange}
           activeTypes={activeTypes}
           onActiveTypesChange={setActiveTypes}
-          points={currentFloorPoints}
+          points={allPoints}
           onPointSelect={point => {
             setSelectedPoint(point);
             setIsMobilePanelOpen(false);

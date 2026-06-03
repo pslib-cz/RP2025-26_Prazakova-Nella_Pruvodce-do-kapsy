@@ -69,6 +69,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       },
+      '/icons': {
+        target: backend,
+        changeOrigin: true,
+        secure: false
+      },
       '/Dashboard': {
         target: backend,
         changeOrigin: true,
