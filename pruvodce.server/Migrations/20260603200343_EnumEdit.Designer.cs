@@ -11,8 +11,8 @@ using pruvodce.server.Data;
 namespace pruvodce.server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260603191627_SpecializationMore")]
-    partial class SpecializationMore
+    [Migration("20260603200343_EnumEdit")]
+    partial class EnumEdit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
