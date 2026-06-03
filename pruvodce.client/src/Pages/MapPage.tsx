@@ -128,10 +128,6 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   setSelectedPoint(null);
 }, [buildingId, currentFloorId]);
 
-  const currentFloor = useMemo(() => {
-    return buildingFloors.find(floor => floor.floorId === currentFloorId) ?? null;
-  }, [buildingFloors, currentFloorId]);
-
   const allPoints = useMemo(() => {
   if (!hasActiveEvent) return [];
 
