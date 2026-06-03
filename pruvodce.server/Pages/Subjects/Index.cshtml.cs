@@ -24,6 +24,7 @@ namespace pruvodce.server.Pages.Subjects
 
             var query = _context.Subjects
                 .Include(s => s.ActiveNote)
+                .Include(s => s.Notes)
                 .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(Search))

@@ -24,6 +24,7 @@ namespace pruvodce.server.Pages.Teachers
             Search = search?.Trim().ToLower();
 
             IQueryable<Teacher> query = _context.Teachers
+                .Include(t => t.Notes)
                 .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(Search))

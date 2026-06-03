@@ -1,6 +1,6 @@
 [
   {
-    "roomId": "vytah-B1",
+    "roomId": "vytah-B",
     "label": "",
     "svgOutline": "M262.5 327.5L276.5 327.5L276.5 372.5L262.5 372.5Z",
     "clipPathId": null,
@@ -421,7 +421,7 @@
     "floorId": 1
   },
   {
-    "roomId": "vytah-A1",
+    "roomId": "vytah-A",
     "label": "",
     "svgOutline": "M352.5 467.5L379.5 467.5L379.5 487.5L352.5 487.5Z",
     "clipPathId": null,

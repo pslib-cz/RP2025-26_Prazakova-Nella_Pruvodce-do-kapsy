@@ -1,6 +1,6 @@
 [
   {
-    "roomId": "vytah-B2",
+    "roomId": "vytah-B",
     "label": "",
     "svgOutline": "M262.5 327.5L276.5 327.5L276.5 372.5L262.5 372.5Z",
     "clipPathId": null,
@@ -275,7 +275,7 @@
     "floorId": 2
   },
   {
-    "roomId": "vytah-A2",
+    "roomId": "vytah-A",
     "label": "",
     "svgOutline": "M352.5 467.5L379.5 467.5L379.5 487.5L352.5 487.5Z",
     "clipPathId": null,
@@ -375,7 +375,7 @@
     "floorId": 2
   },
   {
-    "roomId": "wc-B21",
+    "roomId": "wc-B-muzi",
     "label": "",
     "svgOutline": "M 203 327.5 L 219.5 327.5 L 219.5 371.5 L 203 371.5 Z",
     "clipPathId": null,
@@ -391,7 +391,7 @@
     "icon": "famicons:man"
   },
   {
-    "roomId": "wc-B22",
+    "roomId": "wc-B-zeny",
     "label": "",
     "svgOutline": "M 187.5 327.5 L 203 327.5 L 203 371.5 L 187.5 371.5 Z",
     "clipPathId": null,
@@ -404,7 +404,7 @@
     "coordinateY": 356,
     "type": 3,
     "floorId": 2,
-    "icon": "famicons:man"
+    "icon": "famicons:woman"
   },
   {
     "roomId": "wc-A2",
@@ -420,6 +420,6 @@
     "coordinateY": 454,
     "type": 3,
     "floorId": 2,
-    "icon": "famicons:man"
+    "icon": "famicons:woman"
   }
 ]
