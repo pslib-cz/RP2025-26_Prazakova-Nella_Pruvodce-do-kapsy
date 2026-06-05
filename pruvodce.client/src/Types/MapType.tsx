@@ -73,6 +73,8 @@ export interface Point {
   subjects?: Subject[];
   teachers?: Teacher[];
 
+  areStudents: boolean;
+
   roomId: string;
 
   eventId?: number | null;

@@ -20,7 +20,7 @@
                        class="admin-home__filter-input"
                        placeholder="Hledat body..."
                        oninput="submitEventFilter()" />
-            <label for="BuildingId">Budova
+            <label for="BuildingId" class="visually-hidden">Budova
                 <select asp-for="BuildingId"
                         asp-items="Model.BuildingItems"
                         class="admin-home__filter-select"
@@ -42,7 +42,7 @@
                         <th class="admin-table__cell admin-table__cell--head">Název</th>
                         <th class="admin-table__cell admin-table__cell--head">Budova</th>
                         <th class="admin-table__cell admin-table__cell--head">Místnost</th>
-                        <th class="admin-table__cell admin-table__cell--head">Specializace</th>
+                        <th class="admin-table__cell admin-table__cell--head desktop-only">Specializace</th>
                     </tr>
                 </thead>
 
@@ -57,7 +57,7 @@
                                 </td>
                                 <td class="admin-table__cell">@point.Building</td>
                                 <td class="admin-table__cell">@point.Room</td>
-                                <td class="admin-table__cell">
+                                <td class="admin-table__cell desktop-only">
                                     <span class="admin-badge admin-badge--purple">@point.Specialization</span>
                                 </td>
                             </tr>

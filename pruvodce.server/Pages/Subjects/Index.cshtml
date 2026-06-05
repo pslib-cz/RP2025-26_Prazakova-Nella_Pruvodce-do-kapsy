@@ -31,7 +31,7 @@
                     <tr class="admin-table__row">
                         <th class="admin-table__cell admin-table__cell--head">Název</th>
                         <th class="admin-table__cell admin-table__cell--head">Zkratka</th>
-                        <th class="admin-table__cell admin-table__cell--head">Poznámka</th>
+                        <th class="admin-table__cell admin-table__cell--head desktop-only">Poznámka</th>
                         <th class="admin-table__cell admin-table__cell--head">Akce</th>
                     </tr>
                 </thead>
@@ -53,7 +53,7 @@
                                     @item.Acronym
                                 </td>
 
-                                <td class="admin-table__cell">
+                                <td class="admin-table__cell desktop-only">
                                     @{
                                         var subjectNoteCount = item.Notes?.Count ?? 0;
                                         var activeText = item.ActiveNote?.Text;

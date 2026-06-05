@@ -81,26 +81,26 @@ namespace pruvodce.server.Controllers
             return Ok(result);
         }
         [HttpGet("debug")]
-public async Task<IActionResult> Debug()
-{
-    var now = DateTime.Now;
-    var events = await _context.Events
-        .Include(e => e.EventBuildings)
-        .ToListAsync();
+        public async Task<IActionResult> Debug()
+        {
+            var now = DateTime.Now;
+            var events = await _context.Events
+                .Include(e => e.EventBuildings)
+                .ToListAsync();
 
-    return Ok(new {
-        Now = now,
-        EventCount = events.Count,
-        Events = events.Select(e => new {
-            e.EventId,
-            e.Name,
-            e.IsActive,
-            e.StartDate,
-            e.EndDate,
-            EventBuildings = e.EventBuildings.Select(eb => eb.BuildingId).ToList()
-        })
-    });
-}
+            return Ok(new {
+                Now = now,
+                EventCount = events.Count,
+                Events = events.Select(e => new {
+                    e.EventId,
+                    e.Name,
+                    e.IsActive,
+                    e.StartDate,
+                    e.EndDate,
+                    EventBuildings = e.EventBuildings.Select(eb => eb.BuildingId).ToList()
+                })
+            });
+        }
  
         [HttpGet("points")]
         public async Task<ActionResult<IEnumerable<object>>> GetPoints()

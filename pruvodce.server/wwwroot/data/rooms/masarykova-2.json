@@ -12,7 +12,8 @@
     "coordinateX": 270,
     "coordinateY": 350,
     "type": 4,
-    "floorId": 2
+    "floorId": 2,
+    "icon": "mynaui:elevator"
   },
   {
     "roomId": "D206",
@@ -287,7 +288,8 @@
     "coordinateX": 366,
     "coordinateY": 478,
     "type": 4,
-    "floorId": 2
+    "floorId": 2,
+    "icon": "mynaui:elevator"
   },
   {
     "roomId": "A234",
@@ -384,8 +386,8 @@
     "interiorY": 328,
     "interiorWidth": 23,
     "interiorHeight": 0,
-    "coordinateX": 215,
-    "coordinateY": 356,
+    "coordinateX": 211,
+    "coordinateY": 350,
     "type": 3,
     "floorId": 2,
     "icon": "famicons:man"
@@ -400,8 +402,8 @@
     "interiorY": 328,
     "interiorWidth": 23,
     "interiorHeight": 0,
-    "coordinateX": 199,
-    "coordinateY": 356,
+    "coordinateX": 195,
+    "coordinateY": 350,
     "type": 3,
     "floorId": 2,
     "icon": "famicons:woman"
@@ -416,7 +418,7 @@
     "interiorY": 442,
     "interiorWidth": 44,
     "interiorHeight": 0,
-    "coordinateX": 369,
+    "coordinateX": 357,
     "coordinateY": 454,
     "type": 3,
     "floorId": 2,

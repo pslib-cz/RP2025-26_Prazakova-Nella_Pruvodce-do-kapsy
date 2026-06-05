@@ -14,7 +14,7 @@ export const pointIconByType: Record<PointIconKey, string> = {
   Talk: 'lucide:presentation',
   Hand: 'lucide:hand',
   Ucebna: 'lucide:door-open',
-  Jine: 'lucide--ellipsis',
+  Jine: 'lucide:astroid',
 };
 
 export const pointIconLabel: Record<PointIconKey, string> = {
@@ -219,6 +219,10 @@ export function getPointFieldLabel(point: Point): string {
 
 export function getPointThemeClass(point: Point): string {
   return getFieldThemeClass(getPointFieldType(point));
+}
+
+export function getPointAreStudents(point: Point): boolean {
+  return point.areStudents;
 }
 
 export function getPointMapColorClass(

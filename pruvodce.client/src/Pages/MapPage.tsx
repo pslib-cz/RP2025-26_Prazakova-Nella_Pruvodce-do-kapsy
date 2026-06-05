@@ -63,7 +63,7 @@ const MapPage: React.FC = () => {
   const navigate = useNavigate();
 
   const isDesktop = useIsDesktop();
-const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
+  const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 
   const buildingIdNumber = Number(buildingId);
 
@@ -91,6 +91,25 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
     'Jine',
   ]);
 
+  const [activeSpecializations, setActiveSpecializations] = useState<string[]>([]);
+
+  const uniqueSpecializationIds = useMemo(() => {
+    const specIds = new Set<string>();
+    for (const point of eventPoints) {
+      const specId = point.specializationId ?? point.specialization?.specializationId;
+      if (specId) {
+        specIds.add(specId);
+      }
+    }
+    return Array.from(specIds);
+  }, [eventPoints]);
+
+  useEffect(() => {
+    if (uniqueSpecializationIds.length > 0 && activeSpecializations.length === 0) {
+      setActiveSpecializations(uniqueSpecializationIds);
+    }
+  }, [uniqueSpecializationIds]);
+
   const hasActiveEvent = Boolean(activeEvent);
 
   const visibleEventPoints = useMemo(() => {
@@ -98,9 +117,15 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 
     return eventPoints.filter(point => {
       const pointIconType = getPointIconType(point);
-      return activeTypes.includes(pointIconType);
+      if (!activeTypes.includes(pointIconType)) return false;
+
+      const pointSpecId = point.specializationId ?? point.specialization?.specializationId;
+      
+      if (!pointSpecId) return true;
+      
+      return activeSpecializations.includes(pointSpecId);
     });
-  }, [eventPoints, activeTypes, hasActiveEvent]);
+  }, [eventPoints, activeTypes, activeSpecializations, hasActiveEvent]);
 
   const buildings = useMemo(() => {
     return mergePointsIntoRooms(staticBuildings, visibleEventPoints);
@@ -125,11 +150,11 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   }, [buildingFloors]);
 
   useEffect(() => {
-  setSelectedPoint(null);
-}, [buildingId, currentFloorId]);
+    setSelectedPoint(null);
+  }, [buildingId, currentFloorId]);
 
   const allPoints = useMemo(() => {
-  if (!hasActiveEvent) return [];
+    if (!hasActiveEvent) return [];
 
     return buildingFloors.flatMap(floor =>
       floor.rooms.flatMap(room =>
@@ -191,6 +216,9 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           onFloorChange={handleFloorChange}
           activeTypes={activeTypes}
           onActiveTypesChange={setActiveTypes}
+          activeSpecializations={activeSpecializations}
+          onActiveSpecializationsChange={setActiveSpecializations}
+          availablePoints={eventPoints}
           points={allPoints}
           onPointSelect={point => {
             setSelectedPoint(point);
@@ -286,6 +314,9 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           onFloorChange={handleFloorChange}
           activeTypes={activeTypes}
           onActiveTypesChange={setActiveTypes}
+          activeSpecializations={activeSpecializations}
+          onActiveSpecializationsChange={setActiveSpecializations}
+          availablePoints={eventPoints}
           points={allPoints}
           onPointSelect={point => {
             setSelectedPoint(point);
@@ -297,13 +328,13 @@ const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
           hideBuildingSelect
           hideFloorSelect
         />
-        
       </section>
+
       <PointDetailPanel
-          point={selectedPoint}
-          isDesktop={isDesktop}
-          onClose={() => setSelectedPoint(null)}
-        />
+        point={selectedPoint}
+        isDesktop={isDesktop}
+        onClose={() => setSelectedPoint(null)}
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import BuildingSelect from './BuildingSelect';
 import PointTypeFilters from './PointTypeFilters';
 import FloorControls from './FloorControls';
 import PointList from './PointList';
+import SpecializationFilters from './SpecializationFilters';
 
 import type { BuildingData, FloorData, Point } from '../../Types/MapType';
 
@@ -22,6 +23,10 @@ interface MapFiltersPanelProps {
 
   activeTypes: PointIcon[];
   onActiveTypesChange: React.Dispatch<React.SetStateAction<PointIcon[]>>;
+
+  activeSpecializations: string[];
+  onActiveSpecializationsChange: React.Dispatch<React.SetStateAction<string[]>>;
+  availablePoints: Point[];
 
   points: Point[];
   onPointSelect?: (point: Point) => void;
@@ -44,6 +49,9 @@ const MapFiltersPanel: React.FC<MapFiltersPanelProps> = ({
   onFloorChange,
   activeTypes,
   onActiveTypesChange,
+  activeSpecializations,
+  onActiveSpecializationsChange,
+  availablePoints,
   points,
   onPointSelect,
   hasActiveEvent,
@@ -57,7 +65,6 @@ const MapFiltersPanel: React.FC<MapFiltersPanelProps> = ({
       {!hideBuildingSelect && (
         <section className={style.panelSection}>
           <h2 className={style.panelLabel}>Areál</h2>
-
           <BuildingSelect
             buildings={buildings}
             currentBuilding={currentBuilding}
@@ -74,6 +81,13 @@ const MapFiltersPanel: React.FC<MapFiltersPanelProps> = ({
         <PointTypeFilters
           activeTypes={activeTypes}
           onChange={onActiveTypesChange}
+        />
+      </section>
+      <section className={style.panelSection}>
+        <SpecializationFilters
+          points={availablePoints}
+          activeSpecializations={activeSpecializations}
+          onActiveSpecializationsChange={onActiveSpecializationsChange}
         />
       </section>
 

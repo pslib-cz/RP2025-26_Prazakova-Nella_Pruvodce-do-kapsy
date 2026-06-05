@@ -127,7 +127,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       isOtherFloor: boolean;
     }> = [];
 
-    // Process all floors - current and other floors
     floors.forEach(floor => {
       const isCurrentFloor = floor.floorId === activeFloorId;
 

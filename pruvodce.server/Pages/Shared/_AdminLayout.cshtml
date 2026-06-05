@@ -15,6 +15,13 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
+<div id="small-screen-overlay" style="display:none;">
+    <div class="small-screen-overlay__box">
+        <p class="small-screen-overlay__title">Omlouváme se</p>
+        <p class="small-screen-overlay__text">Toto rozhraní není určeno pro malé displeje. Otevřete jej prosím na větším zařízení.</p>
+    </div>
+</div>
+
 <body>
     <div class="admin-layout">
         <aside class="admin-layout__sidebar">
@@ -91,3 +98,12 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script>
+    function checkScreenSize() {
+        const overlay = document.getElementById('small-screen-overlay');
+        overlay.style.display = window.innerWidth < 768 ? 'flex' : 'none';
+    }
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+</script>

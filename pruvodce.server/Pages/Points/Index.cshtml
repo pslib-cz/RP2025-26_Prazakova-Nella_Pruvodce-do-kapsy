@@ -22,7 +22,7 @@
                    class="admin-list__search"
                    placeholder="Hledat podle názvu, místnosti, akce, specializace..."
                    oninput="submitPointsFilter()" />
-            <label for="BuildingId">Zaměření
+            <label for="BuildingId" class="visually-hidden">Zaměření
                 <select asp-for="SpecializationId"
                     asp-items="Model.SpecializationItems"
                     class="admin-list__select"
@@ -40,7 +40,7 @@
                         <th class="admin-table__cell admin-table__cell--head admin-table__cell--icon">Ikona</th>
                         <th class="admin-table__cell admin-table__cell--head">Název</th>
                         <th class="admin-table__cell admin-table__cell--head">Místnost</th>
-                        <th class="admin-table__cell admin-table__cell--head">Zaměření</th>
+                        <th class="admin-table__cell admin-table__cell--head desktop-only">Zaměření</th>
                         <th class="admin-table__cell admin-table__cell--head admin-table__cell--actions"></th>
                     </tr>
                 </thead>
@@ -67,7 +67,7 @@
                                     @item.Room
                                 </td>
 
-                                <td class="admin-table__cell admin-table__cell--wrap">
+                                <td class="admin-table__cell admin-table__cell--wrap desktop-only">
                                     @item.SpecializationName
                                 </td>
 

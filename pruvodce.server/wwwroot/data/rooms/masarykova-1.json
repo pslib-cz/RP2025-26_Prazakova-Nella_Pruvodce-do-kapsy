@@ -2,7 +2,7 @@
   {
     "roomId": "vytah-B",
     "label": "",
-    "svgOutline": "M262.5 327.5L276.5 327.5L276.5 372.5L262.5 372.5Z",
+    "svgOutline": "M 262.5 327.5 L 277.5 327.5 L 277.5 372.5 L 262.5 372.5 Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/vytah-B1.svg",
     "interiorX": 265,
@@ -183,7 +183,7 @@
   {
     "roomId": "B109",
     "label": "B109",
-    "svgOutline": "M299.5 327.5L322.5 327.5L322.5 372.5L299.5 372.5Z",
+    "svgOutline": "M 299.5 327.5 L 323 327.5 L 323 372.5 L 299.5 372.5 Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/B109.svg",
     "interiorX": 307,
@@ -243,7 +243,7 @@
   {
     "roomId": "C103",
     "label": "C103",
-    "svgOutline": "M337.5 356.5L380.5 356.5L380.5 455.5L337.5 455.5Z",
+    "svgOutline": "M 337 356.5 L 380.5 356.5 L 380.5 455.5 L 337 455.5 Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/C103.svg",
     "interiorX": 373,
@@ -592,7 +592,7 @@
   {
     "roomId": "wc-A1",
     "label": "",
-    "svgOutline": "M327.5 487.5L379.5 487.5L379.5 501.5L327.5 501.5Z",
+    "svgOutline": "M 327.5 487.5 L 379.5 487.5 L 379.5 502.5 L 327.5 502.5 Z",
     "clipPathId": null,
     "interiorImageUrl": "/interior/wc-A1.svg",
     "interiorX": 328,

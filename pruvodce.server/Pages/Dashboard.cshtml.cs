@@ -126,7 +126,6 @@ namespace pruvodce.server.Pages
                 .Distinct()
                 .ToList();
 
-            // Get points through EventPoint junction
             var rawPoints = await _context.EventPoints
                 .Where(ep => visibleEventIds.Contains(ep.EventId))
                 .Include(ep => ep.Point)
@@ -195,15 +194,10 @@ namespace pruvodce.server.Pages
             };
         }
 
-        /// <summary>
-        /// Získá seznam aktuálně viditelných (aktivních) akcí na základě EventPoints.
-        /// Aktivní akce = IsActive=true a má alespoň jedno stanoviště (EventPoint).
-        /// </summary>
         private async Task<List<VisibleEventForBuilding>> GetCurrentlyVisibleEventsAsync()
         {
             var now = DateTime.Now;
 
-            // Získáme aktivní akce, které mají alespoň jedno stanoviště (EventPoint)
             var activeEventsWithPoints = await _context.Events
                 .Include(e => e.EventPoints)
                     .ThenInclude(ep => ep.Point)
@@ -211,27 +205,23 @@ namespace pruvodce.server.Pages
                 .AsNoTracking()
                 .ToListAsync();
 
-            // Získáme mapu roomId -> buildingId
             var roomBuildingMap = await GetRoomBuildingMapAsync();
 
             var visibleEvents = new List<VisibleEventForBuilding>();
 
             foreach (var evt in activeEventsWithPoints)
             {
-                // Kontrola data (pokud je nastaveno)
                 var withinDateRange = (!evt.StartDate.HasValue || evt.StartDate <= now)
                                     && (!evt.EndDate.HasValue || evt.EndDate >= now);
 
                 if (!withinDateRange)
                     continue;
 
-                // Pro každé stanoviště v akci získáme building
                 foreach (var ep in evt.EventPoints)
                 {
                     if (ep.Point?.RoomId != null &&
                         roomBuildingMap.TryGetValue(ep.Point.RoomId, out var buildingId))
                     {
-                        // Přidáme viditelnou akci pro tento building
                         visibleEvents.Add(new VisibleEventForBuilding
                         {
                             EventId = evt.EventId,

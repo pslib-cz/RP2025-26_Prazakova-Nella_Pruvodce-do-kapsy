@@ -40,7 +40,7 @@ const options: {
     value: 'Jine',
     title: 'Ostatní',
     description: '',
-    icon: 'lucide:ellipsis',
+    icon: 'lucide:astroid',
     className: 'pointJine',
   },
 ];

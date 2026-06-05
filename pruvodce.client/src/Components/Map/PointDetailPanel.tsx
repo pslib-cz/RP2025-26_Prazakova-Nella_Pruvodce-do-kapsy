@@ -11,6 +11,7 @@ import {
   getPointSpecialization,
   getPointThemeClass,
   getPointTitle,
+  getPointAreStudents,
 } from '../../pointIconUtils';
 
 import style from '../../Styles/PointDetailPanel.module.css';
@@ -67,6 +68,7 @@ const PointDetailPanel: React.FC<PointDetailPanelProps> = ({
   const iconName = getPointIconFromPoint(renderedPoint);
   const themeClass = getPointThemeClass(renderedPoint);
   const specialization = getPointSpecialization(renderedPoint);
+  const areStudents = getPointAreStudents(renderedPoint);
 
   const rawPoint = renderedPoint as Point & {
     teachers?: {
@@ -175,6 +177,11 @@ const PointDetailPanel: React.FC<PointDetailPanelProps> = ({
             </h3>
 
             <p>{description || 'Popis tohoto stanoviště zatím nebyl vyplněn.'}</p>
+            {areStudents && (
+              <p>
+                <strong>Na stanovišti budou přítomni studenti.</strong> Přijďte se na cokoli zeptat!
+              </p>
+            )}
           </section>
 
           {(teachers.length > 0 || note?.text) && (
